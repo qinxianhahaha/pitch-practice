@@ -1,0 +1,1901 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>音准练习</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="音准练习">
+<meta name="theme-color" content="#F7F7F8">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+/* 清晨练声房：雾蓝灰底、墨色字；杏色 = 你的声音，玉色 = 唱准了 */
+:root{
+  --bg:#E9EEF0;--paper:#F8FAFA;--card:#F8FAFA;--ink:#18222D;--muted:#687582;--line:#D5DDE1;--soft:#EEF2F3;
+  --accent:#2B4C6F;--accent-ink:#fff;--good:#23936F;--warm:#E2803A;--voice:#E2803A;
+  --band:rgba(35,147,111,.13);--grid:rgba(24,34,45,.05);--grid-c:rgba(24,34,45,.13);
+  --shadow:0 1px 2px rgba(24,34,45,.04),0 8px 24px -12px rgba(24,34,45,.12);
+  --white-key:#fff;--black-key:#18222D;
+  --display:"Songti SC","STSong","Noto Serif SC",serif;
+  --body:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root[data-theme="system"]{
+  --bg:#10161D;--paper:#172029;--card:#172029;--ink:#E6ECEF;--muted:#8693A0;--line:#263240;--soft:#1D2833;
+  --accent:#9DB8D6;--accent-ink:#10161D;--good:#3DC497;--warm:#F09A55;--voice:#F09A55;
+  --band:rgba(61,196,151,.14);--grid:rgba(230,236,239,.05);--grid-c:rgba(230,236,239,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.5);
+  --white-key:#DCE3E8;--black-key:#0B1015;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 16px 56px}
+button,select,input,textarea{font:inherit;color:inherit}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hidden{display:none!important}
+
+/* 页头 */
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:20px}
+h1{font:600 30px/1.1 var(--display);margin:0;letter-spacing:2px}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;letter-spacing:.5px}
+
+/* 按钮 */
+.btn{border:0;background:var(--soft);border-radius:12px;padding:9px 16px;cursor:pointer;white-space:nowrap;transition:background .15s,transform .05s}
+.btn:hover:not(:disabled){background:var(--line)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.primary{background:var(--ink);color:var(--paper);font-weight:600}
+.btn.primary:hover:not(:disabled){background:var(--accent)}
+.btn.on{background:transparent;color:var(--good);box-shadow:inset 0 0 0 1.5px var(--good);font-weight:600}
+.btn.on::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:7px;vertical-align:1px}
+.btn.sm{padding:5px 11px;font-size:13px;border-radius:10px}
+.btn.rec{background:#C9483F;color:#fff}
+select,input[type=text],textarea{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:6px 9px}
+textarea{width:100%;min-height:100px;font:14px/1.6 var(--mono)}
+
+.card{background:var(--paper);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+
+/* 今日 */
+.hero{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-bottom:22px;padding:16px 20px}
+.hero-t{font-size:16px;font-weight:600;margin:2px 0 4px}
+.hero-r{display:flex;gap:8px;flex-wrap:wrap}
+.week{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.week i{width:9px;height:9px;border-radius:50%;background:var(--line);display:inline-block}
+.week i.y{background:var(--good)}
+.steps{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px}
+.step{font-size:13px;color:var(--muted);padding-bottom:3px;border-bottom:2px solid transparent}
+.step.cur{color:var(--ink);font-weight:600;border-color:var(--ink)}
+.step.done{color:var(--good)}
+.step.done::before{content:"✓ "}
+.lbl{font-size:12px;color:var(--muted);letter-spacing:1px}
+
+/* 导航 */
+.tabs{display:flex;gap:2px 20px;overflow-x:auto;margin:0 4px 14px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:6px 0;cursor:pointer;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent;font-size:15px}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--ink);font-weight:600;border-color:var(--ink)}
+
+/* 舞台：左边读数，右边谱纸 */
+.main{display:grid;grid-template-columns:260px 1fr;gap:0;background:var(--paper);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+@media (max-width:720px){.main{grid-template-columns:1fr}}
+.main>.card{box-shadow:none;border-radius:0;background:transparent}
+.display{display:flex;flex-direction:column;gap:16px;border-right:1px solid var(--line)}
+@media (max-width:720px){.display{border-right:0;border-bottom:1px solid var(--line)}}
+.big{font:600 52px/1 var(--display);font-variant-numeric:tabular-nums;margin-top:4px}
+.big small{display:block;font:12px/1.4 var(--mono);color:var(--muted);margin-top:6px}
+#curName{color:var(--voice)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hold{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.hold>i{display:block;height:100%;width:0;background:var(--good)}
+.meter{position:relative;height:22px}
+.meter::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:var(--line);border-radius:1px}
+.meter .zone{position:absolute;top:3px;bottom:3px;background:var(--band);border-radius:8px}
+.meter .mid{position:absolute;left:50%;top:2px;bottom:2px;width:2px;margin-left:-1px;background:var(--good);border-radius:1px}
+.meter .needle{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--voice);left:50%;transition:left .08s linear,background .2s;opacity:0;box-shadow:0 0 0 4px var(--paper)}
+.meter-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px}
+.status{font-size:15px;font-weight:600;min-height:25px}
+.status.good{color:var(--good)}.status.warm{color:var(--warm)}
+canvas{width:100%;display:block}
+#cv{height:340px}
+
+/* 教练：一句话，安静地放在舞台下面 */
+.coach-card{display:flex;gap:10px;align-items:baseline;margin:14px 6px 0;font-size:15px;color:var(--ink)}
+.coach-card::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--good);transform:translateY(-1px)}
+.coach .who{display:none}
+
+/* 面板 */
+.panel{margin-top:14px}
+.panel .ctrls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.panel p{margin:0 0 12px;color:var(--muted);font-size:14px}
+.panel p b{color:var(--ink)}
+.lv{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:13px;margin-bottom:12px;color:var(--muted)}
+.lv b{color:var(--ink)}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line);display:inline-block}
+.dots i.g{background:var(--good)}.dots i.h{background:var(--warm)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{padding:5px 11px;border-radius:10px;background:var(--soft);font:14px/1.4 var(--body);font-variant-numeric:tabular-nums;color:var(--muted)}
+.chip.cur{background:var(--ink);color:var(--paper);font-weight:600}
+.chip.done{background:var(--band);color:var(--good)}
+.chip.later{opacity:.5}
+.lyric{font:600 24px/1.4 var(--display);margin-top:14px;letter-spacing:2px}
+.phrases{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.phrases button{border:0;background:none;padding:3px 0;margin-right:10px;font-size:13px;cursor:pointer;color:var(--muted);border-bottom:1.5px solid transparent}
+.phrases button.cur{color:var(--ink);border-color:var(--ink)}
+.phrases button.done{color:var(--good)}
+.checks{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;margin:6px 0 12px}
+.checks label{display:flex;gap:4px;align-items:center}
+.result{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.result div{background:var(--soft);border-radius:14px;padding:12px;text-align:center}
+.result b{display:block;font:600 26px/1.2 var(--display)}
+.result span{font-size:12px;color:var(--muted)}
+
+/* 琴键（默认收起） */
+.kb-wrap{margin-top:14px}
+.kb-wrap summary{font-size:14px;color:var(--muted)}
+.kb-scroll{overflow-x:auto;margin-top:12px}
+.kb{position:relative;display:flex;height:104px;min-width:520px;user-select:none}
+.wk{flex:1;background:var(--white-key);border:1px solid var(--line);border-radius:0 0 8px 8px;margin-right:-1px;display:flex;align-items:flex-end;justify-content:center;font:10px var(--mono);color:#98A2AB;padding-bottom:5px;cursor:pointer}
+.wk.out{opacity:.4}
+.bk{position:absolute;top:0;height:60%;background:var(--black-key);border-radius:0 0 5px 5px;cursor:pointer;z-index:2}
+.wk.target,.bk.target{background:var(--good)!important;color:#fff}
+.wk.sung,.bk.sung{box-shadow:inset 0 -12px 0 var(--voice)}
+
+.stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin:18px 6px 0;font-size:13px;color:var(--muted)}
+.stats b{color:var(--ink);font-family:var(--mono)}
+
+details{margin-top:14px}
+details.card{padding:14px 20px}
+summary{cursor:pointer;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";display:inline-block;width:16px;color:var(--muted);font-weight:400}
+details[open]>summary::before{content:"–"}
+.settings{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;font-size:14px;margin-top:12px}
+.settings label{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted)}
+.steps-help ol{padding-left:20px;margin:8px 0}
+.steps-help li{margin:5px 0}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--paper);padding:11px 20px;border-radius:14px;font-weight:600;opacity:0;transition:.35s;pointer-events:none;z-index:20;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;background:rgba(16,22,29,.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+.modal .card{max-width:460px;width:100%;padding:28px}
+.modal h2{margin:0 0 12px;font:600 26px/1.2 var(--display);letter-spacing:2px}
+.modal ul{padding-left:18px;margin:8px 0 16px}
+.modal li{margin:7px 0}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.prog-grid div{background:var(--soft);border-radius:14px;padding:12px}
+.prog-grid b{display:block;font-size:19px}
+.prog-grid span{font-size:12px;color:var(--muted)}
+#pc{height:220px}
+.import{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.import .ctrls{margin-top:8px}
+
+/* 节奏 */
+.rcells{display:flex;gap:5px;margin:16px 0;flex-wrap:wrap}
+.rcell{min-width:44px;height:56px;border-radius:12px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;font:14px var(--mono);color:var(--muted);transition:background .08s}
+.rcell small{font:10px var(--body);color:var(--muted)}
+.rcell.now{box-shadow:inset 0 0 0 2px var(--ink);color:var(--ink)}
+.rcell.g{background:var(--good);color:#fff}.rcell.g small{color:#fff}
+.rcell.ok{background:var(--band);color:var(--good)}
+.rcell.miss{background:rgba(226,128,58,.12);color:var(--warm)}
+.rcell.ti{min-width:28px;background:transparent}
+.tap{width:100%;height:120px;font:600 20px var(--body);border-radius:20px;border:0;background:var(--soft);cursor:pointer;touch-action:manipulation;color:var(--muted)}
+.tap:active,.tap.hit{background:var(--band);color:var(--good)}
+#rcount{font:600 44px/1 var(--display)}
+
+/* 开口热身 */
+.warm-steps{display:flex;flex-wrap:wrap;gap:4px 14px;margin:4px 0 14px}
+.warm-big{font:600 21px/1.6 var(--display);margin:6px 0 14px;letter-spacing:.5px}
+.safe{font-size:13px;color:var(--good);margin-top:12px}
+
+/* 跟原曲练 */
+.trrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.trrow input[type=range]{flex:1;min-width:160px;accent-color:var(--voice)}
+#trTime{font-family:var(--mono)}
+.seg{display:inline-flex;background:var(--soft);border-radius:12px;padding:3px}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;border-radius:9px;color:var(--muted)}
+.seg button.on{background:var(--paper);color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.file{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+.clips{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.clips div{display:flex;gap:8px;align-items:center;font-size:13px}
+/* 目标音本身就是"再听"按钮 */
+.tgt-btn{border:0;background:none;color:inherit;font:inherit;text-align:left;padding:10px;margin:-10px;border-radius:16px;cursor:pointer;transition:background .15s}
+.tgt-btn:hover:not(:disabled){background:var(--soft)}
+.tgt-btn:disabled{cursor:default}
+.tgt-btn:disabled .replay-tag{visibility:hidden}
+.replay-tag{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12px;font-weight:600;color:var(--good)}
+.replay-tag svg{width:13px;height:13px}
+.tgt-btn.ping .big{animation:ping .5s ease-out}
+.tgt-btn.hit .big{animation:hit .9s ease-out}
+@keyframes hit{0%{color:var(--good);transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes ping{0%{transform:scale(1)}30%{transform:scale(1.06)}100%{transform:scale(1)}}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.acts:empty{display:none}
+.keys{margin-top:-6px}
+.chip[data-i]{cursor:pointer}
+.chip[data-i]:hover{box-shadow:inset 0 0 0 1.5px var(--line)}
+.stage-cv{position:relative}
+.mic-cta{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:14px 26px;font-size:16px;border-radius:16px;box-shadow:0 10px 30px -10px rgba(24,34,45,.5)}
+.vol{display:flex;align-items:center;gap:6px}
+.vol input{accent-color:var(--good);width:120px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Image-generated studio design: output/design/ui-reference.png. */
+:root{color-scheme:light;--bg:#FAFBF8;--paper:#FFFFFF;--card:#FFFFFF;--ink:#1D2C30;--muted:#758087;--line:#DEE4DF;--soft:#F2F5F0;--accent:#174C3B;--accent-ink:#FFFFFF;--good:#328065;--warm:#CB7B31;--voice:#D08A40;--band:rgba(87,159,122,.17);--grid:rgba(38,70,60,.09);--grid-c:rgba(38,70,60,.16);--shadow:none;--sidebar:#F1F3EE;--hero:#EAF1E8;--selected:#DCEADE;--coach:#F5F4ED;--white-key:#FFF;--black-key:#263A33;--side-width:208px}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#131C18;--paper:#1B2620;--card:#1B2620;--ink:#E3EBE4;--muted:#9CAAA0;--line:#344239;--soft:#243128;--accent:#B4D9BF;--accent-ink:#142D22;--good:#7BC29B;--warm:#E8A15E;--voice:#E8A15E;--band:rgba(123,194,155,.18);--grid:rgba(215,235,221,.09);--grid-c:rgba(215,235,221,.17);--sidebar:#17211B;--hero:#23382B;--selected:#2C4736;--coach:#2A3025;--white-key:#DCE5DD;--black-key:#0C1510}
+@media(prefers-color-scheme:dark){:root[data-theme="system"]{color-scheme:dark;--bg:#131C18;--paper:#1B2620;--card:#1B2620;--ink:#E3EBE4;--muted:#9CAAA0;--line:#344239;--soft:#243128;--accent:#B4D9BF;--accent-ink:#142D22;--good:#7BC29B;--warm:#E8A15E;--voice:#E8A15E;--band:rgba(123,194,155,.18);--grid:rgba(215,235,221,.09);--grid-c:rgba(215,235,221,.17);--sidebar:#17211B;--hero:#23382B;--selected:#2C4736;--coach:#2A3025;--white-key:#DCE5DD;--black-key:#0C1510}}
+body{font-size:14px;line-height:1.65}
+button,input,select{touch-action:manipulation}button,input,select,textarea{accent-color:var(--good)}
+button:disabled{opacity:.48}.icon{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:middle}
+.sidebar{width:var(--side-width);position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;background:var(--sidebar);border-right:1px solid var(--line);padding:22px 12px 18px;z-index:5;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px 28px;color:var(--accent)}
+.brand-mark{width:43px;height:43px;border-radius:11px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}.brand-mark .icon{width:30px;height:30px;stroke-width:2.5}
+.brand b{display:block;font-size:20px;line-height:1.25;letter-spacing:1px}.brand small{font:9px/1.8 var(--body);letter-spacing:1.8px}.nav-label{padding:0 12px 12px;color:var(--muted);font-size:12px;letter-spacing:1px}
+.tabs{display:flex;flex-direction:column;gap:5px;overflow:visible;margin:0}.tab{display:flex;align-items:center;gap:15px;padding:11px 14px;border:0;border-radius:9px;text-align:left;color:var(--ink);font-size:14px;min-height:42px;transition:background .15s}
+.tab:hover,.utility:hover{background:var(--soft)}.tab.active{color:var(--accent);background:var(--selected);font-weight:600}.tab[data-mode="progress"]{border-top:1px solid var(--line);margin-top:18px;padding-top:19px;border-radius:0}.tab[data-mode="progress"].active{border-radius:9px}
+.sidebar-bottom{margin-top:auto;padding-top:28px;display:flex;flex-direction:column;gap:5px}.utility{border:0;background:none;display:flex;align-items:center;gap:15px;padding:10px 14px;cursor:pointer;text-align:left;border-radius:9px;color:var(--ink);font-size:14px}.privacy{display:flex;align-items:center;gap:13px;font-size:10px;color:var(--muted);padding:18px 14px 0}.privacy .icon{width:17px;height:17px}
+.wrap{margin-left:var(--side-width);max-width:1480px;padding:24px 28px 34px}
+header{align-items:center;margin-bottom:18px}h1{font:600 clamp(26px,2.9vw,40px)/1.3 var(--display);letter-spacing:2px;color:var(--accent)}.sub{font-size:14px;letter-spacing:1px;margin-top:2px}
+.header-actions{display:flex;align-items:center;gap:15px}.mic-state{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px;white-space:nowrap}.mic-state::before{content:"";width:8px;height:8px;background:var(--line);border-radius:50%}.mic-state.live::before{background:var(--good)}
+.btn{background:var(--paper);border:1px solid var(--line);padding:8px 15px;border-radius:8px;font-size:13px;color:var(--ink);transition:background .15s,transform .08s}.btn:hover:not(:disabled){background:var(--soft);border-color:var(--good)}.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}.btn.primary:hover:not(:disabled){filter:brightness(1.12)}.btn.on{border-color:var(--good);box-shadow:none;color:var(--good)}.btn.sm{border-radius:7px}.btn.rec{background:#B6453F;border-color:#B6453F;color:white}#micBtn{display:flex;align-items:center;gap:10px;padding:9px 18px;border-color:var(--accent);color:var(--accent);background:transparent}#micBtn.on::before{display:none}
+.card{border:1px solid var(--line);border-radius:14px;box-shadow:none;padding:20px}
+.hero{border:0;background:var(--hero);padding:20px 24px;min-height:150px;margin-bottom:20px;position:relative;overflow:hidden;gap:18px}.hero-copy,.hero-r{position:relative;z-index:1}.eyebrow{font:500 9px/1.4 var(--body);letter-spacing:2.8px;color:var(--muted)}.hero-t{font:600 clamp(22px,2.2vw,30px)/1.5 var(--display);margin:7px 0 0;letter-spacing:.5px;color:var(--accent)}.hero-desc{color:var(--muted);font-size:13px;margin:0 0 14px}.hero-r{flex-direction:column;min-width:182px;gap:8px}.hero-r .btn{background:transparent;border-color:var(--accent);color:var(--accent);font-weight:600;padding:9px 16px}.hero-r .primary{background:var(--accent);color:var(--accent-ink)}.hero-r .icon{width:15px;height:15px;margin-left:10px}.hero-art{position:absolute;right:105px;top:-50px;width:350px;height:260px;color:var(--good);opacity:.09;pointer-events:none}
+.week{gap:9px;font-size:11px}.week-day{display:flex;align-items:center;flex-direction:column;gap:3px;font-size:9px;min-width:17px}.week i{width:12px;height:12px;background:transparent;border:1px solid var(--muted)}.week i.y{background:var(--good);border-color:var(--good)}.week>.week-total{margin-left:8px}.steps{margin-top:16px;max-width:560px}
+.section-heading{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px;gap:14px}.section-title{display:flex;align-items:center;gap:12px}.section-title h2{margin:0;font:600 25px/1.3 var(--display);letter-spacing:1px}.level-badge{font-size:11px;color:var(--accent);background:var(--selected);border-radius:20px;padding:2px 13px}.section-heading p{margin:4px 0 0;color:var(--muted);font-size:12px}.mode-meta{font-size:11px;color:var(--muted);text-align:right;white-space:nowrap}
+.main{grid-template-columns:32% 1fr;border:1px solid var(--line);border-radius:14px;min-width:0}.main>.card{border:0}.display{border-right:1px solid var(--line)!important;padding:17px 20px;gap:13px;min-width:0}.display .eyebrow{font-size:8px;letter-spacing:2.2px}.row2{text-align:center;gap:0;min-height:104px;align-items:start;margin-top:5px}.row2>div{border-left:1px solid var(--line)}.tgt-btn{text-align:center;margin:0;padding:0 5px 5px;border-radius:8px;min-width:0;width:100%}.tgt-btn:disabled{opacity:1}.tgt-btn:disabled .big{color:var(--muted)}.lbl{font-size:12px;letter-spacing:0}.row2 .lbl{color:var(--ink);font-weight:500}.big{font:500 42px/1.1 var(--mono);margin-top:12px}.big small{font-size:10px;margin-top:4px}.replay-tag{font-size:10px;margin-top:6px}.row2>.hint{min-height:12px}#curName{color:var(--voice)}.meter{height:15px;border-radius:20px;background:var(--soft)}.meter:before{display:none}.meter .zone{top:0;bottom:0;border-radius:0}.meter .mid{top:-4px;bottom:-4px}.meter-lbl{margin-top:6px;font-size:10px}.hold-label{font-size:10px;color:var(--muted);margin:0 0 -9px}.hold{height:6px;background:var(--soft);border-radius:4px}.status{font-size:12px;min-height:20px;font-weight:500}.acts{margin-top:auto;gap:5px}.acts .btn{padding:5px 10px;font-size:11px}.keys{font-size:9px;line-height:1.6;margin-top:-5px}
+.stage-cv{padding:14px 16px 24px!important;min-width:0;background:var(--paper)}.chart-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--muted);font-size:11px;margin-bottom:9px}.legend{display:flex;align-items:center;gap:14px;font-size:10px}.legend>span{display:flex;align-items:center;gap:6px}.voice-dot{width:6px;height:6px;border-radius:50%;background:var(--voice)}.target-line{width:17px;height:2px;background:var(--good);border-radius:3px}#cv{height:252px}.chart-foot{position:absolute;right:17px;bottom:10px;font-size:9px;color:var(--muted)}
+.mic-gate{position:absolute;inset:45px 10px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;gap:8px}.mic-gate>*{pointer-events:auto}.mic-gate-icon{width:66px;height:66px;border-radius:50%;background:var(--hero);color:var(--accent);display:grid;place-items:center;margin-bottom:2px}.mic-gate-icon .icon{width:30px;height:30px}.mic-gate strong{font:600 20px/1.5 var(--display)}.mic-gate p{margin:0;color:var(--muted);font-size:12px}.mic-cta{position:static;transform:none;box-shadow:none;border-radius:8px;font-size:12px;padding:8px 19px}.mic-cta:active:not(:disabled){transform:translateY(1px)}
+.coach-card{border:1px solid var(--line);background:var(--coach);padding:11px 18px;border-radius:12px;margin:12px 0 0;font-size:12px;align-items:center;gap:16px}.coach-card::before{display:none}.coach-label{display:flex;align-items:center;gap:10px;color:var(--accent);font-weight:600;white-space:nowrap;border-right:1px solid var(--line);padding-right:16px}.coach-label .icon{width:19px;height:19px}.coach .txt{line-height:1.65}
+.panel{margin-top:12px;padding:16px 20px}.panel p{font-size:12px}.panel p:last-child{margin-bottom:0}.panel[data-mode="single"]{display:grid;grid-template-columns:1fr auto;gap:0 24px}.panel[data-mode="single"] h3{margin:0 0 6px;font-size:13px;font-weight:600}.panel[data-mode="single"] p{grid-column:1;margin:0;max-width:720px}.panel[data-mode="single"] .lv{grid-column:1;margin:6px 0 0;font-size:10px}.recent-block{grid-column:2;grid-row:1/4;align-self:center}.recent-block .hint{font-size:10px}.recent-block .dots{display:flex;gap:10px;margin-top:8px}.recent-block .dots i{width:13px;height:13px;border:1px solid var(--muted);background:none}.recent-block .dots i.g{background:var(--good);border-color:var(--good)}.recent-block .dots i.h{background:var(--warm);border-color:var(--warm)}
+.lv{font-size:11px;gap:6px;margin-bottom:14px}.lv .hint{font-size:10px}.panel .ctrls{gap:8px}.phrases button{padding:5px 8px;border:1px solid var(--line);border-radius:6px;margin:0;background:var(--paper)}.phrases button.cur{background:var(--selected);border-color:var(--good);color:var(--accent)}.chip.cur{background:var(--accent);color:var(--accent-ink)}.lyric{font-size:23px}.prog-grid b{font-size:20px}.prog-grid b .hint{font:10px var(--body)}
+.kb-wrap{margin-top:10px}details.card{padding:10px 19px;border-radius:10px}summary{display:flex;align-items:center;gap:12px;font-size:12px}summary::before{display:none}summary::after{content:"+";margin-left:auto;color:var(--muted);font:18px var(--body)}details[open]>summary::after{content:"−"}.kb-wrap summary{color:var(--ink);font-size:12px}.kb-wrap summary .summary-hint{margin-left:auto;font-size:10px;color:var(--muted)}.kb-wrap summary::after{margin-left:0}.stats{margin:13px 20px 0;gap:12px 24px;color:var(--ink);font-size:11px}.stats>span{display:flex;align-items:center;gap:5px}.stats>span+span{border-left:1px solid var(--line);padding-left:24px}.stats .icon{width:17px;height:17px;margin-right:6px}.stats b{font-size:13px}.support-details{margin-top:12px}.support-details:not([open]){display:none}.settings{gap:16px 22px;font-size:12px}.settings label{flex-wrap:wrap}select{max-width:100%;font-size:12px}input[type=file]{font-size:12px;max-width:100%}input::file-selector-button{border:1px solid var(--line);padding:6px 10px;border-radius:7px;background:var(--soft);color:var(--ink);margin-right:10px}audio{height:34px;max-width:100%;min-width:0}.clips>div{flex-wrap:wrap}.modal .card{max-height:85vh;overflow:auto}.modal h2{font-size:25px}.safe{font-size:11px}
+
+@media(max-width:1150px){:root{--side-width:176px}.brand{gap:8px;padding-inline:3px}.brand b{font-size:17px}.brand small{font-size:8px}.brand-mark{width:35px;height:35px}.tab,.utility{gap:10px;padding-inline:10px;font-size:12px}.wrap{padding:22px 22px 30px}.header-actions{gap:8px}.mic-state{display:none}.hero{padding:19px 20px}.hero-r{min-width:163px}.hero-t{font-size:24px}.display{padding:17px 14px}.main{grid-template-columns:33% 1fr}.recent-block .dots{gap:7px}.panel[data-mode="single"]{gap:0 16px}.panel[data-mode="single"] p{font-size:11px}.mode-meta{font-size:10px}}
+@media(max-width:900px){.wrap{padding:20px 18px}.hero-art{display:none}.hero{gap:12px}.hero-r{flex-direction:row;flex-wrap:wrap}.hero-r .btn{font-size:11px;padding:7px 10px}.hero-t{font-size:23px}.hero-desc{font-size:11px}.row2 .lbl{font-size:11px}.big{font-size:34px}.main{grid-template-columns:35% 1fr}.display{padding:14px 11px}.legend{gap:7px;font-size:8px}.chart-heading{font-size:10px}.mic-gate strong{font-size:17px}.mic-gate p{font-size:10px}.coach-label{padding-right:10px;gap:6px}.coach-card{padding:10px 12px;gap:10px}.panel[data-mode="single"]{display:block}.recent-block{margin-top:10px;display:flex;align-items:center;gap:16px}.recent-block .dots{margin:0}.sub{font-size:12px}.mode-meta{white-space:normal}}
+@media(max-width:680px){:root{--side-width:0px}.sidebar{position:static;width:100%;padding:15px 15px 10px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding-bottom:10px}.nav-label,.sidebar-bottom{display:none}.tabs{flex-direction:row;overflow:auto;gap:5px}.tab{flex:none;padding:8px 10px;min-height:35px}.tab .icon{display:none}.tab[data-mode="progress"]{margin:0;padding:8px 10px;border-top:0;border-radius:8px}.wrap{padding:18px 15px}.main{grid-template-columns:1fr}.display{border-right:0!important;border-bottom:1px solid var(--line)!important;padding:18px}.row2{min-height:98px}.hero-r{width:100%}h1{font-size:27px}.header-actions #micBtn{font-size:0;padding:9px}.header-actions #micBtn .icon{width:19px}#cv{height:260px}.mic-gate{inset:45px 10px 24px}.support-details:not([open]){display:block}.coach-card{align-items:flex-start}.coach-label{font-size:0;padding-right:10px}.coach-label .icon{width:18px}.section-title h2{font-size:23px}.stats{margin-left:3px}.stats>span+span{padding-left:12px}.mic-gate p{font-size:12px}.mic-gate strong{font-size:20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+
+.sidebar{overflow:hidden}.brand,.nav-label,.sidebar-bottom{flex-shrink:0}.tabs{min-height:0;overflow-y:auto;scrollbar-width:none}.sidebar-bottom{padding-top:16px}
+@media(max-width:680px){.tabs{overflow-y:hidden;overflow-x:auto}}
+.bk{border:0}.wk{appearance:none}.meter{overflow:visible}
+
+.tgt-btn:disabled .replay-tag{display:none}
+
+
+
+/* ===== 像 Mac 应用，而不是网页 ===== */
+html,body{overscroll-behavior:none}
+html{background:var(--bg);scroll-behavior:smooth}
+body{-webkit-user-select:none;user-select:none;cursor:default}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
+textarea,input[type=text]{cursor:text}
+img,svg,a{-webkit-user-drag:none}
+button,summary,label,select,.chip,.tab,.utility{cursor:default}
+/* 应用窗口里，顶部 28pt 是标题栏的位置（红绿灯 + 拖动区），内容从它下面开始 */
+.native .sidebar{padding-top:50px}
+.native .wrap{padding-top:42px}
+.native body::before{content:"";position:fixed;top:0;left:var(--side-width);right:0;height:34px;background:linear-gradient(var(--bg) 65%,transparent);z-index:4;pointer-events:none}
+/* 切换练习：内容轻轻淡入、上浮一点 */
+@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.enter{animation:enter .32s cubic-bezier(.2,.75,.25,1) both}
+.enter.late{animation-delay:.05s}
+.tab,.btn,.utility,.chip,.phrases button{transition:background .18s,color .18s,border-color .18s,transform .08s}
+@media(prefers-reduced-motion:reduce){.enter{animation:none}html{scroll-behavior:auto}}
+/* 日间 / 夜间切换按钮 */
+.theme-btn{display:grid;place-items:center;width:40px;height:40px;padding:0;border-radius:12px}
+.theme-btn .moon{display:none}
+:root[data-theme="dark"] .theme-btn .sun{display:none}:root[data-theme="dark"] .theme-btn .moon{display:block}
+@media(prefers-color-scheme:dark){:root[data-theme="system"] .theme-btn .sun{display:none}:root[data-theme="system"] .theme-btn .moon{display:block}}
+/* 切换时颜色慢慢过渡，不是一下子闪过去 */
+.theme-anim,.theme-anim *,.theme-anim *::before,.theme-anim *::after{transition:background-color .35s ease,border-color .35s ease,color .35s ease,fill .35s ease!important}
+
+/* ===== 设计：中性灰 + 靛蓝点缀；字体用 Anthropic Sans / Serif（应用里从本机 Claude 读取） ===== */
+:root,:root[data-theme="light"]{color-scheme:light;
+  --bg:#F7F7F8;--sidebar:#EFEFF2;--paper:#FFFFFF;--card:#FFFFFF;--soft:#F2F2F5;--line:#E4E4E9;
+  --ink:#18181B;--muted:#6B6B76;--accent:#4F46E5;--accent-ink:#FFFFFF;--accent-soft:rgba(79,70,229,.09);
+  --good:#1F9D6B;--warm:#D9771F;--voice:#E8792B;--band:rgba(31,157,107,.13);
+  --grid:rgba(24,24,27,.05);--grid-c:rgba(24,24,27,.12);--selected:#E4E4EA;--hero:#FFFFFF;--coach:#F2F2F5;
+  --white-key:#FFFFFF;--black-key:#26262B;--shadow:0 1px 2px rgba(24,24,27,.04),0 1px 1px rgba(24,24,27,.02)}
+:root[data-theme="dark"]{color-scheme:dark;
+  --bg:#141417;--sidebar:#1A1A1E;--paper:#1F1F24;--card:#1F1F24;--soft:#27272D;--line:#2F2F36;
+  --ink:#EDEDF0;--muted:#9A9AA6;--accent:#8E88FF;--accent-ink:#121216;--accent-soft:rgba(142,136,255,.15);
+  --good:#3CCB8B;--warm:#F0A04B;--voice:#F5A05B;--band:rgba(60,203,139,.15);
+  --grid:rgba(237,237,240,.05);--grid-c:rgba(237,237,240,.12);--selected:#2A2A31;--hero:#1F1F24;--coach:#1C1C21;
+  --white-key:#DADAE0;--black-key:#0E0E11;--shadow:none}
+@media(prefers-color-scheme:dark){:root[data-theme="system"]{color-scheme:dark;
+  --bg:#141417;--sidebar:#1A1A1E;--paper:#1F1F24;--card:#1F1F24;--soft:#27272D;--line:#2F2F36;
+  --ink:#EDEDF0;--muted:#9A9AA6;--accent:#8E88FF;--accent-ink:#121216;--accent-soft:rgba(142,136,255,.15);
+  --good:#3CCB8B;--warm:#F0A04B;--voice:#F5A05B;--band:rgba(60,203,139,.15);
+  --grid:rgba(237,237,240,.05);--grid-c:rgba(237,237,240,.12);--selected:#2A2A31;--hero:#1F1F24;--coach:#1C1C21;
+  --white-key:#DADAE0;--black-key:#0E0E11;--shadow:none}}
+:root{--body:"Anthropic Sans",-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB",sans-serif;
+  --display:"Anthropic Sans",-apple-system,"PingFang SC",sans-serif;--serif:"Anthropic Serif","Anthropic Sans","PingFang SC",serif;
+  --mono:"Anthropic Sans",-apple-system,"PingFang SC",sans-serif}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-feature-settings:"tnum"}
+h1,.hero-t,.section-title h2,.modal h2,.sheet h2{font-family:var(--display);font-weight:600;letter-spacing:0;color:var(--ink)}
+h1{font-size:30px}.section-title h2{font-size:24px}.hero-t{font-size:24px}
+.big,#rcount,.result b,.prog-grid b,.home-stats b{font-family:var(--serif);font-weight:500}
+.eyebrow,.brand small{letter-spacing:1.5px;color:var(--muted)}
+/* 侧边栏：分组、无装饰 */
+.sidebar{background:var(--sidebar);border-right:1px solid var(--line)}
+.brand b{color:var(--ink);font-family:var(--display)}.brand-mark{background:var(--accent);color:#fff;border-radius:10px}
+.nav-group{font-size:11px;color:var(--muted);padding:12px 12px 4px;letter-spacing:.5px}
+.brand{padding-bottom:14px!important}.tabs{gap:2px!important}.sidebar-bottom{padding-top:10px!important;gap:2px!important}.privacy{padding-top:10px!important}
+.tab,.utility{color:var(--muted);font-size:14px;min-height:34px;padding:6px 12px;gap:12px;border-radius:8px}
+.tab .icon,.utility .icon{width:18px;height:18px}
+.tab:hover,.utility:hover{background:var(--selected);color:var(--ink)}
+.tab.active{background:var(--selected);color:var(--ink);font-weight:600}.tab.active .icon{color:var(--accent)}
+.tab[data-mode="progress"],.tab[data-mode="progress"].active{border-top:0;margin-top:0;padding-top:7px;border-radius:8px}
+.nav-label{display:none}
+
+/* 卡片、按钮 */
+.card,.main{background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:14px}
+.btn{border-radius:9px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.btn:hover:not(:disabled){background:var(--soft);border-color:var(--line)}
+.btn.primary,.hero-r .primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.hero-r .btn{border-color:var(--line);color:var(--ink);background:var(--paper)}
+#micBtn{border-color:var(--line);color:var(--ink);background:var(--paper)}.mic-state{display:none}
+.level-badge{background:var(--accent-soft);color:var(--accent)}
+.coach-card{background:var(--coach);border:1px solid var(--line)}.coach-label{color:var(--accent)}
+.chip.cur{background:var(--ink);color:var(--bg)}.phrases button.cur{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.week i.y{background:var(--accent);border-color:var(--accent)}.mic-gate-icon{background:var(--accent-soft);color:var(--accent)}
+.hero{background:var(--hero);border:1px solid var(--line)}.hero-art{color:var(--accent);opacity:.07}
+#stats{display:none}
+/* 页面结构：「今天」是首页；练习页只放练习本身 */
+.wrap{position:relative}
+body:not([data-mode="home"]) header>div:first-child{display:none}
+body:not([data-mode="home"]) header{position:absolute;right:28px;top:24px;margin:0;z-index:3}
+.native body:not([data-mode="home"]) header{top:40px}
+body:not([data-mode="home"]) .section-heading{padding-right:230px;min-height:46px}
+body:not([data-mode="home"]):not(.session-on) #hero{display:none}
+body.session-on:not([data-mode="home"]) #hero{min-height:0;padding:12px 18px;margin:0 0 16px}
+body.session-on:not([data-mode="home"]) #hero .hero-art{display:none}
+body[data-mode="home"] .section-heading,body[data-mode="home"] #mainArea,body[data-mode="home"] #kbCard,body[data-mode="home"] .coach-card{display:none!important}
+body[data-mode="home"] #panel{background:none;border:0;box-shadow:none;padding:0;margin-top:8px}
+/* 首页 */
+.home-continue{display:flex;align-items:center;gap:14px;width:100%;padding:16px 20px;border:1px solid var(--line);background:var(--paper);border-radius:14px;color:var(--ink);text-align:left;margin-bottom:14px;transition:border-color .18s,transform .18s}
+.home-continue b{font-size:16px;font-weight:600}.home-continue .icon{margin-left:auto;color:var(--accent)}
+.home-continue:hover{border-color:var(--accent)}
+.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+.home-stats div{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.home-stats b{display:block;font-size:28px;line-height:1.2}.home-stats span{font-size:12px;color:var(--muted)}
+.home-group{margin-bottom:22px}.home-group h3{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 10px}
+.home-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.home-card{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px 18px;border:1px solid var(--line);background:var(--paper);border-radius:14px;color:var(--ink);text-align:left;transition:border-color .18s,transform .18s,box-shadow .18s}
+.home-card .icon{width:20px;height:20px;color:var(--accent);margin-bottom:6px}.home-card b{font-size:15px;font-weight:600}.home-card span{font-size:12px;color:var(--muted)}
+.home-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+/* 设置、指南：弹出面板 */
+.sheet-backdrop{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(10,10,14,.32);backdrop-filter:blur(6px);opacity:0;transition:opacity .2s}
+.sheet-backdrop.show{opacity:1}
+.sheet{position:relative;width:min(620px,100%);max-height:86vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px 28px;box-shadow:0 24px 60px -20px rgba(0,0,0,.35);transform:translateY(8px) scale(.985);transition:transform .22s cubic-bezier(.2,.75,.25,1);overscroll-behavior:contain}
+.sheet-backdrop.show .sheet{transform:none}
+.sheet h2{font-size:22px;margin:0 0 6px}
+.sheet-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;border:0;background:var(--soft);color:var(--muted);font-size:18px;line-height:1}
+.sheet-close:hover{color:var(--ink)}
+.set-group{margin-top:20px}.set-group h3{font-size:12px;font-weight:600;color:var(--muted);margin:0 0 4px;letter-spacing:.5px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.set-row:last-child{border-bottom:0}.set-row select{max-width:62%}.pair{display:flex;gap:8px}
+.set-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.sheet .hint{margin:8px 0 0}.sheet ol{padding-left:20px;line-height:1.8}
+@media(prefers-reduced-motion:reduce){.sheet-backdrop,.sheet{transition:none}}
+@media(max-width:680px){.nav-group{display:none}body:not([data-mode="home"]) header{position:static}}
+/* 页面宽度永远一样：始终给滚动条留位置，切换页面时不会因为有没有滚动条而整体缩放 */
+html{overflow-y:scroll;scrollbar-gutter:stable}
+/* 练习页：整页正好放进窗口，不再被窗口底边切掉一半。
+   中间的音高图随窗口高度伸缩；下面的练习设置区内容多时只在自己里面滚动，底部淡出提示还有内容 */
+body.fit .wrap{height:100vh;display:flex;flex-direction:column;overflow-y:auto;padding-bottom:18px}
+body.fit .wrap>*{flex:none}
+body.fit .wrap>#mainArea{flex:1 1 0;min-height:var(--stage-min,320px);margin-bottom:0}
+body.fit .wrap>#panel:has(.import[open]){max-height:62%}
+body.fit #mainArea>.card{min-height:0}
+body.fit .stage-cv{display:flex;flex-direction:column}
+body.fit #cv{flex:1 1 auto;height:auto!important;min-height:150px}
+body.fit .wrap>#panel{flex:0 1 auto;min-height:110px;max-height:46%;overflow-y:auto;overscroll-behavior:contain}
+body.fit .wrap>#panel.more{-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent)}
+body.fit[data-mode="rhythm"] .wrap>#panel{flex:1 1 auto;max-height:none}
+body.fit .wrap>#kbCard[open]{max-height:190px}
+.import>summary{font-size:13px;font-weight:600;color:var(--ink);padding:4px 0}.import>summary::after{content:"+";margin-left:auto;color:var(--muted)}.import[open]>summary::after{content:"−"}
+/* 手机：屏幕窄，不做"整页装进窗口"，改成自然往下滚 */
+@media(max-width:680px){
+  body.fit .wrap{height:auto;display:block;overflow:visible}
+  body.fit .wrap>#mainArea{min-height:0}
+  body.fit .stage-cv{display:block}
+  body.fit #cv{height:230px!important}
+  body.fit .wrap>#panel{max-height:none;overflow:visible;-webkit-mask-image:none;mask-image:none}
+  body:not([data-mode="home"]) .section-heading{padding-right:0;min-height:0}
+  body:not([data-mode="home"]) header{display:flex;justify-content:flex-end;margin-bottom:8px}
+  .section-heading{flex-wrap:wrap}.mode-meta{text-align:left;white-space:normal}
+  .home-stats{grid-template-columns:repeat(3,1fr);gap:8px}.home-stats b{font-size:22px}
+  .sheet{padding:22px 18px}.set-row{flex-wrap:wrap}.set-row select{max-width:100%}
+}
+</style>
+</head>
+<body>
+<aside class="sidebar"><div class="brand"><div class="brand-mark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4m5-9v14m5-11v8m5-6v4m3-2h0"/></svg></div><div><b>音准练习</b><small>PITCH STUDIO</small></div></div><nav class="tabs" id="tabs" aria-label="练习">
+    <button class="tab active" data-mode="home"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>今天</button>
+    <div class="nav-group">基础</div><button class="tab" data-mode="warm"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>开口热身</button><button class="tab" data-mode="long"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 14c5-13 9 13 14 0l6-6"/></svg>长音稳定</button><button class="tab" data-mode="single"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>单音模唱</button>
+    <div class="nav-group">音阶与音程</div><button class="tab" data-mode="scale"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20v-5m5 5V11m5 9V7m5 13V3"/></svg>音阶</button><button class="tab" data-mode="interval"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4"/></svg>音程</button>
+    <div class="nav-group">唱歌与节奏</div><button class="tab" data-mode="song"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>唱歌</button><button class="tab" data-mode="track"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6m-6 4h6m-6 4h4"/></svg>跟原曲练</button><button class="tab" data-mode="rhythm"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>节奏</button>
+    <div class="nav-group">工具</div><button class="tab" data-mode="free"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18V9m5 13V3m5 15V9m5 11V6m5 11v-6"/></svg>测音域</button><button class="tab" data-mode="progress"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4M12 13v6m-4 2h8m-7-2h6"/></svg>我的进步</button>
+  </nav>
+
+<div class="sidebar-bottom"><button class="utility" data-open="helpCard"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v16M12 5C8 1 3 3 3 3v16s5-2 9 2c4-4 9-2 9-2V3s-5-2-9 2Z"/></svg>使用指南</button><button class="utility" data-open="settingsCard"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h6l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z"/><circle cx="12" cy="12" r="3"/></svg>设置</button><div class="privacy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v13H5zM2 20h20l-3-3H5Z"/></svg>声音只在本机处理</div></div></aside>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>一个人的练声房</h1>
+      <div class="sub">听见自己，每天进步一点点。</div>
+    </div>
+    <div class="header-actions"><button class="btn theme-btn" id="themeBtn" type="button" title="切换日间 / 夜间（⌘⇧L）" aria-label="切换日间 / 夜间"><svg class="icon sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg><svg class="icon moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"/></svg></button><button class="btn" id="micBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg><span>开启麦克风</span></button><span class="mic-state" id="micState">未开启</span></div>
+  </header>
+
+  <div class="card hero" id="hero"></div>
+
+  <section class="section-heading" aria-labelledby="modeTitle"><div><div class="section-title"><h2 id="modeTitle">单音模唱</h2><span class="level-badge" id="modeLevel">第 2 级</span></div><p id="modeDescription">听一个音，再轻轻唱出来。</p></div><div class="mode-meta" id="modeMeta"></div></section>
+
+  <div class="main" id="mainArea">
+    <div class="card display"><div class="eyebrow">LISTEN &amp; MATCH</div>
+      <div class="row2">
+        <button class="tgt-btn" id="tgtBtn" type="button" title="再听一遍（空格键）" disabled><div class="lbl">要唱的音</div><div class="big" id="tgtName">—</div><div class="hint" id="tgtSub">&nbsp;</div><span class="replay-tag"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6h2.5L9 3v10L5.5 10H3z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>点一下再听</span></button>
+        <div><div class="lbl">你在唱</div><div class="big" id="curName">—</div><div class="hint" id="curSub">&nbsp;</div></div>
+      </div>
+      <div>
+        <div class="meter"><div class="zone" id="zone"></div><div class="mid"></div><div class="needle" id="needle"></div></div>
+        <div class="meter-lbl"><span>低了</span><span>正好</span><span>高了</span></div>
+      </div>
+      <div class="hold-label">持续时长</div><div class="hold"><i id="holdBar"></i></div>
+      <div class="status" id="status" role="status">准备好就开始吧</div>
+      <div class="acts" id="acts"></div>
+      <div class="hint keys" id="keysHint"></div>
+    </div>
+    <div class="card stage-cv"><div class="chart-heading"><span>实时音高</span><div class="legend"><span><i class="voice-dot"></i>你的声音</span><span><i class="target-line"></i>目标音</span></div></div><canvas id="cv" aria-label="最近 7 秒的实时音高曲线"></canvas><div class="mic-gate" id="micGate"><div class="mic-gate-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg></div><strong>让我们听见你的声音</strong><p>开启麦克风，轻轻哼一个音就好</p><button class="btn primary mic-cta" id="micCta" type="button">开启麦克风，开始唱</button></div><span class="chart-foot">最近 7 秒</span></div>
+  </div>
+
+  <div class="coach coach-card"><div class="coach-label"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 2.7 7.3L22 12l-7.3 2.7L12 22l-2.7-7.3L2 12l7.3-2.7ZM20 2v4m-2-2h4"/></svg>练习小提示</div><div class="txt" id="coachTxt">小声、哼唱、偶尔跑调都没关系，先放松地开口。开启麦克风，就可以开始练习。</div></div>
+
+  <div class="card panel" id="panel"></div>
+
+  <details class="card kb-wrap" id="kbCard"><summary><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 4v9h3V4m6 0v9h3V4M6 13v7m6-16v16m6-7v7"/></svg>琴键<span class="summary-hint">展开</span></summary><div class="kb-scroll"><div class="kb" id="kb"></div></div><div class="hint" style="margin-top:8px">点琴键随时听音；长音模式下点琴键就是选这个音来练。</div></details>
+
+  <div class="stats" id="stats"></div>
+
+
+
+  <div class="sheet-backdrop hidden" id="sheet">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <button class="sheet-close" id="sheetClose" type="button" aria-label="关闭">×</button>
+      <section class="sheet-page steps-help" id="helpCard">
+        <h2 id="sheetTitle">使用指南</h2>
+        <ol>
+      <li>戴上耳机（练节奏时最好用有线耳机或外放，蓝牙会有延迟），找个安静的地方。</li>
+      <li>点「开启麦克风」，允许浏览器使用麦克风。</li>
+      <li>点「开始今天的练习」。第一步只是哼一哼、叹口气，任何声音都算过——先让自己敢出声。</li>
+      <li>之后听到一个音，用"啊——"（或"嗯""呜"）跟着唱出来，不用大声。</li>
+      <li>看左边的指针：落在<b>绿色区间</b>里就是准的，在里面稳住一小会儿就算过。</li>
+      <li>唱不准完全没关系：我会提示你往高还是往低，必要时再弹一遍、或者陪你一起唱。</li>
+    </ol>
+        <p class="hint">难度会自动调整：你唱得顺，就慢慢减少提示；觉得吃力，就自动多给点帮助。目标是让你"大部分能唱准，偶尔要努力一下"——这是进步最快、也最不容易放弃的状态。</p>
+      </section>
+      <section class="sheet-page" id="settingsCard">
+        <h2>设置</h2>
+        <div class="set-group"><h3>外观</h3>
+          <div class="set-row"><span>界面</span><select id="appearance"><option value="light">日间</option><option value="dark">夜间</option><option value="system">跟随系统</option></select></div>
+        </div>
+        <div class="set-group"><h3>声音</h3>
+          <div class="set-row"><span>麦克风（输入）</span><select id="micPick"><option value="">自动（避开蓝牙耳机的麦克风）</option></select></div>
+          <div class="set-row hidden" id="outWrap"><span>声音输出</span><select id="outPick"></select></div>
+          <div class="set-row vol"><span>提示音音量</span><input type="range" id="vol" min="0.2" max="1.6" step="0.1"></div>
+          <div class="set-row"><span>提示音长度</span><select id="toneLen"><option value="1.2">1.2 秒</option><option value="1.8">1.8 秒</option><option value="2.5">2.5 秒</option></select></div>
+        </div>
+        <div class="set-group"><h3>音域</h3>
+          <div class="set-row"><span>预设</span><select id="rangePreset">
+          <option value="low">低音域 (E2–C4)</option>
+          <option value="male">男声 (G2–D4)</option>
+          <option value="female">女声 (G3–D5)</option>
+          <option value="custom">自定义</option>
+        </select></div>
+          <div class="set-row"><span>最低 / 最高</span><span class="pair"><select id="rangeMin"></select><select id="rangeMax"></select></span></div>
+          <p class="hint" id="topHint"></p>
+          <p class="hint">不知道自己音域？去「测音域」从低往高慢慢滑一遍，一键就能设好。</p>
+        </div>
+        <div class="set-group"><h3>练习</h3>
+          <div class="set-row"><span>每个音稳住</span><select id="hold"><option value="auto">自动（1 秒起，越练越长）</option><option value="1">1 秒</option><option value="1.5">1.5 秒</option><option value="2">2 秒</option></select></div>
+          <div class="set-row"><span>自动调难度（推荐）</span><input type="checkbox" id="auto"></div>
+          <div class="set-row manual"><span>容差</span><select id="tol"><option value="50">宽松 ±50 音分</option><option value="35">标准 ±35 音分</option><option value="25">较严 ±25 音分</option><option value="15">严格 ±15 音分</option></select></div>
+          <div class="set-row manual"><span>引导</span><select id="guide"><option value="drone">陪唱：目标音一直响</option><option value="once">先听再唱</option><option value="blind">盲唱：只给第一个音</option></select></div>
+          <div class="set-row"><span>单音 / 长音允许差八度</span><input type="checkbox" id="fold"></div>
+        </div>
+        <div class="set-group"><h3>练习记录</h3>
+          <div class="set-row"><span>备份或搬到别处</span><span class="pair"><button class="btn sm" id="expBtn" type="button">导出</button><label class="btn sm">导入<input type="file" id="impFile" accept=".json,application/json" hidden></label></span></div>
+          <p class="hint" id="expHint">换电脑或换浏览器时，用它把练习记录带过去。</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true" aria-label="今日练习总结"><div class="card" id="modalBody"></div></div>
+
+<script>
+// ================= 基础 =================
+const NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const nameOf=m=>NAMES[((m%12)+12)%12]+(Math.floor(m/12)-1);
+const m2f=m=>440*Math.pow(2,(m-69)/12);
+const f2m=f=>69+12*Math.log2(f/440);
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rand=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>dkey(new Date());
+
+
+const PROGRESS_KEYS=['pitch-settings','pitch-v2','pitch-scale','pitch-iv','pitch-rhythm','pitch-song','pitch-mode'];
+const isObject=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+function validateSaved(key,v){
+  const check=(ok)=>{if(!ok)throw new Error('进度数据格式不正确：'+key)};
+  const num=(x,a,b)=>typeof x==='number'&&Number.isFinite(x)&&x>=a&&x<=b;
+  const integer=(x,a,b)=>Number.isInteger(x)&&num(x,a,b);
+  const optional=(o,k,test)=>!(k in o)||test(o[k]);
+  const safe=o=>{if(o&&typeof o==='object')for(const k of Object.keys(o)){check(!['__proto__','prototype','constructor'].includes(k));safe(o[k])}};safe(v);
+  if(key==='pitch-mode'){check(['home','warm','single','scale','interval','song','rhythm','track','long','free','progress'].includes(v));return v}
+  check(isObject(v));
+  if(key==='pitch-settings'){
+    check(optional(v,'min',x=>integer(x,36,77))&&optional(v,'max',x=>integer(x,43,84)));
+    if(v.min!=null&&v.max!=null)check(v.max-v.min>=7);
+    for(const k of ['auto','fold'])check(optional(v,k,x=>typeof x==='boolean'));
+    check(optional(v,'tol',x=>[15,25,35,50].includes(x))&&optional(v,'guide',x=>['drone','once','blind','short'].includes(x)));
+    check(optional(v,'vol',x=>num(x,.2,1.6))&&optional(v,'toneLen',x=>[1.2,1.8,2.5].includes(x)));
+    check(optional(v,'hold',x=>['auto','1','1.5','2'].includes(String(x))));
+    check(optional(v,'preset',x=>['low','male','female','custom'].includes(x)));
+    check(optional(v,'appearance',x=>['light','dark','system'].includes(x)));
+    for(const k of ['micId','outId'])check(optional(v,k,x=>typeof x==='string'));
+  }else if(key==='pitch-v2'){
+    const caps={single:5,scale:6,interval:6,song:6,rhythm:8};
+    for(const k of ['level','recent','days','best'])check(optional(v,k,isObject));
+    for(const [k,max] of Object.entries(caps)){
+      check(optional(v.level||{},k,x=>integer(x,0,max)));
+      check(optional(v.recent||{},k,x=>Array.isArray(x)&&x.length<=10&&x.every(n=>[0,.5,1].includes(n))));
+    }
+    check(optional(v,'top',x=>x===null||integer(x,36,84)));
+    check(optional(v.best||{},'longSd',x=>x===null||num(x,0,1e6)));
+    for(const [date,d] of Object.entries(v.days||{})){
+      check(/^\d{4}-\d{2}-\d{2}$/.test(date)&&isObject(d));
+      for(const k of ['sec','hits','cents','n','lock'])check(num(d[k],0,1e12));
+      check(optional(d,'longSd',x=>x===null||num(x,0,1e6)));
+    }
+    if(v.course){check(isObject(v.course)&&isObject(v.course.passes));for(const n of Object.values(v.course.passes))check(integer(n,0,1e9))}
+    if(v.songs!=null){check(Array.isArray(v.songs)&&v.songs.length<=1000);for(const song of v.songs){
+      check(isObject(song)&&typeof song.id==='string'&&typeof song.n==='string'&&typeof song.lv==='string'&&song.custom===true);
+      check(Array.isArray(song.ph)&&song.ph.length>0&&song.ph.length<=2000);
+      for(const ph of song.ph)check(Array.isArray(ph)&&ph.length===2&&ph.every(x=>typeof x==='string')&&/[1-7]/.test(ph[0])&&ph[0].length<=20000);
+    }}
+  }else if(key==='pitch-scale'){
+    check(optional(v,'key',x=>integer(x,0,11))&&optional(v,'type',x=>['major','minor','penta'].includes(x)));
+    check(optional(v,'stage',x=>['c3','c5','penta','arp','desc','oct','leap','free'].includes(x)));
+    check(optional(v,'dir',x=>['up','updown'].includes(x))&&optional(v,'startAdj',x=>integer(x,-100,100)));
+  }else if(key==='pitch-iv'){
+    check(Array.isArray(v.set)&&v.set.every(x=>integer(x,1,12))&&['up','down','mix'].includes(v.dir));
+  }else if(key==='pitch-rhythm'){
+    check(optional(v,'bpm',x=>[60,72,84,96].includes(x))&&optional(v,'pick',x=>x===null||integer(x,0,8)));
+    check(optional(v,'cal',isObject));for(const n of Object.values(v.cal||{}))check(num(n,0,10));
+  }else if(key==='pitch-song')check(typeof v.id==='string'&&integer(v.phi,0,2000)&&integer(v.adj,-100,100));
+  else check(false);
+  return v;
+}
+function saved(key,fallback){try{return validateSaved(key,store.get(key,fallback))}catch(e){return fallback}}
+function parseProgressBackup(text){
+  const data=JSON.parse(text);if(!isObject(data))throw new Error('不是进度备份');
+  const entries=Object.entries(data).filter(([k])=>PROGRESS_KEYS.includes(k));if(!entries.length)throw new Error('没有进度数据');
+  for(const [k,v] of entries){if(typeof v!=='string')throw new Error('不是导出的进度文件');validateSaved(k,JSON.parse(v))}
+  return entries;
+}
+function commitProgressBackup(entries){
+  const previous=entries.map(([k])=>[k,localStorage.getItem(k)]);
+  try{for(const [k,v] of entries)localStorage.setItem(k,v)}
+  catch(e){for(const [k,v] of previous){try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(_){}}throw e}
+}
+
+// ================= 设置 =================
+const PRESETS={low:[40,60],male:[43,62],female:[55,74]};
+const settings=Object.assign({preset:'low',min:40,max:60,tol:35,guide:'once',fold:true,auto:true,vol:0.8,hold:'auto',toneLen:1.8,micId:'',outId:'',appearance:'light'},saved('pitch-settings',{}));
+document.documentElement.dataset.theme=settings.appearance;
+if(window.__NATIVE_APP__){document.documentElement.classList.add('native');document.addEventListener('contextmenu',e=>{if(!/INPUT|TEXTAREA/.test(e.target.tagName))e.preventDefault()})}
+// 把页面主题告诉窗口，让标题栏、窗口边框和页面同一种颜色
+function postTheme(){if(!window.__NATIVE_APP__)return;const bg=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();window.webkit.messageHandlers.audio.postMessage({cmd:'theme',mode:settings.appearance||'light',bg})}
+postTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',postTheme);
+function saveSettings(){store.set('pitch-settings',settings)}
+// 低音域：老版本保存的默认值迁到低音域
+delete settings.voice;delete settings.voiceMode;delete settings.voiceName;
+if(settings.v3!==1){if(settings.toneLen===2.5)settings.toneLen=1.8;settings.v3=1;saveSettings()}
+if(settings.v!==2){if(settings.preset==='male'){settings.preset='low';[settings.min,settings.max]=PRESETS.low}settings.v=2;saveSettings()}
+for(const id of ['rangeMin','rangeMax']){const s=$(id);for(let m=36;m<=84;m++){const o=document.createElement('option');o.value=m;o.textContent=nameOf(m);s.appendChild(o)}}
+function applySettingsUI(){
+  $('appearance').value=settings.appearance;
+  $('rangePreset').value=settings.preset;$('rangeMin').value=settings.min;$('rangeMax').value=settings.max;
+  $('tol').value=settings.tol;$('guide').value=settings.guide;$('fold').checked=settings.fold;
+  $('auto').checked=settings.auto;$('hold').value=String(settings.hold);$('toneLen').value=String(settings.toneLen);$('vol').value=settings.vol;
+  document.querySelectorAll('.manual').forEach(e=>e.classList.toggle('hidden',settings.auto));
+  if(window.D_READY)$('topHint').textContent=`舒适高音：${nameOf(ceilTop())}。比它高的音算"挑战高音"，偶尔出现、区间放宽，够不着不扣分；连续唱准几次就会自动往上扩。`;
+}
+applySettingsUI();
+$('appearance').onchange=e=>{settings.appearance=e.target.value;saveSettings();themeAnim();applyAppearance()};
+const isDarkTheme=()=>settings.appearance==='dark'||(settings.appearance==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);
+function themeAnim(){const r=document.documentElement;r.classList.add('theme-anim');clearTimeout(themeAnim.t);themeAnim.t=setTimeout(()=>r.classList.remove('theme-anim'),450)}
+// 日间 ↔ 夜间（顶部按钮、菜单「显示」、⌘⇧L 都用它）
+window.toggleTheme=()=>{settings.appearance=isDarkTheme()?'light':'dark';saveSettings();$('appearance').value=settings.appearance;themeAnim();applyAppearance()};
+$('themeBtn').onclick=e=>{e.currentTarget.blur();toggleTheme()};
+window.openSettings=()=>document.querySelector('[data-open="settingsCard"]').click();
+// 浏览器里也能用 ⌘⇧L（应用里由菜单负责）
+if(!window.__NATIVE_APP__)document.addEventListener('keydown',e=>{if(e.metaKey&&e.shiftKey&&e.code==='KeyL'){e.preventDefault();toggleTheme()}});
+$('rangePreset').onchange=e=>{settings.preset=e.target.value;if(PRESETS[settings.preset])[settings.min,settings.max]=PRESETS[settings.preset];applySettingsUI();saveSettings();buildKeyboard();restartMode()};
+$('rangeMin').onchange=$('rangeMax').onchange=()=>{let a=clamp(+$('rangeMin').value,36,77),b=clamp(+$('rangeMax').value,43,84);if(b-a<7){if(document.activeElement===$('rangeMax'))a=b-7;else b=a+7;}
+  Object.assign(settings,{min:a,max:b,preset:'custom'});applySettingsUI();saveSettings();buildKeyboard();restartMode()};
+$('tol').onchange=e=>{settings.tol=+e.target.value;saveSettings()};
+$('guide').onchange=e=>{settings.guide=e.target.value;saveSettings()};
+$('fold').onchange=e=>{settings.fold=e.target.checked;saveSettings()};
+$('auto').onchange=e=>{settings.auto=e.target.checked;saveSettings();applySettingsUI();renderPanel()};
+$('toneLen').onchange=e=>{settings.toneLen=+e.target.value;saveSettings();playNote(50,settings.toneLen)};
+$('micPick').onchange=async e=>{const previous=settings.micId;settings.micId=e.target.value;if(micOn&&!(await startMic(true))){settings.micId=previous;e.target.value=previous}saveSettings()};
+$('hold').onchange=e=>{settings.hold=e.target.value;saveSettings();renderPanel()};
+$('vol').oninput=e=>{settings.vol=+e.target.value;saveSettings();if(master)master.gain.value=settings.vol};
+$('vol').onchange=()=>playNote(57,0.8);
+
+// ================= 数据 / 自适应难度 =================
+const D=Object.assign({level:{},recent:{},days:{},best:{longSd:null},first:null,songs:[]},saved('pitch-v2',{}));
+for(const k of ['single','scale','interval','song','rhythm']){if(D.level[k]==null)D.level[k]=k==='rhythm'?0:1;if(!D.recent[k])D.recent[k]=[]}
+// 舒适高音上限：从音域顶端往下 3 个半音开始，唱准挑战高音后慢慢往上扩
+function ceilTop(){return clamp(D.top??settings.max-3,settings.min+5,settings.max)}
+const isStretch=m=>m!=null&&m>ceilTop();
+function tolFor(mode,m){const t=params(mode).t;return m!=null&&m>=ceilTop()-1?t+10:t}
+window.D_READY=true;applySettingsUI();
+function saveD(){store.set('pitch-v2',D)}
+function day(){const k=today();return D.days[k]||(D.days[k]={sec:0,hits:0,cents:0,n:0,lock:0,longSd:null})}
+const GN={drone:'陪唱',once:'先听再唱',short:'短提示',blind:'盲唱'};
+// 单音：提示音越来越短、区间越来越窄
+const LEV_S=[{g:'drone',t:50},{g:'once',t:50},{g:'once',t:40},{g:'once',t:30},{g:'short',t:30},{g:'short',t:25}];
+// 音阶/音程/唱歌：拆掉提示时先放宽区间，不会一下子受挫
+const LEV_Q=[{g:'drone',t:50},{g:'once',t:50},{g:'once',t:40},{g:'blind',t:50},{g:'blind',t:40},{g:'blind',t:30},{g:'blind',t:25}];
+// 节奏：拍子声这根"拐杖"慢慢拆掉
+const Q8=[0,1,2,3,4,5,6,7],P8=[0,1,2,2.5,3,4,5,6,6.5,7];
+const LEV_R=[
+  {n:'拍手：跟着拍子拍',in:'tap',click:'all',pat:Q8},
+  {n:'拍手：后半段拍子消失，靠心里数',in:'tap',click:'half',pat:Q8},
+  {n:'开口：每小节第 1 拍唱「啦」',in:'sing',click:'all',pat:[0,4]},
+  {n:'开口：在第 1、3 拍唱进来',in:'sing',click:'all',pat:[0,2,4,6]},
+  {n:'开口：在第 2、4 拍唱进来（不在强拍上）',in:'sing',click:'all',pat:[1,3,5,7]},
+  {n:'开口：弱起，在半拍上抢进来（很多流行歌这样开头）',in:'sing',click:'all',pat:[3.5,4,7.5]},
+  {n:'开口：后半段拍子消失，自己数着唱进来',in:'sing',click:'half',pat:[0,2,4,6]},
+  {n:'拍手：节奏型 ta ta ti-ti ta',in:'tap',click:'all',pat:P8},
+  {n:'拍手：节奏型，后半段无拍子',in:'tap',click:'half',pat:P8},
+];
+const levKey=m=>m==='scale'||m==='interval'||m==='song'||m==='rhythm'?m:'single';
+const levels=k=>k==='single'?LEV_S:k==='rhythm'?LEV_R:LEV_Q;
+function params(mode){
+  const k=levKey(mode);
+  let p=settings.auto?levels(k)[D.level[k]]:{g:settings.guide,t:settings.tol};
+  if(!p||p.t==null)p={g:'once',t:settings.tol};
+  if(mode==='single'&&p.g==='blind')p={...p,g:'once'};
+  if(mode==='song'&&p.g==='once')p={...p,g:'short'};
+  if(mode==='long')p={g:p.g==='drone'?'drone':'once',t:Math.max(p.t,25)};
+  return p;
+}
+const MODE_NAME={home:'今天',track:'跟原曲练',warm:'开口热身',rhythm:'节奏',single:'单音模唱',scale:'音阶',interval:'音程',song:'唱歌',long:'长音稳定',free:'自由',progress:'我的进步'};
+
+const MODE_DESC={home:'',single:'听一个音，再轻轻唱出来。',warm:'先放松下来，让声音慢慢醒过来。',scale:'从一步一个音，到连贯地唱完整条音阶。',interval:'听清两个音之间的距离。',song:'一句一句，把喜欢的旋律唱准。',rhythm:'在对的时刻，轻轻唱进来。',track:'跟着熟悉的歌，慢慢找到自己的声音。',long:'用一口平稳的气，唱一条平平的线。',free:'自在地唱，找到你舒服的音域。',progress:'每一次开口，都是向前的一小步。'};
+const UI_ICONS={"wave": "<path d=\"M3 10v4m5-9v14m5-11v8m5-6v4m3-2h0\"/>", "warm": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5\"/>", "single": "<path d=\"M9 17V5l11-2v12M9 8l11-2\"/><ellipse cx=\"6\" cy=\"18\" rx=\"3\" ry=\"2.5\"/><ellipse cx=\"17\" cy=\"16\" rx=\"3\" ry=\"2.5\"/>", "scale": "<path d=\"M4 20v-5m5 5V11m5 9V7m5 13V3\"/>", "interval": "<path d=\"M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4\"/>", "song": "<rect x=\"9\" y=\"2\" width=\"6\" height=\"13\" rx=\"3\"/><path d=\"M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8\"/>", "rhythm": "<path d=\"M9 17V5l11-2v12\"/><ellipse cx=\"6\" cy=\"18\" rx=\"3\" ry=\"2.5\"/><ellipse cx=\"17\" cy=\"16\" rx=\"3\" ry=\"2.5\"/>", "track": "<rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\"/><path d=\"M9 7h6m-6 4h6m-6 4h4\"/>", "long": "<path d=\"M2 14c5-13 9 13 14 0l6-6\"/>", "free": "<path d=\"M3 18V9m5 13V3m5 15V9m5 11V6m5 11v-6\"/>", "progress": "<path d=\"M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4M12 13v6m-4 2h8m-7-2h6\"/>", "help": "<path d=\"M12 5v16M12 5C8 1 3 3 3 3v16s5-2 9 2c4-4 9-2 9-2V3s-5-2-9 2Z\"/>", "settings": "<path d=\"m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h6l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "privacy": "<path d=\"M5 4h14v13H5zM2 20h20l-3-3H5Z\"/>", "spark": "<path d=\"m12 2 2.7 7.3L22 12l-7.3 2.7L12 22l-2.7-7.3L2 12l7.3-2.7ZM20 2v4m-2-2h4\"/>", "keyboard": "<rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\"/><path d=\"M6 4v9h3V4m6 0v9h3V4M6 13v7m6-16v16m6-7v7\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 6v6l4 2\"/>", "aim": "<circle cx=\"12\" cy=\"12\" r=\"8\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"m12 12 9-9m-4 0h4v4\"/>", "arrow": "<path d=\"M5 19 19 5M7 5h12v12\"/>"};
+const uiIcon=n=>'<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">'+UI_ICONS[n]+'</svg>';
+function renderModeHeading(){
+  const m=state.mode,p=params(m==='home'?'single':m),leveled=['single','scale','interval','song','rhythm'].includes(m);
+  document.body.dataset.mode=m;document.body.classList.toggle('fit',!['home','progress'].includes(m));document.body.classList.toggle('session-on',!!session);
+  $('modeTitle').textContent=m==='free'?'测音域':MODE_NAME[m];$('modeDescription').textContent=MODE_DESC[m];
+  $('modeLevel').classList.toggle('hidden',!leveled);$('modeLevel').textContent='第 '+((m==='rhythm'?rLevel():D.level[levKey(m)])+1)+' 级';
+  $('modeMeta').textContent=m==='rhythm'?rhythmOpt.bpm+' 拍 / 分':leveled?GN[p.g]+' · ±'+p.t+' 音分':'';
+  document.querySelectorAll('.tab').forEach(b=>{const active=b.dataset.mode===m;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+}
+function applyAppearance(){document.documentElement.dataset.theme=settings.appearance||'light';postTheme();if(window.D_READY){readColors();if(state.mode==='progress')drawProgress()}}
+// 设置、使用指南：弹出面板（不在每个页面底部重复出现）
+function openSheet(id){
+  const sh=$('sheet');sh.querySelectorAll('.sheet-page').forEach(x=>x.classList.toggle('hidden',x.id!==id));
+  sh.classList.remove('hidden');requestAnimationFrame(()=>sh.classList.add('show'));$('sheetClose').focus();
+  if(id==='settingsCard'&&window.__NATIVE_APP__)window.webkit.messageHandlers.audio.postMessage({cmd:'listOutputs'});
+}
+function closeSheet(){const sh=$('sheet');sh.classList.remove('show');setTimeout(()=>sh.classList.add('hidden'),200)}
+document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openSheet(b.dataset.open));
+$('sheetClose').onclick=closeSheet;$('sheet').onclick=e=>{if(e.target.id==='sheet')closeSheet()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sheet').classList.contains('hidden'))closeSheet()});
+$('kbCard').addEventListener('toggle',()=>{$('kbCard').querySelector('.summary-hint').textContent=$('kbCard').open?'收起':'展开'});
+
+// 1 = 自己唱准，0.5 = 在帮助下唱准，0 = 先放一放
+function record(mode,score){
+  if(!settings.auto)return;
+  const k=levKey(mode),r=D.recent[k],L=levels(k);r.push(score);if(r.length>10)r.shift();
+  if(r.length>=8&&avg(r.slice(-8))>=0.85&&D.level[k]<L.length-1){
+    D.level[k]++;D.recent[k]=[];const p=L[D.level[k]];
+    const t=`升级了！${MODE_NAME[k]} 第 ${D.level[k]+1} 级：${k==='rhythm'?p.n:`${GN[k==='song'&&p.g==='once'?'short':p.g]}，±${p.t} 音分`}`;
+    toast(t);if(session)session.ups.push(t);
+  }else if(r.length>=6&&avg(r.slice(-6))<0.5&&D.level[k]>0){
+    D.level[k]--;D.recent[k]=[];
+    coachSay('我们换个更舒服的节奏：多给你一点提示。打好基础比赶进度重要。');
+  }
+  saveD();
+}
+
+// ================= 语音教练 =================
+// 不朗读任何内容，教练只用文字
+let speaking=false;
+function coachSay(text){$('coachTxt').textContent=text}
+
+const TIPS={
+  low:['有点偏低。想象声音往前上方送出去，气息再给足一点。','偏低一点点。试试嘴角微微上扬、眉毛抬一抬，音会自然往上走。','稍微低了。别怕唱高，心里先想着那个音"在上面一点"，再开口。'],
+  high:['有点偏高。肩膀和喉咙放松，声音放轻一点，往下落一落。','偏高一点点。别用力挤，像轻轻叹气那样把声音放下来。','稍微高了。音量小一点、松一点，往往就落准了。'],
+  farLow:n=>`比目标低了大约 ${n} 个半音。先别急着唱，在心里哼一下刚才那个音，再开口往上找。`,
+  farHigh:n=>`比目标高了大约 ${n} 个半音。先在心里哼一下那个音，再从下面轻轻滑上去。`,
+  wobble:['方向是对的，就是有点晃。用肚子托住气，音量小一点会更好控制。','音高在目标附近抖动。吸一口气，想象唱一条平平的直线。'],
+  close:['已经很接近了！再稳住一小会儿就过了。','差一点点，保持这个位置，别松气。'],
+  highLow:['高音别用力往上够。想象声音往前送、往下放，音量小一点反而更容易上去。','试试用「呜」或「嗯」代替「啊」，高音会轻松很多。','可以先从下面像警报声「呜~」一样滑上去，找到那个音再停住。'],
+  praise:['好！','准！','漂亮！','对了！','就是这个音！'],
+};
+
+// ================= 音频 =================
+let micSrc=null,ctx=null,master=null,analyser=null,micOn=false,buf=null,muteUntil=0,drone=null;
+const cueSources=new Set();
+function trackCue(source){cueSources.add(source);source.onended=()=>{cueSources.delete(source);source.disconnect()};return source}
+function stopCues(){for(const source of cueSources){try{source.stop()}catch(e){}source.disconnect()}cueSources.clear();muteUntil=0}
+function ensureCtx(){
+  if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=settings.vol;
+    // 限幅：几个音叠在一起或音量调大时也不会削波出"噼啪"杂音
+    const lim=ctx.createDynamicsCompressor();lim.threshold.value=-8;lim.knee.value=6;lim.ratio.value=12;lim.attack.value=0.003;lim.release.value=0.25;
+    master.connect(lim).connect(ctx.destination)}
+  if(ctx.state==='suspended')ctx.resume();return ctx;
+}
+function playNote(midi,dur=1.1,vol=0.32,delay=0){
+  const c=ensureCtx(),t=c.currentTime+delay,f=m2f(midi);
+  const g=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=Math.min(9000,f*7);
+  // 起音后稍微回落，然后一直保持到结尾再淡出——是能跟着唱的持续音，不是一敲就没的钢琴音
+  const rel=Math.min(0.4,dur*0.3),holdEnd=Math.max(t+0.26,t+dur-rel);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+0.02);
+  g.gain.exponentialRampToValueAtTime(vol*0.6,t+0.25);g.gain.setValueAtTime(vol*0.6,holdEnd);g.gain.exponentialRampToValueAtTime(0.0005,t+dur);
+  g.connect(lp).connect(master);
+  [[1,.6],[2,.25],[3,.1],[4,.05]].forEach(([k,a])=>{const o=trackCue(c.createOscillator()),og=c.createGain();o.frequency.value=f*k;og.gain.value=a;o.connect(og).connect(g);o.start(t);o.stop(t+dur+0.05)});
+  muteUntil=Math.max(muteUntil,performance.now()+(delay+dur*0.85)*1000+120);
+}
+// 连续弹一句旋律，返回总时长（秒）
+function playPhrase(midis,step=0.45){midis.forEach((m,i)=>playNote(m,step*1.6,0.28,i*step));return midis.length*step+0.3}
+function startDrone(midi){
+  stopDrone();const c=ensureCtx(),t=c.currentTime,f=m2f(midi);
+  const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.09,t+0.3);g.connect(master);
+  const o1=c.createOscillator();o1.type='triangle';o1.frequency.value=f;o1.connect(g);o1.start();
+  const o2=c.createOscillator(),g2=c.createGain();o2.frequency.value=f*2;g2.gain.value=.3;o2.connect(g2).connect(g);o2.start();
+  drone={g,os:[o1,o2]};
+}
+function stopDrone(){if(!drone)return;const t=ctx.currentTime,d=drone;drone=null;d.g.gain.cancelScheduledValues(t);d.g.gain.setValueAtTime(d.g.gain.value,t);d.g.gain.linearRampToValueAtTime(0,t+0.15);d.os.forEach(o=>o.stop(t+0.2))}
+// 唱准时的提示音：柔和的上行五度，像轻轻敲一下钟
+// 唱准时不再放提示音，只用画面反馈
+function ding(){const b=$('tgtBtn');if(b){b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit')}}
+
+// 蓝牙耳机（比如 WH-1000XM6、AirPods）的麦克风一打开，系统会把耳机切到"通话模式"，
+// 耳机里的声音会变差、出现沙沙的噪音。所以默认改用电脑自带的麦克风。
+const BAD_MIC=/bluetooth|wh-|wf-|airpods|buds|headset|耳机|iphone|hands-free/i,GOOD_MIC=/macbook|built-in|内建|内置/i;
+let micStream=null;
+async function openMic(id){return navigator.mediaDevices.getUserMedia({audio:Object.assign({echoCancellation:false,noiseSuppression:false,autoGainControl:false},id?{deviceId:{exact:id}}:{})})}
+let micOpening=null;
+function syncMicUI(){
+  $('micGate').classList.toggle('hidden',micOn);$('micBtn').classList.toggle('on',micOn);
+  $('micBtn').innerHTML=uiIcon('song')+'<span>'+(micOn?'麦克风已开启':'开启麦克风')+'</span>';
+  $('micState').textContent=micOn?'已连接':'未开启';$('micState').classList.toggle('live',micOn);
+}
+function startMic(reopen=false){
+  if(micOpening)return micOpening;
+  micOpening=openMicrophone(reopen).finally(()=>{micOpening=null;$('micBtn').disabled=false;$('micCta').disabled=false});
+  return micOpening;
+}
+async function openMicrophone(reopen){
+  const c=ensureCtx();let stream=null;
+  $('micBtn').disabled=true;$('micCta').disabled=true;
+  try{
+    try{stream=await openMic(settings.micId)}catch(e){if(!settings.micId||reopen)throw e;stream=await openMic('');settings.micId='';saveSettings()}
+    let ins=[];try{ins=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='audioinput'&&d.deviceId!=='default'&&d.deviceId!=='communications')}catch(e){}
+    const label=stream.getAudioTracks()[0]?.label||'',good=ins.find(d=>GOOD_MIC.test(d.label));
+    if(!settings.micId&&BAD_MIC.test(label)&&good){try{const better=await openMic(good.deviceId);stream.getTracks().forEach(t=>t.stop());stream=better}catch(e){}}
+    const src=c.createMediaStreamSource(stream),nextAnalyser=c.createAnalyser();nextAnalyser.fftSize=2048;src.connect(nextAnalyser);
+    const oldStream=micStream,oldSource=micSrc;
+    if(TR.rec&&TR.rec.state!=='inactive')TR.rec.stop();
+    micStream=stream;micSrc=src;analyser=nextAnalyser;buf=new Float32Array(analyser.fftSize);micOn=true;
+    if(oldSource)oldSource.disconnect();if(oldStream)oldStream.getTracks().forEach(t=>t.stop());
+    stream.getAudioTracks().forEach(t=>t.addEventListener('ended',()=>{if(micStream!==stream)return;micOn=false;analyser=null;micSrc?.disconnect();micSrc=null;syncMicUI();pausePractice('麦克风已断开，重新开启后可以继续练习。')}));
+    const sel=$('micPick');sel.innerHTML='<option value="">自动（避开蓝牙耳机的麦克风）</option>'+ins.map(d=>`<option value="${esc(d.deviceId)}">${esc(d.label||'麦克风')}</option>`).join('');sel.value=settings.micId||'';
+    syncMicUI();
+    if(reopen)coachSay('已换成：'+(stream.getAudioTracks()[0]?.label||'新的麦克风'));
+    listWebOutputs().catch(()=>{});if(settings.outId&&c.setSinkId)c.setSinkId(settings.outId).catch(()=>{});
+    return true;
+  }catch(e){
+    if(stream&&stream!==micStream)stream.getTracks().forEach(t=>t.stop());syncMicUI();
+    coachSay(reopen&&micOn?'切换失败，继续使用原来的麦克风。':window.__NATIVE_APP__?'无法开启麦克风。请在「系统设置 → 隐私与安全性 → 麦克风」允许音准练习，然后重试。':'无法开启麦克风。请检查设备连接和浏览器的麦克风权限，然后重试。');return false;
+  }
+}
+async function micClick(){if(!micOn&&await startMic()){coachSay('麦克风好了。可以点上面的「开始今天的练习」，也可以直接在这里唱。');restartMode()}}
+$('micBtn').onclick=micClick;
+$('tgtBtn').onclick=()=>doAct('replay');$('micCta').onclick=micClick;
+
+// YIN 音高检测
+let lastRms=0;
+function detectPitch(b,sr,gate=0.008){
+  let rms=0;for(let i=0;i<b.length;i++)rms+=b[i]*b[i];rms=Math.sqrt(rms/b.length);lastRms=rms;if(rms<gate)return null;
+  const minTau=Math.floor(sr/1100),maxTau=Math.min(Math.floor(sr/65),(b.length>>1)-1),W=b.length-maxTau;
+  const d=new Float32Array(maxTau+1);
+  for(let tau=1;tau<=maxTau;tau++){let s=0;for(let i=0;i<W;i++){const x=b[i]-b[i+tau];s+=x*x}d[tau]=s}
+  d[0]=1;let run=0;for(let tau=1;tau<=maxTau;tau++){run+=d[tau];d[tau]=run?d[tau]*tau/run:1}
+  let tau=-1;for(let t=minTau;t<=maxTau;t++){if(d[t]<0.15){while(t+1<=maxTau&&d[t+1]<d[t])t++;tau=t;break}}
+  if(tau<0)return null;
+  let bt=tau;if(tau>1&&tau<maxTau){const a=d[tau-1],b2=d[tau],c=d[tau+1],den=a+c-2*b2;if(den)bt=tau+(a-c)/(2*den)}
+  return sr/bt;
+}
+
+// ================= 歌曲（简谱） =================
+// 每句一个字符串：1-7 是音，后面加 ' 是高八度，加 . 或 , 是低八度，前面加 # / b 是升降，0 和 - 会被忽略
+const DEG=[0,2,4,5,7,9,11];
+function parseJianpu(str,dotLow=true){
+  const out=[],labels=[],canon=[];
+  const re=/([#b♯♭]?)([0-7])((?:[',.^·̣̇])*)/g;let m;
+  while((m=re.exec(str))){
+    if(m[2]==='0')continue;
+    let s=DEG[+m[2]-1];if(m[1]==='#'||m[1]==='♯')s++;if(m[1]==='b'||m[1]==='♭')s--;
+    let hi=0,lo=0;
+    for(const ch of m[3]){if(ch==="'"||ch==='^'||ch==='̇')hi++;else if((ch==='.'||ch==='·')&&!dotLow)continue;else lo++}
+    s+=12*(hi-lo);out.push(s);
+    const acc=m[1]==='#'||m[1]==='♯'?'#':m[1]?'b':'';
+    labels.push((acc==='#'?'♯':acc?'♭':'')+m[2]+'̇'.repeat(hi)+'̣'.repeat(lo));
+    canon.push(acc+m[2]+"'".repeat(hi)+','.repeat(lo));
+  }
+  return {offs:out,labels,canon};
+}
+// 内置都是公版旋律（民歌 / 童谣 / 古典），可以放心练；你自己常唱的歌在下面粘贴简谱导入
+const BUILTIN_SONGS=[
+  {id:'star',n:'小星星',lv:'入门',ph:[['1 1 5 5 6 6 5','一闪一闪亮晶晶'],['4 4 3 3 2 2 1','满天都是小星星'],['5 5 4 4 3 3 2','挂在天上放光明'],['5 5 4 4 3 3 2','好像许多小眼睛'],['1 1 5 5 6 6 5','一闪一闪亮晶晶'],['4 4 3 3 2 2 1','满天都是小星星']]},
+  {id:'tiger',n:'两只老虎',lv:'入门',ph:[['1 2 3 1 1 2 3 1','两只老虎 两只老虎'],['3 4 5 3 4 5','跑得快 跑得快'],['5 6 5 4 3 1','一只没有耳朵'],['5 6 5 4 3 1','一只没有尾巴'],['1 5, 1 1 5, 1','真奇怪 真奇怪']]},
+  {id:'paint',n:'粉刷匠',lv:'入门',ph:[['5 3 5 3 5 3 1','我是一个粉刷匠'],['2 4 3 2 5','粉刷本领强'],['5 3 5 3 5 3 1','我要把那新房子'],['2 4 3 2 1','刷得更漂亮']]},
+  {id:'bday',n:'生日快乐',lv:'简单',ph:[['5. 5. 6. 5. 1 7.','祝你生日快乐'],['5. 5. 6. 5. 2 1','祝你生日快乐'],['5. 5. 5 3 1 7. 6.','祝你生日快乐'],['4 4 3 1 2 1','祝你生日快乐']]},
+  {id:'joy',n:'欢乐颂',lv:'简单',ph:[['3 3 4 5 5 4 3 2','第一句'],['1 1 2 3 3 2 2','第二句'],['3 3 4 5 5 4 3 2','第三句'],['1 1 2 3 2 1 1','第四句']]},
+  {id:'jasmine',n:'茉莉花',lv:'中等 · 很像流行歌的五声旋律',ph:[["3 3 2 3 5 6 1' 1' 6 5 5 6 5",'好一朵美丽的茉莉花'],["3 3 2 3 5 6 1' 1' 6 5 5 6 5",'好一朵美丽的茉莉花'],['5 5 5 3 5 6 6 5','芬芳美丽满枝桠'],['3 2 3 5 3 2 1 1 2 1','又香又白人人夸']]},
+  {id:'farewell',n:'送别',lv:'中等 · 有大跳',ph:[["5 3 5 1' 6 1' 5",'长亭外 古道边'],['5 1 2 3 2 1 2','芳草碧连天'],["5 3 5 1' 7 6 1' 5",'晚风拂柳笛声残'],['5 2 3 4 7. 1','夕阳山外山'],["6 1' 1' 7 6 7 1'",'天之涯 地之角'],["6 7 1' 6 6 5 3 1 2",'知交半零落'],["5 3 5 1' 7 6 1' 5",'一壶浊酒尽余欢'],['5 2 3 4 7. 1','今宵别梦寒']]},
+];
+const allSongs=()=>BUILTIN_SONGS.concat(D.songs);
+let songSel=saved('pitch-song',{id:'star',phi:0,adj:0});
+function curSong(){return allSongs().find(s=>s.id===songSel.id)||BUILTIN_SONGS[0]}
+// 自动移调：让整首歌落在你的音域中间
+function songShift(song){
+  const offs=song.ph.flatMap(p=>parseJianpu(p[0]).offs);if(!offs.length)return 0;
+  const lo=Math.min(...offs),hi=Math.max(...offs);
+  // 低音域优先：先居中，再保证最高音不超过舒适高音
+  let sh=Math.round((settings.min+ceilTop())/2-(lo+hi)/2);
+  if(hi+sh>ceilTop())sh=ceilTop()-hi;
+  if(lo+sh<settings.min-3)sh=settings.min-3-lo;
+  return sh+songSel.adj;
+}
+function songKeyName(song){return '1 = '+NAMES[((songShift(song)%12)+12)%12]}
+function startPhrase(){
+  stopCues();
+  const song=curSong();songSel.phi=clamp(songSel.phi,0,song.ph.length-1);store.set('pitch-song',songSel);
+  const [jp,lyric]=song.ph[songSel.phi],{offs,labels}=parseJianpu(jp),sh=songShift(song),mids=offs.map(o=>o+sh);
+  renderPanel();
+  const p=params('song');const tok=++state.token;stopDrone();state.phase='listen';state.target=null;
+  if(p.g!=='blind'){
+    setStatus('先听这一句…');const dur=playPhrase(mids);
+    setTimeout(()=>{if(tok===state.token)startSeq(mids,labels)},dur*1000+400);
+  }else{setStatus('这一句只给第一个音');startSeq(mids,labels)}
+  state.lyric=lyric;
+}
+// 把从网上复制来的简谱整理成一句一句：去掉调号、拍号、和弦、小节线，歌词行自动配到上一行音符
+const CJK=/[\u4e00-\u9fff]/g;
+function analyzeImport(text,dotLow){
+  const ph=[];
+  for(let line of text.split('\n')){
+    line=line.trim();if(!line)continue;
+    let lyric='';const sp=line.split(/\s*[\/／]\s*(?=[\u4e00-\u9fff])/);if(sp.length>1){line=sp[0];lyric=sp.slice(1).join(' ')}
+    const cjk=(line.match(CJK)||[]).length,digits=(line.match(/[1-7]/g)||[]).length;
+    if(cjk>=2&&cjk>digits){const last=ph[ph.length-1];if(last&&!last.ly)last.ly=line.replace(/\s+/g,' ');continue}
+    line=line.replace(/1\s*=\s*[#b♯♭]?[A-G][#b]?/gi,' ').replace(/[♩J]\s*=\s*\d+/g,' ').replace(/\b\d+\s*\/\s*\d+\b/g,' ')
+      .replace(/(^|[\s(（\[【|])[A-G][#b]?(?:maj|min|m|dim|aug|sus|add)?\d*(?:\/[A-G][#b]?)?(?=$|[\s)）\]】|])/g,'$1 ');
+    const r=parseJianpu(line,dotLow);if(r.canon.length<2)continue;
+    let notes=r.canon;
+    // 一行太长就切成几句，每句 8 个音左右
+    while(notes.length>16){ph.push({n:notes.slice(0,8),ly:''});notes=notes.slice(8)}
+    ph.push({n:notes,ly:lyric});
+  }
+  return ph.map((p,i)=>[p.n.join(' '),p.ly||`第${i+1}句`]);
+}
+function renderImportPreview(){
+  const el=$('impPrev');if(!el)return;const ph=analyzeImport($('impText').value,$('impDot').value==='low');
+  if(!ph.length){el.innerHTML='';return}
+  const offs=ph.flatMap(p=>parseJianpu(p[0]).offs),span=Math.max(...offs)-Math.min(...offs);
+  el.innerHTML=`识别到 <b>${ph.length}</b> 句、<b>${offs.length}</b> 个音，最高最低相差 ${span} 个半音${span>settings.max-settings.min?'（比你的音域宽，最高的几个音会比较难，没关系）':''}。<br>`+
+    ph.slice(0,3).map(p=>`${esc(p[1])}：${parseJianpu(p[0]).labels.join(' ')}`).join('<br>')+(ph.length>3?'<br>…':'')+
+    `<div class="ctrls" style="margin-top:6px"><button class="btn sm" id="bImpPlay">试听第 1 句</button><span class="hint">听着不像原曲？试试切换上面"「.」的意思"，或检查简谱。</span></div>`;
+  $('bImpPlay').onclick=()=>{const o=parseJianpu(ph[0][0]).offs,sh=songShift({ph});playPhrase(o.map(x=>x+sh))};
+}
+function importSong(){
+  const name=$('impName').value.trim()||'我的歌 '+(D.songs.length+1);
+  const ph=analyzeImport($('impText').value,$('impDot').value==='low');
+  if(!ph.length){coachSay('没认出音符。每行写一句，用 1-7 表示音，比如：3 5 6 1\' 6 5',false);return}
+  const s={id:'u'+Date.now(),n:name,lv:'我导入的',ph,custom:true};D.songs.push(s);saveD();
+  songSel={id:s.id,phi:0,adj:0};store.set('pitch-song',songSel);
+  coachSay(`导入好了：${name}，一共 ${ph.length} 句。已经自动移到适合你的调。`,false);startPhrase();
+}
+
+// ================= 练习状态 =================
+const state={mode:'single',seq:[],labels:[],idx:0,phase:'idle',target:null,token:0,done:[],startT:0,lyric:'',
+  hold:0,miss:0,voiced:0,help:0,silence:0,att:null,hc:0,hn:0,offT:0,
+  long:{dur:8,samples:[],started:0,res:null,lastTarget:null},free:{lo:null,hi:null,run:[]},iv:null,later:[],nSingle:0};
+let curMidi=null,smooth=[],history=[],lastT=performance.now(),session=null;
+// 稳住多久算过：研究和教学里都是"先求稳，再求久"。从 1 秒开始，级别越高要求越长（最长 2 秒）
+// 连唱（音阶课程）：不用每个音都等提示音；稳住时长和其他练习一样
+const flowing=()=>state.mode==='scale'&&!!state.course;
+function holdMs(){
+  if(state.mode==='song')return 700;
+  if(settings.hold!=='auto')return +settings.hold*1000;
+  const lv=D.level[levKey(state.mode)]||0;return Math.min(2000,1000+lv*150);
+}
+
+function setStatus(t,cls=''){const s=$('status');if(s.textContent!==t)s.textContent=t;s.className='status '+cls}
+function foldOn(){return settings.fold&&(state.mode==='single'||state.mode==='long')}
+function centsDiff(m,target){let d=(m-target)*100;if(foldOn())d=((d%1200)+1200+600)%1200-600;return d}
+function resetNoteTrack(){Object.assign(state,{idleT:0,hold:0,miss:0,voiced:0,help:0,silence:0,att:{n:0,sum:0,sq:0},hc:0,hn:0,offT:0})}
+
+// ---------- 序列（单音/音阶/音程/唱歌） ----------
+function startSeq(seq,labels){state.paused=false;state.seq=seq;state.labels=labels;state.idx=0;state.done=seq.map(()=>0);state.startT=performance.now();beginNote()}
+function beginNote(){
+  stopCues();
+  const tok=++state.token;stopDrone();
+  const m=state.seq[state.idx];state.target=m;resetNoteTrack();
+  const p=params(state.mode);
+  const play=flowing()?(p.g==='blind'&&state.idx===0):(p.g!=='blind'||state.idx===0);
+  renderChips();
+  if(flowing()&&!play){state.phase='sing';if(p.g==='drone')startDrone(m);setStatus(state.idx===0?'连着唱下来：'+state.labels.join(' '):'下一个 →','');return}
+  if(play){
+    state.phase='listen';const dur=p.g==='short'?Math.max(1.2,settings.toneLen*0.5):settings.toneLen;playNote(m,dur);
+    if(state.mode!=='song')setStatus('先听…');
+    setTimeout(()=>{if(tok!==state.token)return;state.phase='sing';if(p.g==='drone')startDrone(m);
+      setStatus(micOn?'跟着唱「啊——」':'开启麦克风后就能开始唱')},dur*1000-50);
+  }else{state.phase='sing';setStatus(state.mode==='song'?'接着唱下一个音':'这个音不给提示，凭感觉找一找')}
+}
+function isScored(){return (state.mode!=='interval'||state.idx===1)&&!(state.mode==='single'&&isStretch(state.target))}
+function noteSuccess(){
+  const tok=++state.token;stopDrone();state.phase='ok';state.done[state.idx]=1;
+  const lock=state.voiced/1000,cents=state.hn?state.hc/state.hn:0;
+  const d=day();d.hits++;d.cents+=cents;d.n++;d.lock+=lock;
+  if(isScored())record(state.mode,state.help?0.5:1);
+  if(state.mode==='single'&&isStretch(state.target)&&!state.help){
+    D.stretchHits=(D.stretchHits||0)+1;
+    if(D.stretchHits>=3){D.top=ceilTop()+1;D.stretchHits=0;const t=`你的舒适高音往上扩了：${nameOf(D.top)}`;toast(t);if(session)session.ups.push(t);applySettingsUI()}
+  }
+  if(session){session.hits++;session.cents+=cents;session.n++;if(state.help)session.helped++;if(session.fast==null||lock<session.fast)session.fast=lock}
+  saveD();renderStats();
+  const praise=pick(TIPS.praise);setStatus(praise+(state.help?' 在帮助下找到了，下次会更快':''),'good');
+  ding();
+  renderChips();
+  if(flowing()){advance();return}
+  setTimeout(()=>{if(tok!==state.token)return;advance()},state.mode==='song'?400:800);
+}
+function moveOn(){
+  const tok=++state.token;stopDrone();state.phase='ok';state.done[state.idx]=-1;
+  const stretch=state.mode==='single'&&isStretch(state.target);
+  if(isScored())record(state.mode,0);
+  if(state.mode==='single'&&!stretch)state.later.push(state.target);
+  if(session&&!stretch)session.later++;
+  if(stretch)coachSay('高音本来就难，敢去够它就已经很棒了。不扣分，我们以后慢慢往上扩。');
+  else coachSay(pick(['这个音先放一放，等会儿它还会回来。不着急，慢慢来。','这个音有点难，我们先往下走，过一会儿再回来试。','没关系，难的音需要多见几次面。先往下走。']));
+  setStatus('先放一放 →');renderChips();
+  setTimeout(()=>{if(tok!==state.token)return;advance()},1800);
+}
+function advance(){
+  state.idx++;
+  if(state.idx<state.seq.length){beginNote();return}
+  const ok=state.done.filter(x=>x===1).length;
+  if(state.mode==='single'){if(!itemDone('single'))newSingle()}
+  else if(state.mode==='interval'){if(!itemDone('interval'))newInterval()}
+  else if(state.mode==='scale'&&state.course){courseRepDone()}
+  else if(state.mode==='scale'){
+    state.phase='done';state.target=null;stopDrone();
+    setStatus(`整条音阶唱完了：${ok}/${state.seq.length} 个音唱准`,'good');
+    coachSay(ok===state.seq.length?'整条音阶都唱准了，太棒了！':`唱完一整条音阶，有 ${ok} 个音唱准了。没唱准的那几个，下一遍会更熟。`);
+    renderChips();
+    if(!itemDone('scale'))setTimeout(()=>{if(state.mode==='scale'&&state.phase==='done')newScale()},3500);
+  }else if(state.mode==='song'){
+    state.phase='done';state.target=null;stopDrone();
+    const song=curSong(),last=songSel.phi>=song.ph.length-1;
+    if(!state.songDone)state.songDone={};state.songDone[song.id+':'+songSel.phi]=1;
+    ding();
+    const msg=ok===state.seq.length?'这一句每个音都唱准了！':`这一句 ${ok}/${state.seq.length} 个音唱准。`;
+    coachSay(last?msg+' 整首歌唱完了，真棒！可以从头再来一遍，或者换一首。':msg+' 下一句。',last||ok<state.seq.length);
+    setStatus(msg,'good');
+    songSel.phi=last?0:songSel.phi+1;store.set('pitch-song',songSel);renderActs();
+    if(!itemDone('song'))setTimeout(()=>{if(state.mode==='song'&&state.phase==='done')startPhrase()},last?5000:2200);
+  }
+}
+const SEQ_MODES=['single','scale','interval','song'];
+// 舞台下方的操作按钮：再听 / 上一个 / 跳过 / 暂停，跟着模式变化
+function renderActs(){
+  const a=$('acts'),m=state.mode,k=$('keysHint');if(!a)return;
+  const seq=SEQ_MODES.includes(m),hasT=state.target!=null||state.paused;let h='',keys=[];
+  if(state.paused){h='<button class="btn primary" data-act="resume">继续练习</button>';keys.push('空格 继续')}
+  else if(seq||m==='long'){
+    if(hasT){h+='<button class="btn" data-act="replay">再听</button>';keys.push('空格 再听')}
+    if(m==='song')h+='<button class="btn" data-act="phrase">听整句</button>';
+    if(m==='interval'&&state.idx===1)h+='<button class="btn" data-act="root">听根音</button>';
+    if((m==='scale'||m==='song')&&state.idx>0&&state.phase!=='done'){h+='<button class="btn" data-act="prev">上一个</button>';keys.push('← 上一个')}
+    if(seq&&state.phase!=='done'){h+=`<button class="btn" data-act="skip">${m==='single'||m==='interval'?'换一个':'跳过'}</button>`;keys.push('→ '+(m==='single'||m==='interval'?'换一个':'跳过'))}
+    if(state.phase!=='idle'&&state.phase!=='done')h+='<button class="btn" data-act="pause">暂停</button>';
+  }
+  a.innerHTML=h;k.textContent=keys.length?'键盘：'+keys.join(' · '):'';
+  a.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{b.blur();doAct(b.dataset.act)});
+  const tb=$('tgtBtn');if(tb)tb.disabled=state.target==null||state.paused;
+}
+function doAct(act){
+  ensureCtx();
+  if(act==='replay'){if(state.target==null)return;replay(state.target);const tb=$('tgtBtn');tb.classList.remove('ping');void tb.offsetWidth;tb.classList.add('ping')}
+  else if(act==='phrase')startPhrase();
+  else if(act==='root')replay(state.seq[0]);
+  else if(act==='prev'){if(state.idx<=0)return;state.token++;stopDrone();state.idx--;state.done[state.idx]=0;beginNote()}
+  else if(act==='skip'){if(state.mode==='interval')newInterval();else{state.token++;stopDrone();state.done[state.idx]=-1;advance()}}
+  else if(act==='pause')pausePractice();
+  else if(act==='resume')resumePractice();
+}
+function pausePractice(msg){
+  if(state.paused||!(SEQ_MODES.includes(state.mode)||state.mode==='long'))return;
+  state.paused=true;state.token++;stopCues();stopDrone();state.phase='paused';
+  setStatus('已暂停');coachSay(msg||'休息一下。准备好了，点「继续练习」或按空格。');renderActs();
+}
+function resumePractice(){
+  if(!state.paused)return;state.paused=false;
+  if(SEQ_MODES.includes(state.mode)&&state.seq.length&&state.idx<state.seq.length)beginNote();
+  else if(state.mode==='long')newLong(state.target);else restartMode();
+  coachSay('好，我们接着来。');renderActs();
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&!['idle','done','paused'].includes(state.phase))pausePractice('你离开了一会儿，我先帮你暂停了。准备好了点「继续练习」。')});
+document.addEventListener('keydown',e=>{
+  if(e.repeat||e.target.closest('[data-m]')||state.mode==='rhythm'||e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||!$('modal').classList.contains('hidden'))return;
+  if(e.code==='Space'){e.preventDefault();if(e.target.tagName==='BUTTON')e.target.blur();doAct(state.paused?'resume':'replay')}
+  else if(e.code==='ArrowRight'&&SEQ_MODES.includes(state.mode)&&!state.paused&&state.phase!=='done'){e.preventDefault();doAct('skip')}
+  else if(e.code==='ArrowLeft'&&(state.mode==='scale'||state.mode==='song')&&state.idx>0&&!state.paused){e.preventDefault();doAct('prev')}
+});
+function replay(m){if(m==null)return;stopCues();stopDrone();const tok=state.token;playNote(m,settings.toneLen);
+  if(params(state.mode).g==='drone'&&state.phase==='sing')setTimeout(()=>{if(tok===state.token&&state.phase==='sing')startDrone(state.target)},settings.toneLen*1000)}
+
+// 单音（偶尔把之前"放一放"的音拿回来）
+function newSingle(){
+  state.nSingle++;
+  const top=ceilTop();let m;
+  if(state.later.length&&state.nSingle%3===0)m=state.later.shift();
+  // 偶尔来一个挑战高音（15%），平时集中在舒服的中低音区
+  else if(D.level.single>=2&&top<settings.max&&Math.random()<0.15)m=top+rand(1,Math.min(2,settings.max-top));
+  else m=settings.min+Math.floor((top-settings.min+1)*Math.pow(Math.random(),1.2));
+  m=clamp(m,settings.min,settings.max);startSeq([m],[nameOf(m)]);renderPanel();
+}
+// 音阶
+const SCALES={
+  major:{n:'大调',s:[0,2,4,5,7,9,11,12],l:['1 do','2 re','3 mi','4 fa','5 sol','6 la','7 si','1̇ do']},
+  minor:{n:'自然小调',s:[0,2,3,5,7,8,10,12],l:['1','2','♭3','4','5','♭6','♭7','1̇']},
+  penta:{n:'五声',s:[0,2,4,7,9,12],l:['1 do','2 re','3 mi','5 sol','6 la','1̇ do']},
+};
+let scaleOpt=Object.assign({key:0,type:'major',stage:'c3',dir:'updown',startAdj:0},saved('pitch-scale',{}));
+// 音阶课程：声乐课的开嗓结构（一个短音型，每遍升半音往上爬，再降回来）
+// + 柯达伊的顺序（先小步、先五声，半音 mi-fa / si-do 放后面）。起始音和上限按低音域男声来排。
+const SOLF={0:'1 do',2:'2 re',4:'3 mi',5:'4 fa',7:'5 sol',9:'6 la',11:'7 si',12:'1̇ do'};
+const COURSE=[
+  {id:'c3',n:'三音 1-2-3',pat:[0,2,4,2,0],why:'只用 do re mi 三个挨着的音，跨度小，先把"一步一步走准"练稳。',tip:'用「呣」或「呜」轻轻唱，音量小一点更容易准。'},
+  {id:'c5',n:'五音 1-2-3-4-5',pat:[0,2,4,5,7,5,4,2,0],why:'声乐课最经典的开嗓音型。里面有 mi→fa 半音，练小步子的精确度。',tip:'3→4（mi→fa）只差半音，别唱宽了；越往上爬声音越要收小。'},
+  {id:'penta',n:'五声 1-2-3-5-6',pat:[0,2,4,7,9,7,4,2,0],why:'中文流行歌的骨架就是五声音阶，练熟了唱歌会顺很多。',tip:'3→5 是一个小跳，开口前先在心里听到 sol。'},
+  {id:'arp',n:'琶音 1-3-5',pat:[0,4,7,4,0],why:'只走和弦音，练"跳着找音"，对应歌里的大跳。',tip:'跳之前先在心里哼出下一个音，再开口。'},
+  {id:'desc',n:'下行 5-4-3-2-1',pat:[7,5,4,2,0],why:'从上往下唱，最高音轻轻放出来，帮高音放松、不用力去顶，慢慢把音域往上扩。',tip:'第一个音用「呜」轻轻放出来，像叹气一样往下走，可以虚、不要挤。'},
+  {id:'oct',n:'完整八度',pat:[0,2,4,5,7,9,11,12,11,9,7,5,4,2,0],why:'把整条大调音阶唱完整，包含两个半音（mi-fa、si-do）。',tip:'si→do 只差半音；靠近高音 do 时把声音收小、换成「呜」。'},
+  {id:'leap',n:'八度跳 1-1̇-1',pat:[0,12,0],why:'检查低音和高音能不能连起来，声乐课用它来练换声区。',tip:'上面的音用「呜」，可以轻、可以虚，先连起来再求结实。'},
+];
+const courseOf=id=>COURSE.find(c=>c.id===id);
+// 起始根音：比音域最低音高 5 个半音（低音男声大约 A2）；最高音不超过舒适高音 +1（留一个挑战音）
+function courseRoots(c){
+  const span=Math.max(...c.pat)-Math.min(...c.pat),top=Math.min(settings.max,ceilTop()+1);
+  const hi=Math.max(settings.min,top-span),r0=clamp(settings.min+5+scaleOpt.startAdj,settings.min,hi);
+  // 梯子太长（超过 9 遍）就每遍升一个全音，一轮控制在几分钟内
+  const step=hi-r0+1>9?2:1,up=[];for(let r=r0;r<=hi;r+=step)up.push(r);
+  return scaleOpt.dir==='up'?up:up.concat(up.slice(0,-1).reverse());
+}
+function startCourse(){
+  const c=courseOf(scaleOpt.stage)||COURSE[0];state.course={c,roots:courseRoots(c),rep:0,clean:0,total:0};courseRep();
+}
+function courseRep(){
+  stopCues();
+  const cs=state.course,c=cs.c,root=cs.roots[cs.rep],mids=c.pat.map(x=>root+x),labels=c.pat.map(x=>SOLF[x]);
+  const p=params('scale'),tok=++state.token;stopDrone();state.phase='listen';state.target=null;state.seq=[];state.labels=[];renderPanel();
+  if(p.g!=='blind'){setStatus('先听这一遍…');const dur=playPhrase(mids,0.5);setTimeout(()=>{if(tok===state.token)startSeq(mids,labels)},dur*1000+300)}
+  else startSeq(mids,labels);
+}
+function courseRepDone(){
+  const cs=state.course,ok=state.done.filter(x=>x===1).length;cs.clean+=ok;cs.total+=state.seq.length;
+  const tok=++state.token;state.phase='done';state.target=null;stopDrone();renderChips();
+  if(cs.rep+1<cs.roots.length){
+    const up=cs.roots[cs.rep+1]>cs.roots[cs.rep];
+    const st=Math.abs(cs.roots[cs.rep+1]-cs.roots[cs.rep])===2?'一个全音':'半音';setStatus(`第 ${cs.rep+1} 遍完成 · 下一遍${up?'升':'降'}${st} ${up?'↑':'↓'}`,'good');cs.rep++;
+    setTimeout(()=>{if(tok===state.token)courseRep()},1400);return;
+  }
+  const pct=Math.round(cs.clean/Math.max(1,cs.total)*100),c=cs.c;
+  const pr=D.course||(D.course={passes:{}});
+  let grew='';
+  if(pct>=85){pr.passes[c.id]=(pr.passes[c.id]||0)+1;
+    // 合格一轮：练习上限往上放宽一个半音（到了音域顶端就把音域也加一个半音，最多到 G4）
+    if(ceilTop()>=settings.max&&settings.max<67){settings.max++;saveSettings();applySettingsUI();buildKeyboard()}
+    if(ceilTop()<settings.max){D.top=ceilTop()+1;grew=` 合格了，练习上限放宽到 ${nameOf(Math.min(settings.max,ceilTop()+1))}。`;toast('练习上限 +1 个半音')}}
+  saveD();
+  const nextC=COURSE[COURSE.indexOf(c)+1];
+  let msg=`这一轮爬完了：${pct}% 的音一次就唱准。`+grew;
+  if(pct>=85&&pr.passes[c.id]>=2&&nextC)msg+=` 这一阶段已经很稳了，可以试试下一阶段「${nextC.n}」。`;
+  else if(pct>=85)msg+=' 很稳！再来一轮把它坐实。';
+  else msg+=' 没唱准的那几个音，下一轮会更熟。';
+  setStatus(`一轮完成 · ${pct}%`,'good');coachSay(msg);renderPanel();
+  if(!itemDone('scale'))setTimeout(()=>{if(state.mode==='scale'&&state.phase==='done'&&tok===state.token)startCourse()},6000);
+}
+function recommendedStage(){const pr=(D.course||{}).passes||{};let i=0;while(i<COURSE.length-1&&(pr[COURSE[i].id]||0)>=2)i++;return COURSE[i].id}
+function newScale(){
+  if(scaleOpt.stage!=='free')return startCourse();
+  state.course=null;renderPanel();
+
+  const sc=SCALES[scaleOpt.type];let best=settings.min,bs=1e9;
+  for(let m=settings.min-3;m<=settings.max;m++){if(((m%12)+12)%12!==scaleOpt.key)continue;
+    const over=Math.max(0,m+12-ceilTop())+Math.max(0,settings.min-m);if(over<bs){bs=over;best=m}}
+  const up=sc.s.map(s=>best+s);
+  startSeq(up.concat(up.slice(0,-1).reverse()),sc.l.concat(sc.l.slice(0,-1).reverse()));
+}
+// 音程
+const INTERVALS=[[1,'小二度'],[2,'大二度','do→re'],[3,'小三度','mi→sol'],[4,'大三度','do→mi'],[5,'纯四度','do→fa'],[6,'三全音'],
+  [7,'纯五度','do→sol，《小星星》第 2→3 个字'],[8,'小六度'],[9,'大六度','do→la'],[10,'小七度'],[11,'大七度'],[12,'八度','do→高音do']];
+let ivOpt=saved('pitch-iv',{set:[2,4,5,7,12],dir:'up'});
+function newInterval(){
+  const set=ivOpt.set.length?ivOpt.set:[7],s=pick(set);
+  const dir=ivOpt.dir==='mix'?(Math.random()<.5?'up':'down'):ivOpt.dir;
+  const top=ceilTop(),lo=dir==='up'?settings.min:settings.min+s,hi=dir==='up'?top-s:top;
+  const root=rand(lo,Math.max(lo,hi)),tgt=dir==='up'?root+s:root-s,info=INTERVALS.find(x=>x[0]===s);
+  state.iv={s,dir,name:info[1],hint:info[2]||''};
+  startSeq([root,tgt],['根音 '+nameOf(root),`${info[1]} ${dir==='up'?'↑':'↓'}`]);
+}
+// 长音
+function newLong(m){
+  state.paused=false;stopCues();
+  const tok=++state.token;stopDrone();
+  if(m==null)m=state.long.lastTarget??rand(settings.min+1,ceilTop()-2);
+  state.long.lastTarget=m;state.target=m;state.long.samples=[];state.long.started=0;state.long.res=null;state.phase='listen';
+  setStatus('先听…');playNote(m,settings.toneLen);renderPanel();
+  setTimeout(()=>{if(tok!==state.token)return;state.phase='ready';if(params('long').g==='drone')startDrone(m);
+    setStatus(micOn?`吸一口气，开口唱满 ${state.long.dur} 秒`:'开启麦克风后开始')},settings.toneLen*1000-50);
+}
+function finishLong(){
+  state.phase='done';stopDrone();const tok=++state.token;
+  const tol=params('long').t,s=state.long.samples,n=s.length||1;
+  const v=s.filter(x=>x!=null),inTol=v.filter(x=>Math.abs(x)<=tol).length;
+  const mean=avg(v),sd=Math.sqrt(avg(v.map(x=>(x-mean)**2)));
+  const hit=Math.round(inTol/n*100),res={hit,mean:Math.round(mean),sd:Math.round(sd)};state.long.res=res;
+  const d=day(),prev=D.best.longSd,isBest=hit>=50&&(prev==null||sd<prev);
+  if(hit>=50){if(d.longSd==null||sd<d.longSd)d.longSd=Math.round(sd);if(isBest)D.best.longSd=Math.round(sd);d.hits++}
+  if(session){session.longs.push(res);if(isBest&&prev!=null)session.longBest=true}
+  saveD();renderStats();
+  let msg;
+  if(isBest&&prev!=null)msg=`新纪录！这是你唱得最稳的一次，抖动只有 ${res.sd} 音分。`;
+  else if(hit>=80)msg='很稳，曲线几乎是一条直线。';
+  else if(hit>=50)msg='大部分时间都在绿色区间里，挺好的。';
+  else msg='能一口气唱下来就是第一步。';
+  if(v.length<n*0.6)msg+=' 中间有断开，下次先吸足气，用更小的音量唱，会更容易坚持住。';
+  else if(Math.abs(mean)>tol)msg+=mean<0?' 整体偏低一点，想着声音往上送一送。':' 整体偏高一点，放松喉咙，声音放轻一些。';
+  else if(sd>20)msg+=' 音高有点晃，试试用肚子托住气，想象唱一条平平的线。';
+  else if(hit<80)msg+=' 再来一次，你会比这次更稳。';
+  ding();coachSay(msg);setStatus(hit>=50?'完成！':'完成，继续加油',hit>=50?'good':'warm');renderPanel();
+  if(!itemDone('long')&&session)setTimeout(()=>{if(tok===state.token&&state.mode==='long')newLong(state.target)},6000);
+}
+
+// 一次尝试结束（停下来换气）时给具体建议
+function attemptFeedback(){
+  const a=state.att;if(a.n<15)return;
+  const mean=a.sum/a.n,sd=Math.sqrt(Math.max(0,a.sq/a.n-mean*mean)),tol=params(state.mode).t;
+  let tip;
+  if(Math.abs(mean)>=100){const n=Math.round(Math.abs(mean)/100);tip=mean<0?TIPS.farLow(n):TIPS.farHigh(n)}
+  else if(mean<-tol)tip=pick(state.target>=ceilTop()-1?TIPS.highLow:TIPS.low);
+  else if(mean>tol)tip=pick(TIPS.high);
+  else if(sd>tol)tip=pick(TIPS.wobble);
+  else tip=pick(TIPS.close);
+  // 文字提示也别换得太勤：同一个音 8 秒内最多换一次
+  const now=performance.now();if(now-(attemptFeedback.t||0)<8000)return;attemptFeedback.t=now;coachSay(tip);
+}
+
+// ================= 开口热身 =================
+// 只练"敢出声"：没有音准判定，任何声音都算
+const WARM=[
+  {t:'哼一哼',d:'闭上嘴，轻轻哼「嗯——」，就像想事情时随口哼的那种。多小声都可以，哼满 3 秒。',sec:3},
+  {t:'叹口气',d:'像累了一天那样，用声音叹一口气「哎——」，从高往低滑下来。怎么滑都行，没有对错。',sec:2},
+  {t:'唇颤音',d:'嘴唇放松合上，吹气让嘴唇「嘟噜噜——」地抖起来，同时带一点声音，从低往高再滑回来。做不出来就用吸管对着它哼「嗯——」，效果一样。',sec:3},
+  {t:'轻轻唱',d:'用「呜——」轻轻唱一个你觉得最舒服的音，唱满 3 秒。',sec:3},
+];
+const WARM_PRAISE=['很好！你已经出声了，这就是最难的一步。','听到了，很自然！','对，就这样，一点都不难。','漂亮，声音放出来了！'];
+function newWarm(i=0){
+  stopCues();
+  state.token++;stopDrone();state.warm={i,acc:0};state.phase='warm';state.target=null;
+  renderPanel();coachSay(WARM[i].d);setStatus('出声就算，小声也算');
+}
+function warmStepDone(){
+  const tok=++state.token;state.phase='ok';ding();const i=state.warm.i;
+  coachSay(pick(WARM_PRAISE));setStatus('完成 ✓','good');renderPanel();
+  if(i+1<WARM.length){setTimeout(()=>{if(tok===state.token)newWarm(i+1)},2600);return}
+  setTimeout(()=>{if(tok!==state.token)return;
+    coachSay('热身完成！你已经大大方方地发出声音了。接下来唱不准也没关系，敢出声就是在进步。');
+    state.warm.i=WARM.length;renderPanel();itemDone('warm')},2400);
+}
+
+// ================= 节奏 / 开口时机 =================
+let rhythmOpt=Object.assign({bpm:72,pick:null,cal:{}},saved('pitch-rhythm',{}));
+// 设备延迟补偿（秒）：校准过就用校准值，否则用浏览器报告的延迟估算
+function rComp(kind,c){const v=rhythmOpt.cal[kind];if(v!=null)return v;const lat=(c.outputLatency||0)+(c.baseLatency||0);return kind==='sing'?lat+0.035:lat}
+const rLevel=()=>rhythmOpt.pick??D.level.rhythm;
+function playClick(t,accent,vol=1){
+  const c=ensureCtx(),o=trackCue(c.createOscillator()),g=c.createGain();o.frequency.value=accent?1600:1000;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.25*vol,t+0.002);g.gain.exponentialRampToValueAtTime(0.001,t+0.06);
+  o.connect(g).connect(master);o.start(t);o.stop(t+0.08);
+}
+function newRhythm(cal=false){
+  stopCues();
+  const tok=++state.token;stopDrone();
+  const L=cal?{n:'校准',in:LEV_R[rLevel()].in,click:'all',pat:Q8}:LEV_R[rLevel()],c=ensureCtx(),spb=60/rhythmOpt.bpm,t0=c.currentTime+0.5,start=t0+4*spb;
+  if(L.in==='sing'&&!micOn){coachSay('这一级要用麦克风听你什么时候开口，先点右上角「开启麦克风」。',false);return}
+  for(let i=0;i<4;i++)playClick(t0+i*spb,i===0);
+  for(let b=0;b<8;b++)if(L.click==='all'||(L.click==='half'&&b<4))playClick(start+b*spb,b%4===0,0.8);
+  state.rh={L,spb,t0,start,end:start+8*spb,expected:L.pat.map(x=>start+x*spb),hits:[],
+    lat:rComp(L.in,c),cal,running:true,quiet:1000,res:null};
+  state.phase='rhythm';state.target=null;renderPanel();
+  let prev=-1;
+  const loop=()=>{
+    if(tok!==state.token||!state.rh)return;const now=c.currentTime,rh=state.rh,el=$('rcount');
+    if(el){
+      if(now<t0)el.textContent='准备…';
+      else if(now<start)el.textContent='预备 '+(Math.floor((now-t0)/spb)+1);
+      else if(now<rh.end){const b=(now-start)/spb;el.textContent=String(Math.floor(b)%4+1)+(L.click==='half'&&b>=4?'（心里数）':'');
+        const slot=Math.floor(b*2);if(slot!==prev){document.querySelectorAll('.rcell').forEach(x=>x.classList.toggle('now',+x.dataset.slot===slot));prev=slot}}
+      else el.textContent='';
+    }
+    if(now<rh.end+0.4)requestAnimationFrame(loop);else finishRhythm(tok);
+  };
+  requestAnimationFrame(loop);
+}
+function cancelRhythm(){state.token++;stopCues();if(state.rh)state.rh.running=false;state.rh=null;state.phase='idle';setStatus('准备好后，开始新的一轮')}
+function rhythmTap(){
+  const rh=state.rh;if(!rh||!rh.running||rh.L.in!=='tap')return;
+  rh.hits.push(ctx.currentTime-rh.lat);const p=$('tapPad');if(p){p.classList.add('hit');setTimeout(()=>p.classList.remove('hit'),90)}
+}
+document.addEventListener('keydown',e=>{if(!e.repeat&&state.mode==='rhythm'&&e.code==='Space'&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){e.preventDefault();rhythmTap()}});
+function finishRhythm(tok){
+  const rh=state.rh;rh.running=false;state.phase='done';document.querySelectorAll('.rcell').forEach(x=>x.classList.remove('now'));
+  const ex=rh.expected,hits=rh.hits.filter(h=>h>rh.start-rh.spb*0.6);
+  let gap=rh.spb;for(let i=1;i<ex.length;i++)gap=Math.min(gap,ex[i]-ex[i-1]);
+  const win=Math.min(rh.cal?0.3:0.25,gap*0.45),used=new Set();
+  const res=ex.map(e=>{let bi=-1,bd=1e9;hits.forEach((h,i)=>{if(used.has(i))return;const d=h-e;if(Math.abs(d)<=win&&Math.abs(d)<Math.abs(bd)){bd=d;bi=i}});
+    if(bi<0)return null;used.add(bi);return Math.round(bd*1000)});
+  rh.res=res;
+  const extra=hits.length-used.size,matched=res.filter(x=>x!=null),good=matched.filter(x=>Math.abs(x)<=120).length;
+  const ratio=good/ex.length,meanOff=avg(matched),sing=rh.L.in==='sing';
+  if(rh.cal){
+    if(matched.length<5){coachSay('没听清几下，再校准一次吧：跟着每一下「咔」同时'+(sing?'唱「哒」':'点按钮')+'。');renderPanel();return}
+    const sorted=[...matched].sort((a,b)=>a-b),med=sorted[sorted.length>>1];
+    rhythmOpt.cal[rh.L.in]=Math.max(0,rh.lat+med/1000);store.set('pitch-rhythm',rhythmOpt);
+    coachSay(`校准好了！你的设备${sing?'从出声到被听到':'从听到到点击'}大约有 ${Math.round(rhythmOpt.cal[rh.L.in]*1000)} 毫秒延迟，之后会自动扣掉。换耳机后记得重新校准。`);
+    rh.res=null;renderPanel();return;
+  }
+  if(rhythmOpt.pick==null)record('rhythm',ratio>=0.8?1:ratio>=0.5?0.5:0);
+  if(good){day().hits+=good;saveD();renderStats()}
+  if(session)session.hits+=good;
+  let msg=`${good}/${ex.length} 下踩在点上。`;
+  if(matched.length<ex.length/2&&hits.length>=ex.length/2)msg+=' 声音有了，就是时机还没对上。先跟着拍子在心里数「1 2 3 4」，数熟了再开口，慢一点没关系（可以把速度调到 60）。';
+  else if(matched.length<ex.length/2)msg+=sing?' 有几下没听到声音。小声的「啦」也算，大胆出一点声——这里只有你自己。':' 有几下没拍到，跟着「咔」的声音拍就好。';
+  else if(meanOff<-40)msg+=sing?' 你进得有点早。数到前一拍时先吸气，等那一拍真的到了再出声。':' 你有点着急、抢拍了。等一等，听到「咔」的瞬间再拍。';
+  else if(meanOff>40)msg+=sing?' 你进得有点晚。诀窍：在前一拍就把气吸好，那一拍一到就出声，不要等听到了再反应。':' 你稍微有点拖拍。试着提前一点点，和「咔」同时拍下去。';
+  else if(ratio>=0.8)msg+=sing?' 进得很准！你已经能"踩在点上"开口了。':' 很稳，节拍感很好！';
+  else msg+=' 大方向是对的，再来一轮会更稳。';
+  if(extra>2)msg+=sing?' 另外中间多出了几次声，只在标记的位置开口就好。':' 另外多拍了几下，只在标记的位置拍就好。';
+  coachSay(msg);renderPanel();
+  if(!itemDone('rhythm')&&session)setTimeout(()=>{if(tok===state.token&&state.mode==='rhythm')newRhythm()},7000);
+}
+
+// ================= 跟原曲练（像 KTV 导唱，慢慢拆拐杖） =================
+// 用户自己的音频文件只在本地解码播放，不上传
+const TR={vocal:null,inst:null,vName:'',iName:'',mix:1,off:0,playing:false,srcs:[],vg:null,t0:0,p0:0,A:null,B:null,
+  quiz:false,quizOn:false,quizEnd:0,nextQuiz:0,bus:null,rec:null,clips:[]};
+const fmt=t=>{t=Math.max(0,t||0);return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0')};
+function trBus(){const c=ensureCtx();if(!TR.bus){TR.bus=c.createGain();TR.bus.connect(master)}return TR.bus}
+const trDur=()=>Math.max(TR.vocal?.duration||0,TR.inst?.duration||0);
+const looping=()=>TR.A!=null&&TR.B!=null&&TR.B>TR.A+0.5;
+function trPos(){if(!TR.playing)return TR.p0;let p=TR.p0+(ctx.currentTime-TR.t0);if(looping()&&p>=TR.B)p=TR.A+((p-TR.A)%(TR.B-TR.A));return p}
+const vocalLevel=()=>TR.quizOn?0:TR.mix;
+function applyMix(){if(TR.vg)TR.vg.gain.setTargetAtTime(vocalLevel(),ctx.currentTime,0.08)}
+async function loadTrack(kind,file){
+  if(!file)return;const c=ensureCtx();
+  try{const b=await c.decodeAudioData(await file.arrayBuffer());trStop();TR[kind]=b;TR[kind==='vocal'?'vName':'iName']=file.name;TR.A=TR.B=null;TR.p0=0;
+    coachSay(kind==='vocal'?'原唱载入好了。先把原唱开到 100%，跟着唱两遍，熟了再往下调。':'伴奏载入好了。原唱和伴奏会一起播放，如果听着不同步，用「伴奏对齐」微调。',false)}
+  catch(e){coachSay('这个文件读不出来，换一个 mp3 或 m4a 试试。',false)}
+  renderPanel();
+}
+function trStopSources(){TR.srcs.forEach(x=>{try{x.stop()}catch(e){}});TR.srcs=[];TR.vg=null}
+function trPlay(from){
+  const c=ensureCtx();trStopSources();if(!trDur())return;const bus=trBus();
+  let p=from??TR.p0;if(looping()&&(p<TR.A||p>=TR.B))p=TR.A;if(p>=trDur()-0.2)p=0;
+  const when=c.currentTime+0.05;
+  const mk=(b,gain,off)=>{if(p+off>=b.duration&&!looping())return null;const x=c.createBufferSource();x.buffer=b;const g=c.createGain();g.gain.value=gain;x.connect(g).connect(bus);
+    if(looping()){x.loop=true;x.loopStart=Math.max(0,TR.A+off);x.loopEnd=Math.max(0.1,TR.B+off)}
+    const st=p+off;if(st>=0)x.start(when,st);else x.start(when-st,0);TR.srcs.push(x);return g};
+  TR.vg=TR.vocal?mk(TR.vocal,vocalLevel(),0):null;if(TR.inst)mk(TR.inst,1,TR.off/1000);
+  TR.t0=when;TR.p0=p;TR.playing=true;TR.quizOn=false;TR.nextQuiz=performance.now()+8000;renderPanel();
+}
+function trPause(){if(!TR.playing)return;TR.p0=trPos();trStopSources();TR.playing=false;TR.quizOn=false;renderPanel()}
+function trStop(){trStopSources();TR.playing=false;TR.quizOn=false;TR.p0=TR.A??0}
+function recToggle(){
+  if(TR.rec){if(TR.rec.state!=='inactive')TR.rec.stop();return}
+  if(!micOn){coachSay('录音需要先开启麦克风。');return}
+  if(!window.MediaRecorder){coachSay('当前系统不支持录音，请更新 macOS 后重试。');return}
+  const c=ctx,dest=c.createMediaStreamDestination(),bus=trBus(),source=micSrc;let mr;
+  const cleanup=()=>{try{source.disconnect(dest)}catch(e){}try{bus.disconnect(dest)}catch(e){}dest.stream.getTracks().forEach(t=>t.stop())};
+  try{
+    source.connect(dest);bus.connect(dest);mr=new MediaRecorder(dest.stream);const chunks=[];
+    mr.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+    mr.onerror=()=>{cleanup();if(TR.rec===mr)TR.rec=null;renderPanel();coachSay('录音没能完成，请检查麦克风后重试。')};
+    mr.onstop=()=>{cleanup();
+      if(chunks.length){const blob=new Blob(chunks,{type:mr.mimeType});TR.clips.unshift({url:URL.createObjectURL(blob),t:new Date().toTimeString().slice(0,5),ext:/mp4/.test(mr.mimeType)?'m4a':'webm'})}
+      if(TR.rec===mr)TR.rec=null;renderPanel();coachSay('录好了，听一听。找出一两句最想改的，用 A-B 循环单独练就够了。')};
+    mr.start();TR.rec=mr;renderPanel();
+  }catch(e){cleanup();TR.rec=null;coachSay('无法开始录音，请检查麦克风后重试。');renderPanel()}
+}
+setInterval(()=>{
+  if(!ctx||state.mode!=='track')return;
+  if(TR.playing&&!looping()&&trPos()>=trDur()){trStop();renderPanel();coachSay('唱完一遍了！觉得稳了，就把原唱再调小一档。',false);return}
+  if(TR.playing&&TR.quiz&&TR.vocal&&TR.mix>0){const now=performance.now();
+    if(!TR.quizOn&&now>TR.nextQuiz){TR.quizOn=true;TR.quizEnd=now+4000;applyMix();setStatus('现在你自己唱！','warm')}
+    else if(TR.quizOn&&now>TR.quizEnd){TR.quizOn=false;TR.nextQuiz=now+rand(7000,12000);applyMix();setStatus('原唱回来了——你还在调上吗？','good')}}
+  const t=$('trTime');if(t)t.textContent=fmt(trPos())+' / '+fmt(trDur());
+  const sk=$('trSeek');if(sk&&!sk.matches(':active'))sk.value=trPos();
+},200);
+
+// ================= 今日练习 =================
+const PLANS={
+  full:[{mode:'warm',n:1,t:'开口热身'},{mode:'long',n:1,t:'长音'},{mode:'scale',n:1,t:'音阶课程'},{mode:'single',n:4,t:'单音模唱'},{mode:'interval',n:3,t:'音程'}],
+  short:[{mode:'warm',n:1,t:'开口热身'},{mode:'scale',n:1,t:'音阶课程'}],
+};
+const INTRO={
+  warm:'先热热身。哼一哼就行，任何声音都算。',
+  long:'下面唱长音，一口气唱平。',
+  single:'下面听一个音，跟着唱出来。',
+  scale:'下面是音阶课程：先听一遍，再连着唱下来。',
+  interval:'下面练音程，从根音跳到目标音。',
+  rhythm:'下面练节奏：前一拍吸气，该进的那一拍出声。',
+  song:'最后唱一段歌，先听整句。',
+};
+async function startSession(kind){
+  if(!micOn&&!(await startMic()))return;
+  session={kind,plan:PLANS[kind],i:0,count:0,hits:0,helped:0,later:0,cents:0,n:0,fast:null,longs:[],longBest:false,ups:[],sec0:day().sec};
+  renderHero();switchMode(session.plan[0].mode,true);
+}
+function itemDone(mode){
+  if(!session||session.plan[session.i]?.mode!==mode)return false;
+  const completedSession=session;
+  session.count++;renderHero();
+  if(session.count<session.plan[session.i].n)return false;
+  session.i++;session.count=0;renderHero();
+  if(session.i>=session.plan.length){setTimeout(()=>{if(session===completedSession)endSession()},1500);return true}
+  setTimeout(()=>{if(session===completedSession&&session.plan[session.i])switchMode(session.plan[session.i].mode,true)},2400);
+  return true;
+}
+function endSession(){
+  if(!session)return;const s=session;session=null;state.token++;stopCues();stopDrone();state.phase='idle';state.paused=false;state.target=null;renderHero();renderActs();
+  const mins=Math.max(1,Math.round((day().sec-s.sec0)/60));
+  const past=Object.entries(D.days).filter(([k,v])=>k!==today()&&v.n>0).sort().slice(-14).map(([,v])=>v.cents/v.n);
+  const nowAvg=s.n?s.cents/s.n:null,pastAvg=past.length?avg(past):null;
+  const items=[];
+  if(s.hits)items.push(`今天唱准了 <b>${s.hits}</b> 个音，开口约 <b>${mins}</b> 分钟。`);
+  else items.push(`今天开口练了约 <b>${mins}</b> 分钟。能坐下来练，就已经赢了。`);
+  s.ups.forEach(u=>items.push(u));
+  if(nowAvg!=null&&pastAvg!=null&&nowAvg<pastAvg-1)items.push(`唱准时平均只偏 <b>${nowAvg.toFixed(0)}</b> 音分，比你前些天的平均准了 <b>${(pastAvg-nowAvg).toFixed(0)}</b> 音分。`);
+  else if(nowAvg!=null)items.push(`唱准时平均偏差 <b>${nowAvg.toFixed(0)}</b> 音分${pastAvg!=null?'，和平时差不多——稳定本身就是进步':''}。`);
+  if(s.fast!=null)items.push(`最快一次只用了 <b>${s.fast.toFixed(1)}</b> 秒就找到音。`);
+  if(s.longBest)items.push('长音创了新纪录，是你唱得最稳的一次。');
+  if(s.later)items.push(`有 ${s.later} 个音先放了一放，它们以后还会出现，多见几次就熟了。`);
+  const close=pick(['耳朵是慢慢变尖的，今天又往前走了一小步。明天见！','每天一点点，比偶尔练很久有用得多。明天见！','进步常常是一阵一阵的，偶尔停滞也正常。明天见！']);
+  $('modalBody').innerHTML=`<h2>今天练完啦</h2><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul><p>${close}</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mProg">看我的进步</button><button class="btn primary" id="mClose">好的</button></div>`;
+  $('modal').classList.remove('hidden');$('mClose').focus();
+  $('mClose').onclick=()=>{$('modal').classList.add('hidden');switchMode('home')};
+  $('mProg').onclick=()=>{$('modal').classList.add('hidden');switchMode('progress')};
+}
+
+// ================= 界面 =================
+function weekHTML(){
+  const now=new Date(),dow=(now.getDay()+6)%7,mon=new Date(now);mon.setDate(now.getDate()-dow);let n=0,h='';
+  for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const v=D.days[dkey(d)];const y=v&&v.sec>=30;if(y)n++;h+=`<span class="week-day"><i class="${y?'y':''}" title="周${'一二三四五六日'[i]}${y?'，已练习':''}"></i><span>${'一二三四五六日'[i]}</span></span>`}
+  return `<div class="week" aria-label="本周练习 ${n} 天，目标 4 天">${h}<span class="week-total">本周 ${n} / 4 天${n>=4?' · 已达成':''}</span></div>`;
+}
+function renderHero(){
+  const h=$('hero');document.body.classList.toggle('session-on',!!session);
+  if(!session){
+    const done=(D.days[today()]?.sec||0)>=60;
+    h.innerHTML=`<svg class="hero-art" viewBox="0 0 400 250" fill="none" aria-hidden="true">${[0,13,26,39,52].map(y=>`<path d="M0 ${170+y}C160 ${200+y} 150 ${-30+y} 400 ${20+y}" stroke="currentColor"/>`).join('')}<path d="M125 161v-38m64-2V81m50 2V47" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><ellipse cx="120" cy="163" rx="6" ry="4"/><ellipse cx="184" cy="123" rx="6" ry="4"/><ellipse cx="234" cy="85" rx="6" ry="4"/></g></svg><div class="hero-copy"><div class="eyebrow">TODAY’S PRACTICE</div><div class="hero-t">${done?'今天的声音，又进步了一点':'今天，也为自己唱一会儿'}</div><p class="hero-desc">${done?'想再来一轮也可以，按自己的节奏慢慢练。':'10 分钟，跟着引导慢慢找到你的声音。'}</p>${weekHTML()}</div>
+      <div class="hero-r"><button class="btn primary" id="goFull">开始今天的练习 ${uiIcon('arrow')}</button><button class="btn" id="goShort">只有 3 分钟</button></div>`;
+    $('goFull').onclick=()=>startSession('full');$('goShort').onclick=()=>startSession('short');
+  }else{
+    h.innerHTML=`<div><div class="lbl">今日练习进行中</div><div class="steps">${session.plan.map((s,i)=>`<span class="step ${i<session.i?'done':i===session.i?'cur':''}">${s.t}${i===session.i?` ${session.count}/${s.n}`:''}</span>`).join('')}</div></div>
+      <div class="hero-r"><button class="btn" id="goNext">${session.i<session.plan.length-1?'跳过这一步':'结束'}</button><button class="btn" id="goEnd">今天就到这里</button></div>`;
+    $('goEnd').onclick=endSession;
+    $('goNext').onclick=()=>{session.i++;session.count=0;if(session.i>=session.plan.length)endSession();else{renderHero();switchMode(session.plan[session.i].mode,true)}};
+  }
+}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),3200)}
+
+function switchMode(m,fromSession=false){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.mode===m));
+  state.mode=m;ensureCtx();if(m!=='progress'&&m!=='home')store.set('pitch-mode',m);
+  if(fromSession&&INTRO[m]){coachSay(INTRO[m],true);restartMode(Math.min(7000,1500+INTRO[m].length*200))}else restartMode();
+  // 换到另一项练习：回到顶部，内容淡入
+  if(window.scrollY>0)window.scrollTo({top:0,behavior:'smooth'});
+  [['mainArea',''],['panel','late']].forEach(([id,cls])=>{const e=$(id);if(!e)return;e.classList.remove('enter','late');void e.offsetWidth;e.classList.add('enter');if(cls)e.classList.add(cls)});
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  if(session&&t.dataset.mode!==session.plan[session.i]?.mode&&t.dataset.mode!=='progress'){session=null;renderHero()}
+  switchMode(t.dataset.mode)});
+
+function restartMode(delay=0){
+  stopCues();
+  const tok=++state.token;stopDrone();state.phase='idle';state.paused=false;state.target=null;state.seq=[];state.labels=[];
+  const isProg=state.mode==='progress'||state.mode==='home',noPitch=isProg||state.mode==='rhythm';
+  $('mainArea').classList.toggle('hidden',noPitch);$('kbCard').classList.toggle('hidden',noPitch||state.mode==='warm'||state.mode==='track');
+  if(state.mode!=='track'){if(TR.playing)trPause();if(TR.rec&&TR.rec.state!=='inactive')TR.rec.stop()}
+  renderPanel();
+  const go=()=>{if(tok!==state.token)return;
+    if(state.mode==='single')newSingle();else if(state.mode==='scale')newScale();
+    else if(state.mode==='interval')newInterval();else if(state.mode==='long')newLong();
+    else if(state.mode==='song')startPhrase();
+    else if(state.mode==='warm')newWarm(0);
+    else if(state.mode==='rhythm'){if(session)newRhythm();else coachSay('选好练习内容，点「开始一轮」。先听 4 下预备拍，再在标记的位置出声。',false)}
+    else if(state.mode==='free')setStatus(micOn?'随便唱，看看你的音高曲线':'先开启麦克风');};
+  if(!isProg){if(delay&&state.mode!=='rhythm'){setStatus('\u00a0');setTimeout(go,delay)}else go()}
+  renderActs();
+}
+
+function levelHTML(mode){
+  if(!settings.auto)return '';
+  const k=levKey(mode),p=params(mode),dots=D.recent[k].slice(-8);
+  const pad=Array(Math.max(0,8-dots.length)).fill('<i></i>').join('');
+  return `<div class="lv">难度 <b>第 ${D.level[k]+1} 级</b> · ${GN[p.g]} · 绿区 ±${p.t} 音分 · 每个音稳住 ${(holdMs()/1000).toFixed(1)} 秒
+    <span class="dots" title="绿=自己唱准 橙=在帮助下唱准 灰=先放一放">${dots.map(x=>`<i class="${x>=1?'g':x>0?'h':''}"></i>`).join('')}${pad}</span>
+    <span class="hint">最近 8 个大部分是绿点就会升级</span></div>`;
+}
+function trackHTML(){
+  const has=trDur()>0,mixes=[[1,'原唱 100%'],[0.5,'50%'],[0.2,'20%'],[0,TR.inst?'关（只剩伴奏）':'关']];
+  return `<p>用你自己手机或电脑里的歌（比如《晴天》的原唱和伴奏，mp3 / m4a 都行），像 KTV 导唱那样练：先跟着原唱唱，再把原唱一档一档调小，最后只剩伴奏。文件只在你电脑上播放，不会上传。请戴耳机。</p>
+    <div class="file">原唱：<input type="file" accept="audio/*" id="fVocal"> <span class="hint">${esc(TR.vName)}</span></div>
+    <div class="file">伴奏：<input type="file" accept="audio/*" id="fInst"> <span class="hint">${esc(TR.iName)||'可选，有伴奏才能把原唱完全关掉'}</span></div>
+    ${has?`
+    <div class="trrow"><button class="btn primary" id="trPlay">${TR.playing?'暂停':'播放'}</button><button class="btn" id="trBack">退 5 秒</button>
+      <input type="range" id="trSeek" min="0" max="${trDur().toFixed(1)}" step="0.1" value="${trPos()}"><span class="hint" id="trTime">${fmt(trPos())} / ${fmt(trDur())}</span></div>
+    ${TR.vocal?`<div class="trrow"><span class="hint">原唱音量</span><span class="seg">${mixes.map(([v,l])=>`<button data-mix="${v}" class="${TR.mix===v?'on':''}">${l}</button>`).join('')}</span>
+      <label class="hint"><input type="checkbox" id="trQuiz" ${TR.quiz?'checked':''}> 接龙测试（原唱随机消失 4 秒，看你能不能自己接上）</label></div>`:''}
+    <div class="trrow"><span class="hint">循环练一句</span><button class="btn sm" id="trA">从这里开始 A</button><button class="btn sm" id="trB">到这里结束 B</button>
+      ${looping()?`<span class="hint">正在循环 ${fmt(TR.A)}–${fmt(TR.B)}</span><button class="btn sm" id="trAB0">取消循环</button>`:TR.A!=null?`<span class="hint">起点 ${fmt(TR.A)}，播到这句结尾再点 B</span>`:''}</div>
+    ${TR.vocal&&TR.inst?`<div class="trrow"><span class="hint">伴奏对齐 ${TR.off>0?'+':''}${TR.off} 毫秒</span><button class="btn sm" id="trOm">伴奏提前</button><button class="btn sm" id="trOp">伴奏推后</button></div>`:''}
+    `:''}
+    <div class="trrow"><button class="btn ${TR.rec?'rec':''}" id="trRec">${TR.rec?'● 录音中，点这里停止':'录一段（连伴奏一起）'}</button><span class="hint">录音只保存在这个页面里，关掉就没了；想留着就点"下载"。</span></div>
+    <div class="clips">${TR.clips.map((c,i)=>`<div><span class="hint">${c.t}</span><audio controls src="${c.url}"></audio><a class="hint" href="${c.url}" download="我的录音-${i+1}.${c.ext}">下载</a></div>`).join('')}</div>
+    <p class="hint" style="margin-top:10px">建议顺序：原唱 100% 跟唱两遍 → 50% → 20% → 关掉。每一档能跟稳了再往下。总跑的那一句，用 A-B 循环单独练；右上方的曲线会画出你唱的音高。</p>`;
+}
+function scaleHTML(){
+  const st=scaleOpt.stage,c=courseOf(st),rec=recommendedStage(),pr=(D.course||{}).passes||{},cs=state.course;
+  const stages=COURSE.map((x,i)=>`<button data-stage="${x.id}" class="${x.id===st?'cur':''} ${(pr[x.id]||0)>=2?'done':''}">${i+1}. ${x.n}${x.id===rec&&x.id!==st?' · 推荐':''}</button>`).join('')+`<button data-stage="free" class="${st==='free'?'cur':''}">自由音阶</button>`;
+  let body;
+  if(c){
+    const roots=courseRoots(c),top=Math.max(...roots)+Math.max(...c.pat);
+    body=`<p><b>怎么练：</b>先听一遍音型，然后<b>连着唱下来</b>，不用等每个音的提示。每个音落稳一小会儿，就自动跳到下一个。<br><b>为什么练：</b>${c.why}<br><b>怎么唱：</b>${c.tip}</p>
+    <div class="ctrls">
+      <span class="hint">从 <b>${nameOf(roots[0])}</b> 开始，每遍升${roots.length>1&&roots[1]-roots[0]===2?'一个全音':'半音'}，最高唱到 <b>${nameOf(top)}</b>（舒适高音 +1），一共 ${roots.length} 遍</span>
+      <button class="btn sm" id="sLow">起点低一点</button><button class="btn sm" id="sHigh">起点高一点</button>
+      <label class="hint">爬法 <select id="sDir"><option value="updown" ${scaleOpt.dir==='updown'?'selected':''}>爬上去再下来</option><option value="up" ${scaleOpt.dir==='up'?'selected':''}>只往上爬</option></select></label>
+      <button class="btn" id="bRestart">重新开始这一轮</button>
+    </div>
+    ${cs&&cs.c===c?`<div class="hint" style="margin-top:10px">第 ${cs.rep+1} / ${cs.roots.length} 遍 · 这一遍从 ${nameOf(cs.roots[cs.rep])} 开始</div>`:''}`;
+  }else{
+    body=`<p>选一个调，从主音唱上去再唱下来。</p><div class="ctrls">
+      <label class="hint">调 <select id="sKey">${NAMES.map((n,i)=>`<option value="${i}" ${i===scaleOpt.key?'selected':''}>${n}</option>`).join('')}</select></label>
+      <label class="hint">音阶 <select id="sType">${Object.entries(SCALES).map(([k,v])=>`<option value="${k}" ${k===scaleOpt.type?'selected':''}>${v.n}</option>`).join('')}</select></label>
+      <button class="btn" id="bRestart">从头开始</button></div>`;
+  }
+  return `${levelHTML('scale')}<div class="phrases" style="margin:0 0 14px">${stages}</div>${body}<div class="chips" id="chips"></div>`;
+}
+function warmHTML(){
+  const w=state.warm||{i:0},cur=WARM[Math.min(w.i,WARM.length-1)],fin=w.i>=WARM.length;
+  return `<p>这一步只为了让你敢出声：不看音准，任何声音都算过。</p>
+    <div class="warm-steps">${WARM.map((x,i)=>`<span class="step ${i<w.i?'done':i===w.i?'cur':''}">${i+1}. ${x.t}</span>`).join('')}</div>
+    <div class="warm-big">${fin?'热身完成 ✓':esc(cur.d)}</div>
+    <div class="ctrls">${fin?'<button class="btn primary" id="bWarmAgain">再来一遍</button>':'<button class="btn" id="bWarmSkip">跳过这一步</button>'}</div>
+    <div class="safe">小声也算 · 跑调也算 · 声音不会被录下或上传，这里只有你自己</div>`;
+}
+function rhythmHTML(){
+  const lv=rLevel(),L=LEV_R[lv],rh=state.rh&&state.rh.L===L?state.rh:null,auto=rhythmOpt.pick==null;
+  const dots=D.recent.rhythm.slice(-8),pad=Array(Math.max(0,8-dots.length)).fill('<i></i>').join('');
+  let cells='';
+  for(let sl=0;sl<16;sl++){
+    const beat=sl/2,ti=L.pat.indexOf(beat),isT=ti>=0;let cls='rcell'+(sl%2?' ti':''),sub=isT?(L.in==='sing'?'啦':'拍'):'';
+    if(isT&&rh&&rh.res){const r=rh.res[ti];if(r==null){cls+=' miss';sub='没有'}else if(Math.abs(r)<=60){cls+=' g';sub='正好'}else if(Math.abs(r)<=120){cls+=' ok';sub=(r<0?'早':'晚')+Math.abs(r)}else{cls+=' miss';sub=(r<0?'早':'晚')+Math.abs(r)}}
+    cells+=`<div class="${cls}" data-slot="${sl}" style="${isT?'font-weight:700':''}">${sl%2?'&':Math.floor(beat)%4+1}<small>${sub}</small></div>`;
+  }
+  return `<div class="lv">节奏 <b>第 ${lv+1} 级</b> · ${L.n} ${auto?`<span class="dots">${dots.map(x=>`<i class="${x>=1?'g':x>0?'h':''}"></i>`).join('')}${pad}</span>`:''}</div>
+    <p>练"什么时候该出声"。先听 4 下预备拍，然后在<b>加粗的格子</b>出声。诀窍：<b>前一拍吸气，该进的那一拍出声</b>。${L.in==='sing'?'唱「啦」或「哒」，清脆短促最好判断；请戴耳机，免得麦克风把拍子声当成你。':'点下面的大按钮，或者按空格键。'}</p>
+    <div class="ctrls">
+      <label class="hint">练习内容 <select id="rPick"><option value="auto" ${auto?'selected':''}>自动（跟着我的进度）</option>${LEV_R.map((x,i)=>`<option value="${i}" ${!auto&&i===lv?'selected':''}>第 ${i+1} 级：${x.n}</option>`).join('')}</select></label>
+      <label class="hint">速度 <select id="rBpm">${[60,72,84,96].map(b=>`<option ${b===rhythmOpt.bpm?'selected':''}>${b}</option>`).join('')}</select> 拍/分</label>
+      <button class="btn primary" id="bRStart" ${state.phase==='rhythm'?'disabled':''}>${rh&&rh.res?'再来一轮':'开始一轮'}</button>
+      <button class="btn" id="bRCal" ${state.phase==='rhythm'?'disabled':''}>校准延迟</button>
+    </div>
+    <div class="hint" style="margin-top:6px">${rhythmOpt.cal[L.in]!=null?`已校准（${L.in==='sing'?'唱':'拍'}）：${Math.round(rhythmOpt.cal[L.in]*1000)} 毫秒。`:`<b style="color:var(--warm)">建议先校准一次：</b>`}校准时跟着每一下「咔」同时${L.in==='sing'?'唱「哒」':'点按钮'}，8 下就好。第一次用、或者换了耳机时做一次，判定会更准。</div>
+    <div class="big" id="rcount" style="margin-top:12px;min-height:50px"></div>
+    <div class="rcells">${cells}</div>
+    ${L.in==='tap'?'<button class="tap" id="tapPad">拍（或按空格）</button>':'<div class="hint">我会通过麦克风听你是什么时候开口的。</div>'}`;
+}
+function songHTML(){
+  const song=curSong(),done=state.songDone||{};
+  const opts=allSongs().map(s=>`<option value="${esc(s.id)}" ${s.id===song.id?'selected':''}>${esc(s.n)}（${esc(s.lv)}）</option>`).join('');
+  const lyric=song.ph[songSel.phi]?song.ph[songSel.phi][1]:'';
+  return `${levelHTML('song')}<p>先听整句，再一个音一个音唱。调会自动移到你的音域里——这一步就解决了"原调不适合我"的问题。</p>
+    <div class="ctrls">
+      <label class="hint">歌曲 <select id="songSel">${opts}</select></label>
+      <span class="hint">${songKeyName(song)}</span>
+      <button class="btn sm" id="bDown">降调</button><button class="btn sm" id="bUp">升调</button>
+      
+      ${song.custom?'<button class="btn sm" id="bDel">删除这首</button>':''}
+    </div>
+    <div class="lyric">${esc(lyric)}</div>
+    <div class="chips" id="chips"></div>
+    <div class="phrases">${song.ph.map((p,i)=>`<button data-phi="${i}" class="${i===songSel.phi?'cur':''} ${done[song.id+':'+i]?'done':''}">${i+1}. ${esc(p[1])}</button>`).join('')}</div>
+    <details class="import" id="impBox" ${state.impOpen?'open':''}>
+      <summary>导入你自己常唱的歌（粘贴简谱）</summary>
+      <p style="margin-top:4px">在网上搜"歌名 简谱"（比如"晴天 简谱"），把你最想唱准的那段（建议先从副歌开始）<b>直接整段复制粘贴</b>进来就行：调号、拍号、和弦、小节线我会自动去掉，歌词行会自动配到上一行音符。手写的话：每行一句，高音在数字后加 <b>'</b>，低音加 <b>,</b>，升降号写在前面如 <b>#4</b>、<b>b7</b>。不用管节奏，只练音准。</p>
+      <input type="text" id="impName" placeholder="歌名" style="width:200px;margin-bottom:6px">
+      <label class="hint" style="margin-left:8px">「.」的意思 <select id="impDot"><option value="dot">附点（忽略）</option><option value="low">低八度</option></select></label>
+      <textarea id="impText" placeholder="3 5 6 1' 6 5 / 第一句歌词&#10;5 3 2 3 1 / 第二句歌词&#10;6, 1 2 3 2 1 6, 5,"></textarea>
+      <div class="hint" id="impPrev" style="margin:6px 0"></div>
+      <div class="ctrls"><button class="btn primary" id="bImport">导入并开始练</button></div>
+    </details>`;
+}
+const HOME_GROUPS=[
+  ['基础',[['warm','开口热身','哼一哼、唇颤音，先让声音醒过来'],['long','长音稳定','一口气唱平，练稳'],['single','单音模唱','听一个音，跟着唱准']]],
+  ['音阶与音程',[['scale','音阶课程','七个阶段，从三音到八度'],['interval','音程','从一个音跳到另一个音']]],
+  ['唱歌与节奏',[['song','唱歌','一句一句唱准喜欢的歌'],['track','跟原曲练','原唱一档一档调小'],['rhythm','节奏','在对的时刻开口']]],
+];
+function homeHTML(){
+  const last=saved('pitch-mode',null),d=day();
+  const cont=last&&MODE_NAME[last]&&last!=='home'?`<button class="home-continue" data-go="${last}"><span class="hint">继续上次</span><b>${last==='scale'&&scaleOpt.stage!=='free'?'音阶课程 · '+(courseOf(scaleOpt.stage)?.n||''):MODE_NAME[last]}</b>${uiIcon('arrow')}</button>`:'';
+  return `${cont}
+    <div class="home-stats"><div><b>${Math.floor(d.sec/60)}</b><span>今天开口（分钟）</span></div><div><b>${d.hits}</b><span>今天唱准</span></div><div><b>${nameOf(ceilTop())}</b><span>舒适高音</span></div></div>
+    ${HOME_GROUPS.map(([t,items])=>`<div class="home-group"><h3>${t}</h3><div class="home-cards">${items.map(([m,n,desc])=>`<button class="home-card" data-go="${m}">${uiIcon(m)||''}<b>${n}</b><span>${desc}</span></button>`).join('')}</div></div>`).join('')}`;
+}
+function markPanelMore(){const p=$('panel');if(!p)return;
+  // 舞台最矮不能矮过左边读数区的内容，否则按钮会被切掉
+  const d=document.querySelector('.display');
+  if(d&&d.offsetParent){const cs=getComputedStyle(d),kids=[...d.children].filter(k=>k.offsetParent);
+    const h=kids.reduce((t,k)=>t+k.offsetHeight,0)+(parseFloat(cs.rowGap)||0)*Math.max(0,kids.length-1)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+2;
+    document.documentElement.style.setProperty('--stage-min',Math.max(240,Math.ceil(h))+'px')}p.classList.toggle('more',p.scrollHeight-p.clientHeight-p.scrollTop>4)}
+addEventListener('resize',()=>requestAnimationFrame(markPanelMore));
+function renderPanel(){
+  renderModeHeading();const p=$('panel'),m=state.mode;let h='';p.dataset.mode=m;
+  if(m==='single'){
+    const recent=D.recent.single.slice(-8);
+    h=`<h3>练习方式</h3><p>先听提示音，用「啊」或「嗯」跟着唱，在绿色区间稳住一会儿。找不到时，我会再弹一遍，或陪你一起唱。</p><div class="lv">${settings.auto?'自动调难度':'手动难度'} · 每个音稳住 ${(holdMs()/1000).toFixed(1)} 秒</div><div class="recent-block"><div class="hint">最近 8 次练习结果</div><span class="dots" title="绿：自己唱准；橙：在帮助下唱准；灰：先放一放。大部分是绿点就会升级。">${recent.map(x=>`<i class="${x>=1?'g':x>0?'h':''}"></i>`).join('')}${'<i></i>'.repeat(8-recent.length)}</span></div>`;
+  }else if(m==='scale'){
+    h=scaleHTML();
+  }else if(m==='interval'){
+    h=`${levelHTML(m)}<p>先唱根音，再从根音"跳"到目标音。这是离开原唱也能找到下一个音的核心能力。</p>
+    <div class="checks">${INTERVALS.map(([s,n])=>`<label><input type="checkbox" data-s="${s}" ${ivOpt.set.includes(s)?'checked':''}>${n}</label>`).join('')}</div>
+    <div class="ctrls">
+      <label class="hint">方向 <select id="ivDir"><option value="up">上行</option><option value="down">下行</option><option value="mix">随机</option></select></label>
+      <button class="btn" id="bTgt">偷听目标音</button>
+    </div><div class="hint" id="ivHint" style="margin-top:8px"></div><div class="chips" id="chips"></div>`;
+  }else if(m==='song'){h=songHTML()}
+  else if(m==='warm'){h=warmHTML()}
+  else if(m==='rhythm'){h=rhythmHTML()}
+  else if(m==='track'){h=trackHTML()}
+  else if(m==='long'){
+    const r=state.long.res;
+    h=`<p>选一个舒服的音，一口气平稳地唱满。看右边曲线是不是一条直线——气稳了，音才稳。</p>
+    <div class="ctrls">
+      <label class="hint">时长 <select id="lDur">${[5,8,12].map(d=>`<option ${d===state.long.dur?'selected':''}>${d}</option>`).join('')}</select> 秒</label>
+      <button class="btn" id="bAgain">再来一次</button><button class="btn" id="bNew">换一个音</button>
+      ${D.best.longSd!=null?`<span class="hint">你的最稳纪录：抖动 ${D.best.longSd} 音分</span>`:''}
+    </div>
+    ${r?`<div class="result"><div><b>${r.hit}%</b><span>时间在绿区内</span></div><div><b>${r.mean>0?'+':''}${r.mean}</b><span>平均偏差（音分）</span></div><div><b>${r.sd}</b><span>抖动（越小越稳）</span></div></div>`:''}`;
+  }else if(m==='free'){
+    const f=state.free;
+    h=`<p>自由唱，看曲线。从舒服的低音慢慢滑到舒服的高音，可以测出你的音域。</p>
+    <div class="ctrls"><span>这次唱到：<b>${f.lo!=null?nameOf(f.lo):'—'}</b> ~ <b>${f.hi!=null?nameOf(f.hi):'—'}</b></span>
+    <button class="btn" id="bSetRange" ${f.lo==null||f.hi-f.lo<9?'disabled':''}>设为我的练习音域</button><button class="btn" id="bClear">清空</button></div>
+    <p class="hint" style="margin-top:8px">练习音域会两头各收一个半音；最上面几个音会当作"挑战高音"，平时少出现。</p>`;
+  }else if(m==='home'){h=homeHTML()}
+  else{h=progressHTML()}
+  p.innerHTML=h;
+  const on=(id,fn)=>{const e=$(id);if(e)e.onclick=fn};
+  on('bReplay',()=>replay(state.target));
+  on('bSkip',()=>{if(m==='interval')newInterval();else{state.token++;stopDrone();state.done[state.idx]=-1;advance()}});
+  on('bRestart',newScale);
+  p.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>{scaleOpt.stage=b.dataset.stage;scaleOpt.startAdj=0;store.set('pitch-scale',scaleOpt);newScale()});
+  on('sLow',()=>{scaleOpt.startAdj--;store.set('pitch-scale',scaleOpt);newScale()});on('sHigh',()=>{scaleOpt.startAdj++;store.set('pitch-scale',scaleOpt);newScale()});
+  if($('sDir'))$('sDir').onchange=e=>{scaleOpt.dir=e.target.value;store.set('pitch-scale',scaleOpt);newScale()};on('bRoot',()=>replay(state.seq[0]));on('bTgt',()=>{state.help=Math.max(state.help,1);replay(state.seq[1])});
+  on('bAgain',()=>newLong(state.target));on('bNew',()=>{state.long.lastTarget=null;newLong()});
+  on('bClear',()=>{state.free={lo:null,hi:null,run:[]};renderPanel()});
+  on('bSetRange',()=>{const f=state.free;Object.assign(settings,{min:clamp(f.lo+1,36,77),max:clamp(f.hi-1,43,84),preset:'custom'});D.top=null;saveD();applySettingsUI();saveSettings();buildKeyboard();
+    coachSay(`好了，练习音域设为 ${nameOf(settings.min)} 到 ${nameOf(settings.max)}。之后出的音都会在你舒服的范围里。`,false)});
+  on('bPhrase',()=>startPhrase());
+  on('bUp',()=>{songSel.adj++;startPhrase()});on('bDown',()=>{songSel.adj--;startPhrase()});
+  on('bImport',importSong);
+  p.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>switchMode(b.dataset.go));
+  if($('impText')){$('impText').oninput=renderImportPreview;$('impDot').onchange=renderImportPreview}
+  on('bWarmSkip',()=>{state.warm.acc=1e9});on('bWarmAgain',()=>newWarm(0));
+  if($('fVocal'))$('fVocal').onchange=e=>loadTrack('vocal',e.target.files[0]);
+  if($('fInst'))$('fInst').onchange=e=>loadTrack('inst',e.target.files[0]);
+  on('trPlay',()=>TR.playing?trPause():trPlay());on('trBack',()=>{const p=Math.max(0,trPos()-5);TR.playing?trPlay(p):(TR.p0=p,renderPanel())});
+  if($('trSeek'))$('trSeek').onchange=e=>{const p=+e.target.value;TR.playing?trPlay(p):(TR.p0=p,renderPanel())};
+  p.querySelectorAll('[data-mix]').forEach(b=>b.onclick=()=>{TR.mix=+b.dataset.mix;applyMix();renderPanel()});
+  if($('trQuiz'))$('trQuiz').onchange=e=>{TR.quiz=e.target.checked;TR.nextQuiz=performance.now()+5000;if(!TR.quiz){TR.quizOn=false;applyMix();setStatus('原唱已恢复')}};
+  on('trA',()=>{const p=trPos();TR.A=p;TR.B=null;TR.playing?trPlay(p):renderPanel()});
+  on('trB',()=>{const b=trPos();if(TR.A!=null&&b>TR.A+0.5){TR.B=b;trPlay(TR.A)}else coachSay('先在这句开头点 A，播到结尾再点 B。',false)});
+  on('trAB0',()=>{const p=trPos();TR.A=TR.B=null;TR.playing?trPlay(p):renderPanel()});
+  on('trOm',()=>{TR.off+=50;if(TR.playing)trPlay(trPos());else renderPanel()});on('trOp',()=>{TR.off-=50;if(TR.playing)trPlay(trPos());else renderPanel()});
+  on('trRec',recToggle);
+  on('bRStart',()=>newRhythm());on('bRCal',()=>{coachSay('校准：听 4 下预备拍后，跟着每一下「咔」同时'+(LEV_R[rLevel()].in==='sing'?'唱「哒」':'点按钮')+'。',false);newRhythm(true)});
+  if($('tapPad'))$('tapPad').onpointerdown=e=>{e.preventDefault();rhythmTap()};
+  if($('rPick'))$('rPick').onchange=e=>{rhythmOpt.pick=e.target.value==='auto'?null:+e.target.value;store.set('pitch-rhythm',rhythmOpt);cancelRhythm();renderPanel()};
+  if($('rBpm'))$('rBpm').onchange=e=>{rhythmOpt.bpm=+e.target.value;store.set('pitch-rhythm',rhythmOpt);cancelRhythm();renderPanel()};
+  on('bDel',()=>{D.songs=D.songs.filter(s=>s.id!==songSel.id);saveD();songSel={id:'star',phi:0,adj:0};startPhrase()});
+  if($('songSel'))$('songSel').onchange=e=>{songSel={id:e.target.value,phi:0,adj:0};startPhrase()};
+  p.querySelectorAll('[data-phi]').forEach(b=>b.onclick=()=>{songSel.phi=+b.dataset.phi;startPhrase()});
+  if($('sKey'))$('sKey').onchange=e=>{scaleOpt.key=+e.target.value;store.set('pitch-scale',scaleOpt);newScale()};
+  if($('sType'))$('sType').onchange=e=>{scaleOpt.type=e.target.value;store.set('pitch-scale',scaleOpt);newScale()};
+  if($('ivDir')){$('ivDir').value=ivOpt.dir;$('ivDir').onchange=e=>{ivOpt.dir=e.target.value;store.set('pitch-iv',ivOpt);newInterval()}}
+  p.querySelectorAll('[data-s]').forEach(c=>c.onchange=()=>{ivOpt.set=[...p.querySelectorAll('[data-s]:checked')].map(x=>+x.dataset.s);store.set('pitch-iv',ivOpt)});
+  if($('lDur'))$('lDur').onchange=e=>{state.long.dur=+e.target.value};
+  if(m==='progress')drawProgress();
+  renderChips();
+  if(!p.onscroll)p.onscroll=markPanelMore;
+  if($('impBox'))$('impBox').ontoggle=e=>{state.impOpen=e.target.open;requestAnimationFrame(markPanelMore);if(e.target.open)e.target.scrollIntoView({block:'nearest',behavior:'smooth'})};requestAnimationFrame(markPanelMore);
+}
+function renderChips(){
+  renderActs();const c=$('chips');
+  if(c)c.innerHTML=state.labels.map((l,i)=>`<span data-i="${i}" title="点一下听这个音" class="chip ${state.done[i]===1?'done':state.done[i]===-1?'later':''} ${i===state.idx&&state.phase!=='done'?'cur':''}">${l}</span>`).join('');
+  if(c)c.querySelectorAll('[data-i]').forEach(x=>x.onclick=()=>replay(state.seq[+x.dataset.i]));
+  const h=$('ivHint');if(h&&state.iv)h.textContent=`${state.iv.name}${state.iv.dir==='up'?'上行':'下行'}${state.iv.hint?'　记忆小窍门：'+state.iv.hint:''}`;
+}
+
+// ---------- 我的进步 ----------
+function progressHTML(){
+  const ds=Object.entries(D.days).filter(([,v])=>v.sec>=30).sort();
+  const totalMin=Math.round(ds.reduce((a,[,v])=>a+v.sec,0)/60),totalHits=ds.reduce((a,[,v])=>a+v.hits,0);
+  const withN=ds.filter(([,v])=>v.n>0);
+  let trend;
+  if(withN.length>=4){
+    const k=Math.min(3,Math.floor(withN.length/2));
+    const a=avg(withN.slice(0,k).map(([,v])=>v.cents/v.n)),b=avg(withN.slice(-k).map(([,v])=>v.cents/v.n));
+    const la=avg(withN.slice(0,k).map(([,v])=>v.lock/v.n)),lb=avg(withN.slice(-k).map(([,v])=>v.lock/v.n));
+    if(b<a-1)trend=`刚开始时你唱准的音平均偏 ${a.toFixed(0)} 音分，最近只偏 ${b.toFixed(0)} 音分。耳朵确实在变尖。`;
+    else if(lb<la-0.3)trend=`找音速度变快了：从平均 ${la.toFixed(1)} 秒缩短到 ${lb.toFixed(1)} 秒。`;
+    else trend='最近处在平台期——这很正常，进步常常是攒一阵再突然跳一下。保持每周 4 天就好。';
+  }else trend='多练几天，这里会出现你的进步曲线。';
+  const lv=k=>{const p=levels(k)[D.level[k]];return `第 ${D.level[k]+1} 级 <span class="hint">${k==='rhythm'?p.n:GN[p.g]+' ±'+p.t}</span>`};
+  return `<p style="color:var(--ink);font-size:15px">${trend}</p>
+    <div class="prog-grid">
+      <div><b>${ds.length}</b><span>练习天数</span></div><div><b>${totalMin}</b><span>总开口分钟</span></div><div><b>${totalHits}</b><span>累计唱准</span></div>
+      <div><b>${D.best.longSd??'—'}</b><span>长音最稳纪录（抖动）</span></div>
+      <div><b>${nameOf(ceilTop())}</b><span>舒适高音（会慢慢往上扩）</span></div>
+      <div><b>${lv('rhythm')}</b><span>节奏难度</span></div>
+      <div><b>${lv('single')}</b><span>单音难度</span></div><div><b>${lv('scale')}</b><span>音阶难度</span></div>
+      <div><b>${lv('interval')}</b><span>音程难度</span></div><div><b>${lv('song')}</b><span>唱歌难度</span></div>
+    </div>
+    <div class="lbl" style="margin-bottom:6px">最近 14 天：唱准时的平均偏差（音分，越低越准）</div>
+    <canvas id="pc"></canvas>`;
+}
+function drawProgress(){
+  const c=$('pc');if(!c)return;const dpr=devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;c.width=W*dpr;c.height=H*dpr;
+  const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
+  const days=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const v=D.days[dkey(d)];days.push({d,v:v&&v.n?v.cents/v.n:null,sec:v?v.sec:0})}
+  const max=Math.max(30,...days.map(d=>d.v||0)),bw=(W-30)/14,top=18,bot=H-22;
+  x.font='11px -apple-system,sans-serif';x.textAlign='center';
+  days.forEach((d,i)=>{const cx=30+bw*i+bw/2;
+    x.fillStyle=colors.muted;x.fillText(`${d.d.getMonth()+1}/${d.d.getDate()}`,cx,H-6);
+    if(d.v!=null){const h=Math.max(2,(bot-top)*d.v/max);x.fillStyle=colors.good;x.fillRect(cx-bw*0.3,bot-h,bw*0.6,h);
+      x.fillStyle=colors.ink;x.fillText(d.v.toFixed(0),cx,bot-h-5)}
+    else if(d.sec>=30){x.fillStyle=colors.muted;x.fillText('·',cx,bot-4)}});
+  x.strokeStyle=colors.gridC;x.beginPath();x.moveTo(30,bot+.5);x.lineTo(W,bot+.5);x.stroke();
+}
+
+// ---------- 琴键 ----------
+const isBlack=m=>[1,3,6,8,10].includes(((m%12)+12)%12);
+let kbShown={};
+function buildKeyboard(){
+  let lo=settings.min-2,hi=settings.max+2;while(isBlack(lo))lo--;while(isBlack(hi))hi++;
+  const kb=$('kb');kb.innerHTML='';const whites=[];for(let m=lo;m<=hi;m++)if(!isBlack(m))whites.push(m);const w=100/whites.length;
+  whites.forEach(m=>{const d=document.createElement('button');d.type='button';d.setAttribute('aria-label',nameOf(m));d.className='wk'+(m<settings.min||m>settings.max?' out':'');d.dataset.m=m;d.textContent=m%12===0?nameOf(m):'';kb.appendChild(d)});
+  for(let m=lo;m<=hi;m++)if(isBlack(m)){const i=whites.indexOf(m-1);const d=document.createElement('button');d.type='button';d.setAttribute('aria-label',nameOf(m));d.className='bk';d.dataset.m=m;
+    d.style.left=`calc(${(i+1)*w}% - ${w*0.32}%)`;d.style.width=w*0.64+'%';kb.appendChild(d)}
+  kb.querySelectorAll('[data-m]').forEach(k=>{const play=()=>{const m=+k.dataset.m;if(state.mode==='long')newLong(m);else playNote(m,1.0)};k.onpointerdown=e=>{e.preventDefault();play()};k.onkeydown=e=>{if(e.code==='Space'||e.code==='Enter'){e.preventDefault();e.stopPropagation();if(!e.repeat)play()}}});
+  kbShown={};
+}
+function updateKeyboard(){
+  const t=state.target,s=curMidi!=null?Math.round(curMidi):null;if(t===kbShown.t&&s===kbShown.s)return;kbShown={t,s};
+  $('kb').querySelectorAll('[data-m]').forEach(k=>{const m=+k.dataset.m;k.classList.toggle('target',m===t);k.classList.toggle('sung',m===s)});
+}
+
+// ---------- 统计条 ----------
+function renderStats(){const d=day();
+  $('stats').innerHTML=`<span>${uiIcon('clock')}今天开口 <b>${Math.floor(d.sec/60)}</b> 分 <b>${Math.floor(d.sec%60)}</b> 秒</span><span>${uiIcon('aim')}今天唱准 <b>${d.hits}</b> 个</span>`}
+let secAcc=0;
+
+// ================= 主循环 =================
+const cv=$('cv'),g=cv.getContext('2d');
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+let colors={};function readColors(){colors={voice:css('--voice'),paper:css('--paper'),grid:css('--grid'),gridC:css('--grid-c'),band:css('--band'),good:css('--good'),accent:css('--accent'),muted:css('--muted'),ink:css('--ink'),warm:css('--warm')}}
+readColors();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{readColors();if(state.mode==='progress')drawProgress()});
+
+function tick(now){
+  const dt=Math.min(100,now-lastT);lastT=now;
+  let raw=null;
+  if(analyser&&now>muteUntil&&!speaking){
+    analyser.getFloatTimeDomainData(buf);const f=detectPitch(buf,ctx.sampleRate,state.mode==='warm'?0.005:0.008);
+    if(f&&f>55&&f<1100)raw=f2m(f);
+  }
+  if(raw!=null){smooth.push(raw);if(smooth.length>5)smooth.shift();const s=[...smooth].sort((a,b)=>a-b);curMidi=s[s.length>>1]}
+  else{smooth=[];curMidi=null}
+
+  if(curMidi!=null){secAcc+=dt;if(secAcc>=1000){day().sec+=secAcc/1000;secAcc=0;saveD();renderStats()}}
+
+  const tgt=state.target,tol=tolFor(state.mode,tgt);
+  let diff=null;if(curMidi!=null&&tgt!=null)diff=centsDiff(curMidi,tgt);
+  const ok=diff!=null&&Math.abs(diff)<=tol;
+
+  // 序列模式：判定 + 逐级帮助（再弹一遍 → 陪唱 → 先放一放）
+  if(state.phase==='sing'&&tgt!=null){
+    if(curMidi==null&&micOn){state.idleT+=dt;if(state.idleT>30000){pausePractice('好一会儿没听到声音，我先帮你暂停了。准备好了按空格，或点「继续练习」。')}}else state.idleT=0;
+    if(state.phase==='sing'&&curMidi!=null){
+      state.voiced+=dt;state.silence=0;const a=state.att;a.n++;a.sum+=diff;a.sq+=diff*diff;
+      if(ok){state.hold+=dt;state.miss=0;state.hc+=Math.abs(diff);state.hn++;state.offT=0}
+      else{state.miss+=dt;state.offT+=dt;if(state.miss>220){state.hold=Math.max(0,state.hold-dt*2);if(!state.hold){state.hc=0;state.hn=0}}}
+      if(state.hold>=holdMs())noteSuccess();
+    }else if(state.phase==='sing'&&state.voiced>0){
+      state.silence+=dt;state.hold=Math.max(0,state.hold-dt);
+      if(state.silence>500&&state.att.n>=15){attemptFeedback();state.att={n:0,sum:0,sq:0}}
+    }
+    if(state.phase==='sing'){
+      const helpToken=state.token;const H=flowing()?[3000,7000,12000]:[5000,10000,17000];
+      if(state.voiced>H[0]&&state.help<1){state.help=1;coachSay('我再弹一遍，你跟着它找一找。');setTimeout(()=>{if(state.token===helpToken&&state.phase==='sing'&&state.target===tgt)replay(tgt)},1600)}
+      else if(state.voiced>H[1]&&state.help<2){state.help=2;coachSay('我陪你一起唱这个音，慢慢往它靠过去。');setTimeout(()=>{if(state.token===helpToken&&state.phase==='sing'&&state.target===tgt)startDrone(tgt)},2200)}
+      else if(state.voiced>H[2]&&state.help<3){state.help=3;moveOn()}
+    }
+  }
+  if(state.mode==='long'){
+    if(state.phase==='ready'&&curMidi!=null){state.phase='rec';state.long.started=now;state.long.samples=[]}
+    if(state.phase==='rec'){state.long.samples.push(diff);const left=state.long.dur-(now-state.long.started)/1000;
+      setStatus(`保持住… ${Math.max(0,left).toFixed(1)} 秒`);if(left<=0)finishLong()}
+  }
+  const heard=analyser&&now>muteUntil&&!speaking;
+  if(state.mode==='warm'&&state.phase==='warm'&&heard){
+    if(curMidi!=null||lastRms>0.012)state.warm.acc+=dt;
+    const need=WARM[state.warm.i].sec*1000;
+    if(state.warm.acc>=need)warmStepDone();else if(state.warm.acc>0)setStatus(`很好，继续… ${(state.warm.acc/1000).toFixed(1)} / ${WARM[state.warm.i].sec} 秒`,'good');
+  }
+  // 开口时机：检测声音从安静到响起的那一刻
+  if(state.mode==='rhythm'&&state.rh&&state.rh.running&&state.rh.L.in==='sing'&&heard){
+    const rh=state.rh;
+    if(lastRms>0.02&&rh.quiet>=70){rh.hits.push(ctx.currentTime-rh.lat);rh.quiet=0}
+    else if(lastRms<0.012)rh.quiet+=dt;
+  }
+  if(state.mode==='free'&&curMidi!=null){
+    const f=state.free;f.run.push(curMidi);if(f.run.length>15)f.run.shift();
+    if(f.run.length===15&&Math.max(...f.run)-Math.min(...f.run)<0.6){const m=Math.round(f.run[7]);let ch=false;
+      if(f.lo==null||m<f.lo){f.lo=m;ch=true}if(f.hi==null||m>f.hi){f.hi=m;ch=true}if(ch)renderPanel()}
+  }
+
+  // 实时文字提示（只显示，不出声）
+  if(state.phase==='sing'&&diff!=null){
+    if(ok){if(state.offT===0)setStatus('就是这里，稳住…','good')}
+    else if(state.offT>600&&now-(tick.hintT||0)>900){tick.hintT=now;const ad=Math.abs(diff);
+      setStatus(ad>=100?`往${diff<0?'上':'下'}找找，差了约 ${Math.round(ad/100)} 个半音 ${diff<0?'↑':'↓'}`:diff<0?'再高一点点 ↑':'再低一点点 ↓','warm')}
+  }
+
+  let disp=curMidi;if(disp!=null&&tgt!=null&&foldOn())disp=tgt+diff/100;
+  history.push({t:now,m:disp,ok});while(history.length&&now-history[0].t>7000)history.shift();
+
+  if(state.mode!=='progress'){
+    const lab=state.labels[state.idx],useLab=tgt!=null&&(state.mode==='scale'||state.mode==='song')&&lab;
+    $('tgtName').innerHTML=tgt!=null?(useLab?lab:nameOf(tgt))+`<small>${useLab?nameOf(tgt)+' · ':''}${Math.round(m2f(tgt))}Hz</small>`:'—';
+    $('tgtSub').textContent=state.mode==='single'&&isStretch(tgt)?'挑战高音 · 够不着也没关系':tgt!=null&&state.mode==='interval'&&lab?lab:'\u00a0';
+    if(curMidi!=null){const r=Math.round(curMidi);$('curName').textContent=nameOf(r);$('curSub').textContent=`${Math.round(m2f(curMidi))}Hz`}
+    else{$('curName').textContent='—';$('curSub').textContent=' '}
+    const nd=$('needle');
+    if(diff!=null){nd.style.opacity=1;nd.style.left=(50+clamp(diff,-50,50))+'%';nd.style.background=ok?colors.good:colors.warm}else nd.style.opacity=0;
+    $('zone').style.left=(50-clamp(tol,0,50))+'%';$('zone').style.width=(clamp(tol,0,50)*2)+'%';
+    $('holdBar').style.width=(state.phase==='warm'?clamp(state.warm.acc/(WARM[state.warm.i].sec*1000),0,1)*100:state.phase==='sing'?clamp(state.hold/holdMs(),0,1)*100:state.phase==='rec'?clamp((now-state.long.started)/1000/state.long.dur,0,1)*100:0)+'%';
+    draw(now,tgt,tol);updateKeyboard();
+  }
+  requestAnimationFrame(tick);
+}
+
+function draw(now,tgt,tol){
+  const dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+  if(cv.width!==W*dpr||cv.height!==H*dpr){cv.width=W*dpr;cv.height=H*dpr}
+  g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
+  let center=tgt;
+  if(center==null){const last=history.slice().reverse().find(p=>p.m!=null);center=last?last.m:(settings.min+settings.max)/2;
+    draw.c=draw.c==null?center:draw.c+(center-draw.c)*0.08;center=draw.c}else{draw.c=draw.c==null?center:draw.c+(center-draw.c)*0.2;center=draw.c}
+  const span=8,y=m=>H/2-(m-center)/span*(H/2-10),pad=40;
+  // 像谱纸：只画自然音的线，C 稍深
+  g.font='10px ui-monospace,Menlo,monospace';g.textBaseline='middle';g.textAlign='left';
+  for(let m=Math.floor(center-span)-1;m<=Math.ceil(center+span)+1;m++){const yy=Math.round(y(m))+.5;if(yy<0||yy>H||isBlack(m))continue;
+    g.strokeStyle=m%12===0?colors.gridC:colors.grid;g.lineWidth=1;g.beginPath();g.moveTo(pad,yy);g.lineTo(W-12,yy);g.stroke();
+    g.fillStyle=colors.muted;g.globalAlpha=m%12===0?0.9:0.5;g.fillText(nameOf(m),10,yy);g.globalAlpha=1}
+  if(tgt!=null){const t=tol/100,top=y(tgt+t),h=y(tgt-t)-top;g.fillStyle=colors.band;g.beginPath();g.roundRect(pad,top,W-pad-12,h,Math.min(10,h/2));g.fill();
+    g.strokeStyle=colors.good;g.globalAlpha=.6;g.lineWidth=1.5;g.beginPath();g.moveTo(pad,y(tgt));g.lineTo(W-12,y(tgt));g.stroke();g.globalAlpha=1}
+  const x=t=>W-12-(now-t)/7000*(W-pad-12);
+  g.lineWidth=3.5;g.lineCap='round';g.lineJoin='round';
+  for(let i=1;i<history.length;i++){const a=history[i-1],b=history[i];if(a.m==null||b.m==null||Math.abs(a.m-b.m)>1.5)continue;
+    g.strokeStyle=tgt!=null&&b.ok?colors.good:colors.voice;g.beginPath();g.moveTo(x(a.t),y(a.m));g.lineTo(x(b.t),y(b.m));g.stroke()}
+  const last=history[history.length-1];
+  if(last&&last.m!=null){const c=last.ok&&tgt!=null?colors.good:colors.voice;g.fillStyle=c;g.shadowColor=c;g.shadowBlur=14;g.beginPath();g.arc(x(last.t),y(last.m),6,0,7);g.fill();g.shadowBlur=0}
+  
+}
+
+// ================= 输出设备 =================
+// 应用里：由原生代码切换系统默认输出；浏览器里：支持 setSinkId 时只切这一页的声音
+const NATIVE=!!window.__NATIVE_APP__;
+window.onNativeOutputs=({devices,current})=>{
+  $('outWrap').classList.remove('hidden');
+  $('outPick').innerHTML=devices.map(d=>`<option value="${d.id}" ${d.id===current?'selected':''}>${esc(d.name)}</option>`).join('');
+};
+async function listWebOutputs(){
+  if(NATIVE||!window.AudioContext||!AudioContext.prototype.setSinkId)return;
+  const outs=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='audiooutput'&&d.deviceId!=='default');if(!outs.length)return;
+  $('outWrap').classList.remove('hidden');
+  $('outPick').innerHTML='<option value="">跟随系统</option>'+outs.map(d=>`<option value="${esc(d.deviceId)}">${esc(d.label||'扬声器')}</option>`).join('');
+  $('outPick').value=settings.outId||'';
+}
+$('outPick').onchange=e=>{
+  if(NATIVE)window.webkit.messageHandlers.audio.postMessage({cmd:'setOutput',id:+e.target.value});
+  else{settings.outId=e.target.value;saveSettings();ensureCtx().setSinkId(settings.outId||'').catch(()=>{})}
+};
+if(NATIVE)window.webkit.messageHandlers.audio.postMessage({cmd:'listOutputs'});
+
+// ================= 进度导出 / 导入 =================
+$('expBtn').onclick=()=>{
+  const data={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('pitch-'))data[k]=localStorage.getItem(k)}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data)],{type:'application/json'}));
+  a.download=`音准练习进度-${today()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+  $('expHint').textContent='已导出到「下载」文件夹。';
+};
+$('impFile').onchange=async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{if(f.size>8*1024*1024)throw new Error('文件过大');const entries=parseProgressBackup(await f.text());commitProgressBackup(entries);
+    if(NATIVE)window.webkit.messageHandlers.audio.postMessage({cmd:'reload'});else location.reload();
+  }catch(err){$('expHint').textContent='导入失败：文件格式不正确或存储空间不足，原来的进度已保留。';e.target.value=''}
+};
+window.addEventListener('pagehide',()=>{stopCues();stopDrone();trStopSources();if(TR.rec&&TR.rec.state!=='inactive')TR.rec.stop();micStream?.getTracks().forEach(t=>t.stop());saveD()});
+window.addEventListener('resize',()=>{if(state.mode==='progress')drawProgress()});
+
+// ================= 启动 =================
+if(!D.first){D.first=today();saveD()}
+buildKeyboard();renderStats();renderHero();renderPanel();
+if(NATIVE)micClick();
+// 回到上次练的那一项
+state.mode='home';restartMode();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
