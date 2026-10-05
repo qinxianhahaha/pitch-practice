@@ -168,6 +168,7 @@ details[open]>summary::before{content:"–"}
 .prog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
 .prog-grid div{background:var(--soft);border-radius:14px;padding:12px}
 .prog-grid b{display:block;font-size:19px}
+.insight{margin:14px 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:12px}.insight ul{margin:6px 0 0;padding-left:18px}.insight li{font-size:13px;line-height:1.7;color:var(--ink)}
 .prog-grid span{font-size:12px;color:var(--muted)}
 #pc{height:220px}
 .import{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
@@ -383,6 +384,51 @@ body[data-mode="home"] #panel{background:none;border:0;box-shadow:none;padding:0
 .sheet .hint{margin:8px 0 0}.sheet ol{padding-left:20px;line-height:1.8}
 @media(prefers-reduced-motion:reduce){.sheet-backdrop,.sheet{transition:none}}
 @media(max-width:680px){.nav-group{display:none}body:not([data-mode="home"]) header{position:static}}
+
+/* ===== 每日练习：热身 → 单音 ===== */
+.tab-step{margin-left:auto;min-width:18px;height:18px;border-radius:9px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+.daily-tab{font-weight:500;color:var(--ink)}
+#hero.daily{display:grid;grid-template-columns:1fr auto;gap:18px 24px;align-items:center;padding:22px 24px}
+.daily-head .hero-t{margin:6px 0 10px}
+.daily-cta{display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:210px}
+.daily-cta .primary{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;font-size:15px;font-weight:600}
+.daily-cta .primary .icon{width:16px;height:16px}
+.btn.link{border:0;background:none;color:var(--muted);font-size:12px;padding:4px}.btn.link:hover:not(:disabled){background:none;color:var(--accent)}
+.daily-steps{grid-column:1/-1;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch}
+.daily-step{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:2px 14px;align-items:center;text-align:left;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--soft);color:var(--ink);transition:border-color .18s,transform .18s}
+.daily-step:hover{border-color:var(--accent);transform:translateY(-1px)}
+.daily-step .n{grid-row:1/3;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--accent-ink);font:600 16px/1 var(--serif)}
+.daily-step b{font-size:17px;font-weight:600}.daily-step span:not(.n){font-size:12px;color:var(--muted)}
+.daily-step.done .n{background:var(--good)}
+.daily-arrow{align-self:center;color:var(--muted);font-size:18px}
+@media(max-width:900px){#hero.daily{grid-template-columns:1fr}.daily-cta{min-width:0}.daily-steps{grid-template-columns:1fr}.daily-arrow{display:none}}
+/* 热身舞台：不看音准，只看"出声了多久" */
+body:not([data-mode="warm"]) #warmStage{display:none}
+body[data-mode="warm"] .display>.eyebrow,body[data-mode="warm"] .display>.row2,body[data-mode="warm"] .display>.meter-wrap,
+body[data-mode="warm"] .display>.hold-label,body[data-mode="warm"] .display>.hold,body[data-mode="warm"] #acts,body[data-mode="warm"] #keysHint{display:none}
+.warm-stage{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.warm-top{display:flex;align-items:center;justify-content:space-between;width:100%}
+.warm-dots{display:flex;gap:6px}.warm-dots i{width:22px;height:4px;border-radius:2px;background:var(--line)}.warm-dots i.d{background:var(--good)}.warm-dots i.c{background:var(--accent)}
+.warm-title{font:600 26px/1.3 var(--display);margin-top:10px}
+.warm-desc{font-size:13px;line-height:1.7;color:var(--muted);margin:0;max-width:340px}
+.warm-ring{position:relative;width:132px;height:132px;margin:10px 0 4px}
+.warm-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.warm-ring circle{fill:none;stroke-width:8}.warm-ring .bg{stroke:var(--line)}
+.warm-ring .fg{stroke:var(--good);stroke-linecap:round;stroke-dasharray:326.73;stroke-dashoffset:326.73;transition:stroke-dashoffset .12s linear}
+.warm-sec{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.warm-sec b{font:500 30px/1 var(--serif)}.warm-sec span{font-size:11px;color:var(--muted);margin-top:4px}
+.warm-acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.warm-acts .primary{display:inline-flex;align-items:center;gap:6px}.warm-acts .icon{width:14px;height:14px}
+.warm-done{width:64px;height:64px;border-radius:50%;background:var(--good);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin-top:16px}
+.warm-stage.hit .warm-ring{animation:warmPop .5s ease}
+@keyframes warmPop{40%{transform:scale(1.06)}}
+.warm-list{margin:8px 0 0;padding-left:20px;font-size:12px;line-height:1.9;color:var(--muted)}.warm-list li.cur{color:var(--ink);font-weight:600}.warm-list li.done{color:var(--good)}
+/* 单音：一组 10 个音 */
+body:not([data-mode="single"]) #roundBox{display:none}
+.round{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted)}
+.round-dots{display:flex;gap:5px}.round-dots i{width:10px;height:10px;border-radius:50%;border:1px solid var(--line);background:none}
+.round-dots i.g{background:var(--good);border-color:var(--good)}.round-dots i.h{background:var(--warm);border-color:var(--warm)}.round-dots i.x{background:var(--line)}.round-dots i.c{border-color:var(--accent);border-width:2px}
+@media(prefers-reduced-motion:reduce){.warm-ring .fg{transition:none}.warm-stage.hit .warm-ring{animation:none}}
 /* 页面宽度永远一样：始终给滚动条留位置，切换页面时不会因为有没有滚动条而整体缩放 */
 html{overflow-y:scroll;scrollbar-gutter:stable}
 /* 练习页：整页正好放进窗口，不再被窗口底边切掉一半。
@@ -417,8 +463,8 @@ body.fit .wrap>#kbCard[open]{max-height:190px}
 <body>
 <aside class="sidebar"><div class="brand"><div class="brand-mark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4m5-9v14m5-11v8m5-6v4m3-2h0"/></svg></div><div><b>音准练习</b><small>PITCH STUDIO</small></div></div><nav class="tabs" id="tabs" aria-label="练习">
     <button class="tab active" data-mode="home"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>今天</button>
-    <div class="nav-group">基础</div><button class="tab" data-mode="warm"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>开口热身</button><button class="tab" data-mode="long"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 14c5-13 9 13 14 0l6-6"/></svg>长音稳定</button><button class="tab" data-mode="single"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>单音模唱</button>
-    <div class="nav-group">音阶与音程</div><button class="tab" data-mode="scale"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20v-5m5 5V11m5 9V7m5 13V3"/></svg>音阶</button><button class="tab" data-mode="interval"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4"/></svg>音程</button>
+    <div class="nav-group">每日练习</div><button class="tab daily-tab" data-mode="warm"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>开口热身<span class="tab-step">1</span></button><button class="tab daily-tab" data-mode="single"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>单音模唱<span class="tab-step">2</span></button>
+    <div class="nav-group">进阶</div><button class="tab" data-mode="long"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 14c5-13 9 13 14 0l6-6"/></svg>长音稳定</button><button class="tab" data-mode="scale"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20v-5m5 5V11m5 9V7m5 13V3"/></svg>音阶</button><button class="tab" data-mode="interval"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4"/></svg>音程</button>
     <div class="nav-group">唱歌与节奏</div><button class="tab" data-mode="song"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>唱歌</button><button class="tab" data-mode="track"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6m-6 4h6m-6 4h4"/></svg>跟原曲练</button><button class="tab" data-mode="rhythm"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>节奏</button>
     <div class="nav-group">工具</div><button class="tab" data-mode="free"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18V9m5 13V3m5 15V9m5 11V6m5 11v-6"/></svg>测音域</button><button class="tab" data-mode="progress"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4M12 13v6m-4 2h8m-7-2h6"/></svg>我的进步</button>
   </nav>
@@ -443,11 +489,13 @@ body.fit .wrap>#kbCard[open]{max-height:190px}
         <button class="tgt-btn" id="tgtBtn" type="button" title="再听一遍（空格键）" disabled><div class="lbl">要唱的音</div><div class="big" id="tgtName">—</div><div class="hint" id="tgtSub">&nbsp;</div><span class="replay-tag"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6h2.5L9 3v10L5.5 10H3z"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>点一下再听</span></button>
         <div><div class="lbl">你在唱</div><div class="big" id="curName">—</div><div class="hint" id="curSub">&nbsp;</div></div>
       </div>
-      <div>
+      <div id="warmStage" class="warm-stage"></div>
+      <div class="meter-wrap">
         <div class="meter"><div class="zone" id="zone"></div><div class="mid"></div><div class="needle" id="needle"></div></div>
         <div class="meter-lbl"><span>低了</span><span>正好</span><span>高了</span></div>
       </div>
       <div class="hold-label">持续时长</div><div class="hold"><i id="holdBar"></i></div>
+      <div class="round" id="roundBox"></div>
       <div class="status" id="status" role="status">准备好就开始吧</div>
       <div class="acts" id="acts"></div>
       <div class="hint keys" id="keysHint"></div>
@@ -538,7 +586,7 @@ const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+Str
 const today=()=>dkey(new Date());
 
 
-const PROGRESS_KEYS=['pitch-settings','pitch-v2','pitch-scale','pitch-iv','pitch-rhythm','pitch-song','pitch-mode'];
+const PROGRESS_KEYS=['pitch-settings','pitch-v2','pitch-log','pitch-scale','pitch-iv','pitch-rhythm','pitch-song','pitch-mode'];
 const isObject=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 function validateSaved(key,v){
   const check=(ok)=>{if(!ok)throw new Error('进度数据格式不正确：'+key)};
@@ -578,6 +626,9 @@ function validateSaved(key,v){
       check(Array.isArray(song.ph)&&song.ph.length>0&&song.ph.length<=2000);
       for(const ph of song.ph)check(Array.isArray(ph)&&ph.length===2&&ph.every(x=>typeof x==='string')&&/[1-7]/.test(ph[0])&&ph[0].length<=20000);
     }}
+  }else if(key==='pitch-log'){
+    check(Array.isArray(v.notes)&&v.notes.length<=20000&&v.notes.every(isObject));
+    check(optional(v,'events',x=>Array.isArray(x)&&x.length<=20000&&x.every(isObject)));
   }else if(key==='pitch-scale'){
     check(optional(v,'key',x=>integer(x,0,11))&&optional(v,'type',x=>['major','minor','penta'].includes(x)));
     check(optional(v,'stage',x=>['c3','c5','penta','arp','desc','oct','leap','free'].includes(x)));
@@ -659,6 +710,63 @@ function tolFor(mode,m){const t=params(mode).t;return m!=null&&m>=ceilTop()-1?t+
 window.D_READY=true;applySettingsUI();
 function saveD(){store.set('pitch-v2',D)}
 function day(){const k=today();return D.days[k]||(D.days[k]={sec:0,hits:0,cents:0,n:0,lock:0,longSd:null})}
+// ================= 训练日志 =================
+// 每个音、每次长音 / 节奏 / 一轮音阶 / 升降级都记一条，只存在本机。
+// 在 Mac 应用里还会自动同步一份到「~/Library/Application Support/音准练习/训练记录.json」，方便以后分析、针对性调整。
+const LOG=(()=>{const v=saved('pitch-log',null);return v&&Array.isArray(v.notes)?v:{v:1,notes:[],events:[]}})();
+if(!Array.isArray(LOG.events))LOG.events=[];
+if(Array.isArray(D.log)){LOG.notes.push(...D.log);delete D.log}
+let logTimer=0,insightCache=null;
+function saveLog(){insightCache=null;store.set('pitch-log',LOG);clearTimeout(logTimer);logTimer=setTimeout(syncLogFile,3000)}
+function logEvent(type,data){LOG.events.push({t:Date.now(),type,...data});if(LOG.events.length>3000)LOG.events.splice(0,LOG.events.length-3000);saveLog()}
+function logSnapshot(){
+  const st={...settings};delete st.micId;delete st.outId;
+  return{app:'音准练习',saved:new Date().toISOString(),
+    guide:'notes: m=模式 n=目标音(MIDI) name=音名 ok=1唱准/0先放一放 h=帮助(0无 1重弹 2陪唱 3跳过) lk=开口到唱准的秒数 f=刚开口0.4秒的偏差(音分,负=偏低) b=整个音的平均偏差 c=稳住时的平均绝对偏差 tol=允许范围 hold=要求稳住毫秒 g=提示方式 lv=级别 from=上一个目标音 st=音阶阶段 sess=今日练习编号',
+    range:{min:nameOf(settings.min),max:nameOf(settings.max),ceiling:nameOf(ceilTop())},settings:st,level:D.level,days:D.days,best:D.best,course:D.course||null,
+    insights:insights(),notes:LOG.notes,events:LOG.events};
+}
+function syncLogFile(){if(!window.__NATIVE_APP__)return;try{window.webkit.messageHandlers.audio.postMessage({cmd:'saveLog',json:JSON.stringify(logSnapshot())})}catch(e){}}
+setTimeout(syncLogFile,2500);addEventListener('pagehide',syncLogFile);
+// 从最近的记录里找出你的规律（给「我的进步」和练习中的提示用）
+const median=a=>{if(!a.length)return null;const b=[...a].sort((x,y)=>x-y),i=b.length>>1;return b.length%2?b[i]:(b[i-1]+b[i])/2};
+function insights(){
+  if(insightCache)return insightCache;
+  const N=LOG.notes.filter(x=>['single','scale','interval','song'].includes(x.m)&&x.n!=null).slice(-300);
+  const r={n:N.length,tips:[]};
+  if(N.length<20){r.tips.push(`再唱 ${20-N.length} 个音，这里就会出现你自己的规律分析。`);return insightCache=r}
+  const ok=N.filter(x=>x.ok),fs=N.filter(x=>x.f!=null).map(x=>x.f);
+  r.okRate=Math.round(ok.length/N.length*100);r.helpRate=Math.round(N.filter(x=>x.h>0).length/N.length*100);
+  r.findSec=median(ok.map(x=>Math.max(0,x.lk-(x.hold||1000)/1000)));
+  r.landing=fs.length?Math.round(median(fs)):null;
+  r.landLow=fs.length?Math.round(fs.filter(x=>x<-50).length/fs.length*100):0;r.landHigh=fs.length?Math.round(fs.filter(x=>x>50).length/fs.length*100):0;
+  const half=Math.floor(ok.length/2);
+  if(ok.length>=20){const a=median(ok.slice(0,half).map(x=>x.lk)),b=median(ok.slice(half).map(x=>x.lk));r.trend={early:+a.toFixed(1),late:+b.toFixed(1)}}
+  // 按音高分区：低 / 中 / 高（以你的练习上限为准）
+  const top=ceilTop(),zone=m=>m>=top-2?'高':m<=settings.min+4?'低':'中',Z={};
+  N.forEach(x=>{const z=Z[zone(x.n)]||(Z[zone(x.n)]={n:0,ok:0,f:[],lk:[]});z.n++;if(x.ok){z.ok++;z.lk.push(x.lk)}if(x.f!=null)z.f.push(x.f)});
+  r.zones=Object.fromEntries(Object.entries(Z).map(([k,z])=>[k,{n:z.n,okRate:Math.round(z.ok/z.n*100),landing:z.f.length?Math.round(median(z.f)):null,sec:z.lk.length?+median(z.lk).toFixed(1):null}]));
+  // 往上走 / 往下走
+  const mv=d=>N.filter(x=>x.from!=null&&x.f!=null&&Math.sign(x.n-x.from)===d).map(x=>x.f);
+  const up=mv(1),dn=mv(-1);r.moveUp=up.length>=8?Math.round(median(up)):null;r.moveDown=dn.length>=8?Math.round(median(dn)):null;
+  // 最难的几个音
+  const byName={};N.forEach(x=>{const k=x.name||nameOf(x.n),o=byName[k]||(byName[k]={n:0,miss:0,lk:[]});o.n++;if(!x.ok||x.h>=2)o.miss++;if(x.ok)o.lk.push(x.lk)});
+  r.hard=Object.entries(byName).filter(([,o])=>o.n>=4).map(([k,o])=>({name:k,n:o.n,miss:Math.round(o.miss/o.n*100),sec:o.lk.length?+median(o.lk).toFixed(1):null}))
+    .sort((a,b)=>b.miss-a.miss||(b.sec||0)-(a.sec||0)).slice(0,3);
+  // 文字结论：先说做得好的，再说一个最值得改的点
+  r.tips.push(`最近 ${N.length} 个音里，${r.okRate}% 最后都唱准了${r.helpRate?`（${r.helpRate}% 用到了重弹或陪唱）`:''}。`);
+  if(r.findSec!=null)r.tips.push(`开口后平均约 ${r.findSec.toFixed(1)} 秒找到音${r.findSec<=1?'，已经很快了':r.findSec<=2.5?'，再快一点就更像"一开口就准"了':'——找音的过程还偏长，练习时先在心里哼一下再开口，会快很多'}。`);
+  if(r.trend&&r.trend.late<r.trend.early-0.3)r.tips.push(`找音变快了：从 ${r.trend.early} 秒到 ${r.trend.late} 秒。`);
+  if(r.landing!=null&&r.landing<=-25)r.tips.push(`你一开口常常偏低（中间值 ${-r.landing} 音分），然后再往上找。开口前先把音"想高一点"，嘴角微微上扬。`);
+  else if(r.landing!=null&&r.landing>=25)r.tips.push(`你一开口常常偏高（中间值 ${r.landing} 音分）。开口时放松、音量小一点，从上面轻轻落下来。`);
+  else if(r.landing!=null)r.tips.push('一开口的位置基本居中，没有固定的偏高或偏低，这很好。');
+  if(r.moveUp!=null&&r.moveUp<=-30)r.tips.push(`往上走的时候容易唱不够高（偏低 ${-r.moveUp} 音分）。上行时想着"多迈一点点"。`);
+  if(r.moveDown!=null&&r.moveDown<=-30)r.tips.push(`往下走的时候容易落过头（偏低 ${-r.moveDown} 音分）。下行时想着"轻轻放下"，别一下掉下去。`);
+  if(r.moveDown!=null&&r.moveDown>=30)r.tips.push(`往下走的时候常常没落够（偏高 ${r.moveDown} 音分）。下行时让声音放松地"沉"下去。`);
+  const zh=r.zones['高'],zm=r.zones['中'];if(zh&&zm&&zh.n>=6&&zh.okRate<zm.okRate-15)r.tips.push(`高音区（${nameOf(top-2)} 以上）准确率比中音区低 ${zm.okRate-zh.okRate}%，这正常；高音用"呜"小声唱会轻松很多。`);
+  const hardList=r.hard.filter(h=>h.miss>=30);if(hardList.length)r.tips.push(`最近最难的音：${hardList.map(h=>h.name).join('、')}。单音练习里会多安排它们几次。`);
+  return insightCache=r;
+}
 const GN={drone:'陪唱',once:'先听再唱',short:'短提示',blind:'盲唱'};
 // 单音：提示音越来越短、区间越来越窄
 const LEV_S=[{g:'drone',t:50},{g:'once',t:50},{g:'once',t:40},{g:'once',t:30},{g:'short',t:30},{g:'short',t:25}];
@@ -719,11 +827,11 @@ function record(mode,score){
   if(!settings.auto)return;
   const k=levKey(mode),r=D.recent[k],L=levels(k);r.push(score);if(r.length>10)r.shift();
   if(r.length>=8&&avg(r.slice(-8))>=0.85&&D.level[k]<L.length-1){
-    D.level[k]++;D.recent[k]=[];const p=L[D.level[k]];
+    D.level[k]++;D.recent[k]=[];const p=L[D.level[k]];logEvent('level',{mode:k,to:D.level[k],dir:'up'});
     const t=`升级了！${MODE_NAME[k]} 第 ${D.level[k]+1} 级：${k==='rhythm'?p.n:`${GN[k==='song'&&p.g==='once'?'short':p.g]}，±${p.t} 音分`}`;
     toast(t);if(session)session.ups.push(t);
   }else if(r.length>=6&&avg(r.slice(-6))<0.5&&D.level[k]>0){
-    D.level[k]--;D.recent[k]=[];
+    D.level[k]--;D.recent[k]=[];logEvent('level',{mode:k,to:D.level[k],dir:'down'});
     coachSay('我们换个更舒服的节奏：多给你一点提示。打好基础比赶进度重要。');
   }
   saveD();
@@ -770,14 +878,18 @@ function playNote(midi,dur=1.1,vol=0.32,delay=0){
 }
 // 连续弹一句旋律，返回总时长（秒）
 function playPhrase(midis,step=0.45){midis.forEach((m,i)=>playNote(m,step*1.6,0.28,i*step));return midis.length*step+0.3}
-function startDrone(midi){
-  stopDrone();const c=ensureCtx(),t=c.currentTime,f=m2f(midi);
-  const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.09,t+0.3);g.connect(master);
-  const o1=c.createOscillator();o1.type='triangle';o1.frequency.value=f;o1.connect(g);o1.start();
-  const o2=c.createOscillator(),g2=c.createGain();o2.frequency.value=f*2;g2.gain.value=.3;o2.connect(g2).connect(g);o2.start();
-  drone={g,os:[o1,o2]};
+// 陪唱音：柔和的正弦 + 很轻的八度，低通滤掉刺耳的高频；最多响几秒就自己淡出，不会一直在耳机里"嗡"着
+function startDrone(midi,sec=6){
+  stopDrone();const c=ensureCtx(),t=c.currentTime,f=m2f(midi),end=t+sec;
+  const g=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=Math.min(1800,f*2.5);lp.Q.value=0.5;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.06,t+0.4);g.gain.setValueAtTime(0.06,end-1.2);g.gain.linearRampToValueAtTime(0,end);
+  g.connect(lp).connect(master);
+  const o1=c.createOscillator();o1.frequency.value=f;o1.connect(g);
+  const o2=c.createOscillator(),g2=c.createGain();o2.frequency.value=f*2;g2.gain.value=.15;o2.connect(g2).connect(g);
+  const d={g,os:[o1,o2]};o1.onended=()=>{if(drone===d)drone=null;g.disconnect()};
+  [o1,o2].forEach(o=>{o.start(t);o.stop(end+0.05)});drone=d;
 }
-function stopDrone(){if(!drone)return;const t=ctx.currentTime,d=drone;drone=null;d.g.gain.cancelScheduledValues(t);d.g.gain.setValueAtTime(d.g.gain.value,t);d.g.gain.linearRampToValueAtTime(0,t+0.15);d.os.forEach(o=>o.stop(t+0.2))}
+function stopDrone(){if(!drone)return;const t=ctx.currentTime,d=drone;drone=null;d.g.gain.cancelScheduledValues(t);d.g.gain.setValueAtTime(d.g.gain.value,t);d.g.gain.linearRampToValueAtTime(0,t+0.15);d.os.forEach(o=>{try{o.stop(t+0.2)}catch(e){}})}
 // 唱准时的提示音：柔和的上行五度，像轻轻敲一下钟
 // 唱准时不再放提示音，只用画面反馈
 function ding(){const b=$('tgtBtn');if(b){b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit')}}
@@ -948,7 +1060,17 @@ function holdMs(){
 function setStatus(t,cls=''){const s=$('status');if(s.textContent!==t)s.textContent=t;s.className='status '+cls}
 function foldOn(){return settings.fold&&(state.mode==='single'||state.mode==='long')}
 function centsDiff(m,target){let d=(m-target)*100;if(foldOn())d=((d%1200)+1200+600)%1200-600;return d}
-function resetNoteTrack(){Object.assign(state,{idleT:0,hold:0,miss:0,voiced:0,help:0,silence:0,att:{n:0,sum:0,sq:0},hc:0,hn:0,offT:0})}
+function resetNoteTrack(){Object.assign(state,{idleT:0,hold:0,miss:0,voiced:0,help:0,silence:0,att:{n:0,sum:0,sq:0},hc:0,hn:0,offT:0,ss:0,sn:0,fs:0,fn:0})}
+// 训练日志：每个音一条（目标音、开口落点、整体偏高偏低、找到用时、是否需要帮助），只存在本机
+function logNote(ok,lock){
+  const p=params(state.mode),q={t:Date.now(),m:state.mode,n:state.target,name:nameOf(state.target),ok,h:state.help,lk:+lock.toFixed(2),
+    f:state.fn?Math.round(state.fs/state.fn):null,b:state.sn?Math.round(state.ss/state.sn):null,c:state.hn?Math.round(state.hc/state.hn):null,
+    tol:tolFor(state.mode,state.target),hold:holdMs(),g:p.g,lv:D.level[levKey(state.mode)]};
+  if(state.idx>0&&state.seq[state.idx-1]!=null)q.from=state.seq[state.idx-1];
+  if(state.course)q.st=state.course.c.id;if(session)q.sess=session.id;if(state.mode==='single'&&isStretch(state.target))q.stretch=1;
+  LOG.notes.push(q);if(LOG.notes.length>8000)LOG.notes.splice(0,LOG.notes.length-8000);
+  saveLog();return q;
+}
 
 // ---------- 序列（单音/音阶/音程/唱歌） ----------
 function startSeq(seq,labels){state.paused=false;state.seq=seq;state.labels=labels;state.idx=0;state.done=seq.map(()=>0);state.startT=performance.now();beginNote()}
@@ -959,11 +1081,11 @@ function beginNote(){
   const p=params(state.mode);
   const play=flowing()?(p.g==='blind'&&state.idx===0):(p.g!=='blind'||state.idx===0);
   renderChips();
-  if(flowing()&&!play){state.phase='sing';if(p.g==='drone')startDrone(m);setStatus(state.idx===0?'连着唱下来：'+state.labels.join(' '):'下一个 →','');return}
+  if(flowing()&&!play){state.phase='sing';if(p.g==='drone')startDrone(m,8);setStatus(state.idx===0?'连着唱下来：'+state.labels.join(' '):'下一个 →','');return}
   if(play){
     state.phase='listen';const dur=p.g==='short'?Math.max(1.2,settings.toneLen*0.5):settings.toneLen;playNote(m,dur);
     if(state.mode!=='song')setStatus('先听…');
-    setTimeout(()=>{if(tok!==state.token)return;state.phase='sing';if(p.g==='drone')startDrone(m);
+    setTimeout(()=>{if(tok!==state.token)return;state.phase='sing';if(p.g==='drone')startDrone(m,8);
       setStatus(micOn?'跟着唱「啊——」':'开启麦克风后就能开始唱')},dur*1000-50);
   }else{state.phase='sing';setStatus(state.mode==='song'?'接着唱下一个音':'这个音不给提示，凭感觉找一找')}
 }
@@ -971,15 +1093,17 @@ function isScored(){return (state.mode!=='interval'||state.idx===1)&&!(state.mod
 function noteSuccess(){
   const tok=++state.token;stopDrone();state.phase='ok';state.done[state.idx]=1;
   const lock=state.voiced/1000,cents=state.hn?state.hc/state.hn:0;
-  const d=day();d.hits++;d.cents+=cents;d.n++;d.lock+=lock;
+  const d=day();d.hits++;d.cents+=cents;d.n++;d.lock+=lock;const q=logNote(1,lock);
   if(isScored())record(state.mode,state.help?0.5:1);
+  roundAdd(q,state.help?0.5:1);
   if(state.mode==='single'&&isStretch(state.target)&&!state.help){
     D.stretchHits=(D.stretchHits||0)+1;
-    if(D.stretchHits>=3){D.top=ceilTop()+1;D.stretchHits=0;const t=`你的舒适高音往上扩了：${nameOf(D.top)}`;toast(t);if(session)session.ups.push(t);applySettingsUI()}
+    if(D.stretchHits>=3){D.top=ceilTop()+1;D.stretchHits=0;logEvent('ceiling',{top:nameOf(D.top)});const t=`你的舒适高音往上扩了：${nameOf(D.top)}`;toast(t);if(session)session.ups.push(t);applySettingsUI()}
   }
   if(session){session.hits++;session.cents+=cents;session.n++;if(state.help)session.helped++;if(session.fast==null||lock<session.fast)session.fast=lock}
   saveD();renderStats();
-  const praise=pick(TIPS.praise);setStatus(praise+(state.help?' 在帮助下找到了，下次会更快':''),'good');
+  const praise=pick(TIPS.praise),land=!flowing()&&q.f!=null&&Math.abs(q.f)>=40&&q.lk>q.hold/1000+0.6?`（开口时${q.f<0?'偏低':'偏高'} ${Math.abs(q.f)} 音分，下次开口前先想${q.f<0?'高':'低'}一点）`:'';
+  setStatus(praise+(state.help?' 在帮助下找到了，下次会更快':land),'good');
   ding();
   renderChips();
   if(flowing()){advance();return}
@@ -988,7 +1112,7 @@ function noteSuccess(){
 function moveOn(){
   const tok=++state.token;stopDrone();state.phase='ok';state.done[state.idx]=-1;
   const stretch=state.mode==='single'&&isStretch(state.target);
-  if(isScored())record(state.mode,0);
+  const q=logNote(0,state.voiced/1000);if(isScored())record(state.mode,0);roundAdd(q,0);saveD();
   if(state.mode==='single'&&!stretch)state.later.push(state.target);
   if(session&&!stretch)session.later++;
   if(stretch)coachSay('高音本来就难，敢去够它就已经很棒了。不扣分，我们以后慢慢往上扩。');
@@ -1000,7 +1124,7 @@ function advance(){
   state.idx++;
   if(state.idx<state.seq.length){beginNote();return}
   const ok=state.done.filter(x=>x===1).length;
-  if(state.mode==='single'){if(!itemDone('single'))newSingle()}
+  if(state.mode==='single'){if(!itemDone('single')){if(!session&&state.round&&state.round.res.length>=ROUND_N)roundDone();else newSingle()}}
   else if(state.mode==='interval'){if(!itemDone('interval'))newInterval()}
   else if(state.mode==='scale'&&state.course){courseRepDone()}
   else if(state.mode==='scale'){
@@ -1027,6 +1151,7 @@ function renderActs(){
   const a=$('acts'),m=state.mode,k=$('keysHint');if(!a)return;
   const seq=SEQ_MODES.includes(m),hasT=state.target!=null||state.paused;let h='',keys=[];
   if(state.paused){h='<button class="btn primary" data-act="resume">继续练习</button>';keys.push('空格 继续')}
+  else if(m==='single'&&state.phase==='done'&&!session){h='<button class="btn primary" data-act="again">再来一组</button><button class="btn" data-go-mode="progress">看我的特点</button>';keys.push('空格 再来一组')}
   else if(seq||m==='long'){
     if(hasT){h+='<button class="btn" data-act="replay">再听</button>';keys.push('空格 再听')}
     if(m==='song')h+='<button class="btn" data-act="phrase">听整句</button>';
@@ -1037,6 +1162,7 @@ function renderActs(){
   }
   a.innerHTML=h;k.textContent=keys.length?'键盘：'+keys.join(' · '):'';
   a.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{b.blur();doAct(b.dataset.act)});
+  a.querySelectorAll('[data-go-mode]').forEach(b=>b.onclick=()=>switchMode(b.dataset.goMode));
   const tb=$('tgtBtn');if(tb)tb.disabled=state.target==null||state.paused;
 }
 function doAct(act){
@@ -1048,6 +1174,7 @@ function doAct(act){
   else if(act==='skip'){if(state.mode==='interval')newInterval();else{state.token++;stopDrone();state.done[state.idx]=-1;advance()}}
   else if(act==='pause')pausePractice();
   else if(act==='resume')resumePractice();
+  else if(act==='again'){state.round=newRound();newSingle()}
 }
 function pausePractice(msg){
   if(state.paused||!(SEQ_MODES.includes(state.mode)||state.mode==='long'))return;
@@ -1063,22 +1190,53 @@ function resumePractice(){
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&!['idle','done','paused'].includes(state.phase))pausePractice('你离开了一会儿，我先帮你暂停了。准备好了点「继续练习」。')});
 document.addEventListener('keydown',e=>{
   if(e.repeat||e.target.closest('[data-m]')||state.mode==='rhythm'||e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||!$('modal').classList.contains('hidden'))return;
-  if(e.code==='Space'){e.preventDefault();if(e.target.tagName==='BUTTON')e.target.blur();doAct(state.paused?'resume':'replay')}
+  if(e.code==='Space'){e.preventDefault();if(e.target.tagName==='BUTTON')e.target.blur();doAct(state.paused?'resume':state.mode==='single'&&state.phase==='done'&&!session?'again':'replay')}
   else if(e.code==='ArrowRight'&&SEQ_MODES.includes(state.mode)&&!state.paused&&state.phase!=='done'){e.preventDefault();doAct('skip')}
   else if(e.code==='ArrowLeft'&&(state.mode==='scale'||state.mode==='song')&&state.idx>0&&!state.paused){e.preventDefault();doAct('prev')}
 });
 function replay(m){if(m==null)return;stopCues();stopDrone();const tok=state.token;playNote(m,settings.toneLen);
-  if(params(state.mode).g==='drone'&&state.phase==='sing')setTimeout(()=>{if(tok===state.token&&state.phase==='sing')startDrone(state.target)},settings.toneLen*1000)}
+  if(params(state.mode).g==='drone'&&state.phase==='sing')setTimeout(()=>{if(tok===state.token&&state.phase==='sing')startDrone(state.target,8)},settings.toneLen*1000)}
 
 // 单音（偶尔把之前"放一放"的音拿回来）
+// 单音一组 10 个：有开头、有结尾，结束时给一份小结
+const ROUND_N=10;
+const newRound=()=>({res:[],lk:[],f:[]});
+function roundAdd(q,score){
+  if(state.mode!=='single')return;const r=state.round||(state.round=newRound());r.res.push(score);
+  if(q.ok&&q.lk!=null)r.lk.push(Math.max(0,q.lk-(q.hold||1000)/1000));if(q.f!=null)r.f.push(q.f);
+  const d=day();d.single=(d.single||0)+1;renderRound();
+}
+function renderRound(){
+  const el=$('roundBox');if(!el)return;const r=state.round||newRound(),n=r.res.length,cur=state.phase!=='done'&&n<ROUND_N?n:-1;
+  el.innerHTML=`<span>本组 ${Math.min(n+(cur>=0?1:0),ROUND_N)} / ${ROUND_N}</span><span class="round-dots">${Array.from({length:ROUND_N},(_,i)=>{const x=r.res[i];return `<i class="${x===1?'g':x===.5?'h':x===0?'x':i===cur?'c':''}"></i>`}).join('')}</span>`;
+}
+function roundDone(){
+  const r=state.round,self=r.res.filter(x=>x===1).length,help=r.res.filter(x=>x===.5).length,miss=r.res.filter(x=>x===0).length;
+  state.token++;state.phase='done';state.target=null;stopDrone();renderChips();
+  const f=median(r.f),lk=median(r.lk);
+  setStatus(`这一组完成：${self+help} / ${r.res.length} 个唱准`,'good');
+  let msg=`这一组 ${self} 个自己唱准${help?`，${help} 个在帮助下唱准`:''}${miss?`，${miss} 个先放了一放`:''}。`;
+  if(lk!=null)msg+=` 开口后平均 ${lk.toFixed(1)} 秒找到音。`;
+  if(f!=null&&f<=-25)msg+=` 这一组开口普遍偏低一点（约 ${-Math.round(f)} 音分），下一组开口前先"想高一点"。`;
+  else if(f!=null&&f>=25)msg+=` 这一组开口普遍偏高一点（约 ${Math.round(f)} 音分），下一组放松、小声一点开口。`;
+  else if(f!=null)msg+=' 开口的位置挺准的。';
+  coachSay(msg);logEvent('round',{n:r.res.length,self,help,miss,findSec:lk!=null?+lk.toFixed(1):null,landing:f!=null?Math.round(f):null});
+  renderRound();renderActs();renderHero();
+}
 function newSingle(){
-  state.nSingle++;
+  state.nSingle++;if(!state.round)state.round=newRound();
   const top=ceilTop();let m;
-  if(state.later.length&&state.nSingle%3===0)m=state.later.shift();
+  // 记录里最难的音，每 4 个里大约安排 1 个，让它多见几次面
+  const hard=(insights().hard||[]).filter(h=>h.miss>=30).map(h=>{for(let x=settings.min;x<=top;x++)if(nameOf(x)===h.name)return x;return null}).filter(x=>x!=null);
+  if(!state.round.res.length&&D.comfortDay===today()&&D.comfort!=null)m=clamp(D.comfort,settings.min,top);
+  else if(state.later.length&&state.nSingle%3===0)m=state.later.shift();
+  else if(hard.length&&state.nSingle%4===2)m=hard[rand(0,hard.length-1)];
   // 偶尔来一个挑战高音（15%），平时集中在舒服的中低音区
   else if(D.level.single>=2&&top<settings.max&&Math.random()<0.15)m=top+rand(1,Math.min(2,settings.max-top));
   else m=settings.min+Math.floor((top-settings.min+1)*Math.pow(Math.random(),1.2));
-  m=clamp(m,settings.min,settings.max);startSeq([m],[nameOf(m)]);renderPanel();
+  m=clamp(m,settings.min,settings.max);startSeq([m],[nameOf(m)]);renderPanel();renderRound();
+  // 有固定的开口偏差时，隔几个音提醒一次（不唠叨）
+  const ins=insights();if(ins.landing!=null&&Math.abs(ins.landing)>=25&&state.nSingle%5===1)coachSay(ins.landing<0?'小提醒：你开口常常偏低一点。先在心里把这个音"想高一点"，再开口。':'小提醒：你开口常常偏高一点。放松、小声一点，从上面轻轻落下来。');
 }
 // 音阶
 const SCALES={
@@ -1128,6 +1286,7 @@ function courseRepDone(){
   }
   const pct=Math.round(cs.clean/Math.max(1,cs.total)*100),c=cs.c;
   const pr=D.course||(D.course={passes:{}});
+  logEvent('course',{stage:c.id,pct,clean:cs.clean,total:cs.total,from:nameOf(cs.roots[0]),peak:nameOf(Math.max(...cs.roots))});
   let grew='';
   if(pct>=85){pr.passes[c.id]=(pr.passes[c.id]||0)+1;
     // 合格一轮：练习上限往上放宽一个半音（到了音域顶端就把音域也加一个半音，最多到 G4）
@@ -1172,7 +1331,7 @@ function newLong(m){
   if(m==null)m=state.long.lastTarget??rand(settings.min+1,ceilTop()-2);
   state.long.lastTarget=m;state.target=m;state.long.samples=[];state.long.started=0;state.long.res=null;state.phase='listen';
   setStatus('先听…');playNote(m,settings.toneLen);renderPanel();
-  setTimeout(()=>{if(tok!==state.token)return;state.phase='ready';if(params('long').g==='drone')startDrone(m);
+  setTimeout(()=>{if(tok!==state.token)return;state.phase='ready';if(params('long').g==='drone')startDrone(m,state.long.dur+4);
     setStatus(micOn?`吸一口气，开口唱满 ${state.long.dur} 秒`:'开启麦克风后开始')},settings.toneLen*1000-50);
 }
 function finishLong(){
@@ -1184,6 +1343,7 @@ function finishLong(){
   const d=day(),prev=D.best.longSd,isBest=hit>=50&&(prev==null||sd<prev);
   if(hit>=50){if(d.longSd==null||sd<d.longSd)d.longSd=Math.round(sd);if(isBest)D.best.longSd=Math.round(sd);d.hits++}
   if(session){session.longs.push(res);if(isBest&&prev!=null)session.longBest=true}
+  logEvent('long',{n:state.target,name:nameOf(state.target),dur:state.long.dur,hit,mean:res.mean,sd:res.sd,voiced:Math.round(v.length/n*100)});
   saveD();renderStats();
   let msg;
   if(isBest&&prev!=null)msg=`新纪录！这是你唱得最稳的一次，抖动只有 ${res.sd} 音分。`;
@@ -1215,24 +1375,70 @@ function attemptFeedback(){
 // ================= 开口热身 =================
 // 只练"敢出声"：没有音准判定，任何声音都算
 const WARM=[
-  {t:'哼一哼',d:'闭上嘴，轻轻哼「嗯——」，就像想事情时随口哼的那种。多小声都可以，哼满 3 秒。',sec:3},
-  {t:'叹口气',d:'像累了一天那样，用声音叹一口气「哎——」，从高往低滑下来。怎么滑都行，没有对错。',sec:2},
-  {t:'唇颤音',d:'嘴唇放松合上，吹气让嘴唇「嘟噜噜——」地抖起来，同时带一点声音，从低往高再滑回来。做不出来就用吸管对着它哼「嗯——」，效果一样。',sec:3},
-  {t:'轻轻唱',d:'用「呜——」轻轻唱一个你觉得最舒服的音，唱满 3 秒。',sec:3},
+  {t:'哼一哼',d:'闭上嘴，轻轻哼「嗯——」，就像想事情时随口哼的那种。多小声都可以。',tip:'嘴唇轻闭、牙齿分开。鼻子和嘴唇有点麻麻的，就说明哼对了。',sec:3},
+  {t:'叹口气',d:'像累了一天那样，用声音叹一口气「哎——」，从高往低滑下来。怎么滑都行，没有对错。',tip:'从一个不费力的"高处"开始就好，不用很高。滑下来时右边会画出一条往下的线。',sec:2},
+  {t:'唇颤音',d:'嘴唇放松合上，吹气让嘴唇「嘟噜噜——」地抖起来，带一点声音，从低滑到高再滑回来。',tip:'嘴唇抖不起来？用两根手指轻轻托住两边脸颊。实在不行，就哼「嗯——」滑上滑下，效果一样。',sec:3},
+  {t:'轻轻唱',d:'用「呜——」轻轻唱一个你觉得最舒服的音，唱稳。',tip:'这个音就是你今天的"舒服音"，接下来的单音练习会从它附近开始。',sec:3},
 ];
 const WARM_PRAISE=['很好！你已经出声了，这就是最难的一步。','听到了，很自然！','对，就这样，一点都不难。','漂亮，声音放出来了！'];
+// 热身的"舒服音"：上次热身测到的，或者你音域里偏低、最不费力的位置
+const onClick=(id,fn)=>{const e=$(id);if(e)e.onclick=fn};
+const warmBase=()=>D.comfort!=null?clamp(D.comfort,settings.min,ceilTop()):clamp(settings.min+7,settings.min,ceilTop());
 function newWarm(i=0){
   stopCues();
-  state.token++;stopDrone();state.warm={i,acc:0};state.phase='warm';state.target=null;
-  renderPanel();coachSay(WARM[i].d);setStatus('出声就算，小声也算');
+  state.token++;stopDrone();state.warm={i,acc:0,ms:i>0&&state.warm?state.warm.ms:[],t0:i===0?Date.now():(state.warm?.t0||Date.now())};state.phase='warm';state.target=null;
+  renderPanel();renderWarm();coachSay(WARM[i].tip);setStatus(micOn?'出声就算，小声也算':'先开启麦克风，就可以开始');
 }
-function warmStepDone(){
-  const tok=++state.token;state.phase='ok';ding();const i=state.warm.i;
-  coachSay(pick(WARM_PRAISE));setStatus('完成 ✓','good');renderPanel();
-  if(i+1<WARM.length){setTimeout(()=>{if(tok===state.token)newWarm(i+1)},2600);return}
+function renderWarm(){
+  const el=$('warmStage');if(!el)return;const w=state.warm||{i:0},fin=w.i>=WARM.length;el.classList.remove('hit');
+  if(fin){
+    const c=D.comfortDay===today()&&D.comfort!=null;
+    el.innerHTML=`<div class="warm-done">✓</div><div class="warm-title">声音醒过来了</div>
+      <p class="warm-desc">${c?`你今天最舒服的音大约是 <b>${nameOf(D.comfort)}</b>，单音练习会从它附近开始。`:'接下来唱不准也没关系，敢出声就是在进步。'}</p>
+      <div class="warm-acts">${session?'':`<button class="btn primary" id="wNext">接着练单音 ${uiIcon('arrow')}</button><button class="btn" id="wAgain">再来一遍</button>`}</div>`;
+    onClick('wNext',()=>switchMode('single'));onClick('wAgain',()=>newWarm(0));return;
+  }
+  const cur=WARM[w.i];
+  el.innerHTML=`<div class="warm-top"><span class="eyebrow">热身 ${w.i+1} / ${WARM.length}</span><span class="warm-dots">${WARM.map((x,i)=>`<i class="${i<w.i?'d':i===w.i?'c':''}"></i>`).join('')}</span></div>
+    <div class="warm-title">${cur.t}</div><p class="warm-desc">${esc(cur.d)}</p>
+    <div class="warm-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" id="warmArc"/></svg>
+      <div class="warm-sec"><b id="warmSec">0.0</b><span>/ ${cur.sec} 秒</span></div></div>
+    <div class="warm-acts"><button class="btn" id="wDemo">听示范</button><button class="btn" id="wSkip">跳过这一步</button></div>`;
+  onClick('wDemo',()=>playWarmDemo(w.i));onClick('wSkip',()=>warmStepDone(true));updateWarmRing();
+}
+function updateWarmRing(){
+  const a=$('warmArc'),t=$('warmSec'),w=state.warm;if(!a||!w||w.i>=WARM.length)return;
+  const need=WARM[w.i].sec*1000,v=Math.min(w.acc,need);a.style.strokeDashoffset=(1-v/need)*326.73;t.textContent=(v/1000).toFixed(1);
+}
+// 示范：哼和唱用持续音；叹气是从高往低的滑音；唇颤音是低→高→低、带一点"抖"的滑音
+function playGlide(pts,dur,trem=0){
+  const c=ensureCtx(),t=c.currentTime+0.03,g=c.createGain();
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.2,t+0.08);g.gain.setValueAtTime(0.2,t+dur-0.3);g.gain.linearRampToValueAtTime(0,t+dur);
+  [[1,1],[2,.22]].forEach(([k,a])=>{const o=trackCue(c.createOscillator()),og=c.createGain();og.gain.value=a;
+    o.frequency.setValueAtTime(m2f(pts[0])*k,t);pts.slice(1).forEach((m,n)=>o.frequency.exponentialRampToValueAtTime(m2f(m)*k,t+dur*(n+1)/(pts.length-1)));
+    o.connect(og).connect(g);o.start(t);o.stop(t+dur+0.05)});
+  let out=g;
+  if(trem){const lfo=trackCue(c.createOscillator()),depth=c.createGain(),am=c.createGain();lfo.frequency.value=trem;depth.gain.value=0.35;am.gain.value=0.65;
+    lfo.connect(depth).connect(am.gain);g.connect(am);out=am;lfo.start(t);lfo.stop(t+dur+0.05)}
+  out.connect(master);muteUntil=Math.max(muteUntil,performance.now()+dur*1000+250);
+}
+function playWarmDemo(i){
+  stopCues();const b=warmBase();
+  if(i===1)playGlide([b+7,b-5],1.8);
+  else if(i===2)playGlide([b-3,b+6,b-3],3,20);
+  else playNote(b,2.4,0.24);
+}
+function warmStepDone(skip=false){
+  const tok=++state.token;state.phase='ok';const w=state.warm,i=w.i;
+  if(i===WARM.length-1&&!skip&&w.ms.length>20){D.comfort=Math.round(median(w.ms));D.comfortDay=today();saveD()}
+  if(!skip){coachSay(pick(WARM_PRAISE));setStatus('完成 ✓','good');ding();updateWarmRing();$('warmStage')?.classList.add('hit')}
+  if(i+1<WARM.length){setTimeout(()=>{if(tok===state.token)newWarm(i+1)},skip?0:1700);return}
   setTimeout(()=>{if(tok!==state.token)return;
+    day().warm=1;saveD();
+    logEvent('warm',{sec:Math.round((Date.now()-w.t0)/1000),comfort:D.comfortDay===today()&&D.comfort!=null?nameOf(D.comfort):null,skippedLast:skip});
     coachSay('热身完成！你已经大大方方地发出声音了。接下来唱不准也没关系，敢出声就是在进步。');
-    state.warm.i=WARM.length;renderPanel();itemDone('warm')},2400);
+    setStatus(session?'马上进入单音模唱…':'热身完成','good');
+    state.warm.i=WARM.length;renderPanel();renderWarm();renderHero();itemDone('warm')},skip?0:1300);
 }
 
 // ================= 节奏 / 开口时机 =================
@@ -1293,6 +1499,7 @@ function finishRhythm(tok){
     rh.res=null;renderPanel();return;
   }
   if(rhythmOpt.pick==null)record('rhythm',ratio>=0.8?1:ratio>=0.5?0.5:0);
+  logEvent('rhythm',{lv:rLevel(),bpm:rhythmOpt.bpm,input:rh.L.in,good,total:ex.length,extra,meanOff:matched.length?Math.round(meanOff):null,offs:res});
   if(good){day().hits+=good;saveD();renderStats()}
   if(session)session.hits+=good;
   let msg=`${good}/${ex.length} 下踩在点上。`;
@@ -1366,6 +1573,8 @@ setInterval(()=>{
 
 // ================= 今日练习 =================
 const PLANS={
+  daily:[{mode:'warm',n:1,t:'开口热身'},{mode:'single',n:ROUND_N,t:'单音模唱'}],
+  dailySingle:[{mode:'single',n:ROUND_N,t:'单音模唱'}],
   full:[{mode:'warm',n:1,t:'开口热身'},{mode:'long',n:1,t:'长音'},{mode:'scale',n:1,t:'音阶课程'},{mode:'single',n:4,t:'单音模唱'},{mode:'interval',n:3,t:'音程'}],
   short:[{mode:'warm',n:1,t:'开口热身'},{mode:'scale',n:1,t:'音阶课程'}],
 };
@@ -1380,7 +1589,8 @@ const INTRO={
 };
 async function startSession(kind){
   if(!micOn&&!(await startMic()))return;
-  session={kind,plan:PLANS[kind],i:0,count:0,hits:0,helped:0,later:0,cents:0,n:0,fast:null,longs:[],longBest:false,ups:[],sec0:day().sec};
+  if(kind==='daily'&&D.days[today()]?.warm)kind='dailySingle';
+  session={id:Date.now(),kind,plan:PLANS[kind],i:0,count:0,hits:0,helped:0,later:0,cents:0,n:0,fast:null,longs:[],longBest:false,ups:[],sec0:day().sec};
   renderHero();switchMode(session.plan[0].mode,true);
 }
 function itemDone(mode){
@@ -1396,6 +1606,7 @@ function itemDone(mode){
 function endSession(){
   if(!session)return;const s=session;session=null;state.token++;stopCues();stopDrone();state.phase='idle';state.paused=false;state.target=null;renderHero();renderActs();
   const mins=Math.max(1,Math.round((day().sec-s.sec0)/60));
+  logEvent('session',{id:s.id,kind:s.kind,min:+((day().sec-s.sec0)/60).toFixed(1),hits:s.hits,n:s.n,helped:s.helped,later:s.later,fast:s.fast,ups:s.ups,longs:s.longs,done:s.i>=s.plan.length});
   const past=Object.entries(D.days).filter(([k,v])=>k!==today()&&v.n>0).sort().slice(-14).map(([,v])=>v.cents/v.n);
   const nowAvg=s.n?s.cents/s.n:null,pastAvg=past.length?avg(past):null;
   const items=[];
@@ -1423,11 +1634,18 @@ function weekHTML(){
 }
 function renderHero(){
   const h=$('hero');document.body.classList.toggle('session-on',!!session);
+  h.classList.toggle('daily',!session);
   if(!session){
-    const done=(D.days[today()]?.sec||0)>=60;
-    h.innerHTML=`<svg class="hero-art" viewBox="0 0 400 250" fill="none" aria-hidden="true">${[0,13,26,39,52].map(y=>`<path d="M0 ${170+y}C160 ${200+y} 150 ${-30+y} 400 ${20+y}" stroke="currentColor"/>`).join('')}<path d="M125 161v-38m64-2V81m50 2V47" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><ellipse cx="120" cy="163" rx="6" ry="4"/><ellipse cx="184" cy="123" rx="6" ry="4"/><ellipse cx="234" cy="85" rx="6" ry="4"/></g></svg><div class="hero-copy"><div class="eyebrow">TODAY’S PRACTICE</div><div class="hero-t">${done?'今天的声音，又进步了一点':'今天，也为自己唱一会儿'}</div><p class="hero-desc">${done?'想再来一轮也可以，按自己的节奏慢慢练。':'10 分钟，跟着引导慢慢找到你的声音。'}</p>${weekHTML()}</div>
-      <div class="hero-r"><button class="btn primary" id="goFull">开始今天的练习 ${uiIcon('arrow')}</button><button class="btn" id="goShort">只有 3 分钟</button></div>`;
-    $('goFull').onclick=()=>startSession('full');$('goShort').onclick=()=>startSession('short');
+    const d=D.days[today()]||{},warmed=!!d.warm,sn=d.single||0,all=warmed&&sn>=ROUND_N;
+    h.innerHTML=`<div class="daily-head"><div class="eyebrow">每日练习 · 约 8 分钟</div><div class="hero-t">${all?'今天的练习完成了，再来一组也可以':warmed?'热身好了，接着唱单音吧':'先热身，再唱单音'}</div>${weekHTML()}</div>
+      <div class="daily-cta"><button class="btn primary" id="goDaily">${all?'再练一组单音':warmed?'继续：单音模唱':'开始：热身 → 单音'} ${uiIcon('arrow')}</button><button class="btn link" id="goFull">完整练习（加上长音、音阶、音程）</button></div>
+      <div class="daily-steps">
+        <button class="daily-step ${warmed?'done':''}" data-go="warm"><span class="n">${warmed?'✓':'1'}</span><b>开口热身</b><span>${warmed?'今天已完成':'哼一哼、叹口气、唇颤音 · 约 2 分钟'}</span></button>
+        <span class="daily-arrow">→</span>
+        <button class="daily-step ${sn>=ROUND_N?'done':''}" data-go="single"><span class="n">${sn>=ROUND_N?'✓':'2'}</span><b>单音模唱</b><span>${sn?`今天已唱 ${sn} 个音`:`一组 ${ROUND_N} 个音 · 听一个、唱一个`}</span></button>
+      </div>`;
+    $('goDaily').onclick=()=>startSession(all?'dailySingle':'daily');$('goFull').onclick=()=>startSession('full');
+    h.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>switchMode(b.dataset.go));
   }else{
     h.innerHTML=`<div><div class="lbl">今日练习进行中</div><div class="steps">${session.plan.map((s,i)=>`<span class="step ${i<session.i?'done':i===session.i?'cur':''}">${s.t}${i===session.i?` ${session.count}/${s.n}`:''}</span>`).join('')}</div></div>
       <div class="hero-r"><button class="btn" id="goNext">${session.i<session.plan.length-1?'跳过这一步':'结束'}</button><button class="btn" id="goEnd">今天就到这里</button></div>`;
@@ -1457,7 +1675,7 @@ function restartMode(delay=0){
   if(state.mode!=='track'){if(TR.playing)trPause();if(TR.rec&&TR.rec.state!=='inactive')TR.rec.stop()}
   renderPanel();
   const go=()=>{if(tok!==state.token)return;
-    if(state.mode==='single')newSingle();else if(state.mode==='scale')newScale();
+    if(state.mode==='single'){state.round=newRound();newSingle()}else if(state.mode==='scale')newScale();
     else if(state.mode==='interval')newInterval();else if(state.mode==='long')newLong();
     else if(state.mode==='song')startPhrase();
     else if(state.mode==='warm')newWarm(0);
@@ -1516,11 +1734,9 @@ function scaleHTML(){
   return `${levelHTML('scale')}<div class="phrases" style="margin:0 0 14px">${stages}</div>${body}<div class="chips" id="chips"></div>`;
 }
 function warmHTML(){
-  const w=state.warm||{i:0},cur=WARM[Math.min(w.i,WARM.length-1)],fin=w.i>=WARM.length;
-  return `<p>这一步只为了让你敢出声：不看音准，任何声音都算过。</p>
-    <div class="warm-steps">${WARM.map((x,i)=>`<span class="step ${i<w.i?'done':i===w.i?'cur':''}">${i+1}. ${x.t}</span>`).join('')}</div>
-    <div class="warm-big">${fin?'热身完成 ✓':esc(cur.d)}</div>
-    <div class="ctrls">${fin?'<button class="btn primary" id="bWarmAgain">再来一遍</button>':'<button class="btn" id="bWarmSkip">跳过这一步</button>'}</div>
+  const w=state.warm||{i:0};
+  return `<h3>为什么先热身</h3><p>声带和呼吸要先"醒"过来，唱单音时才不紧、不抖。这一步只为了让你敢出声：<b>不看音准，任何声音都算</b>。四步大约 2 分钟，每一步都可以先点「听示范」。</p>
+    <ol class="warm-list">${WARM.map((x,i)=>`<li class="${i<w.i?'done':i===w.i?'cur':''}">${x.t}</li>`).join('')}</ol>
     <div class="safe">小声也算 · 跑调也算 · 声音不会被录下或上传，这里只有你自己</div>`;
 }
 function rhythmHTML(){
@@ -1571,13 +1787,12 @@ function songHTML(){
     </details>`;
 }
 const HOME_GROUPS=[
-  ['基础',[['warm','开口热身','哼一哼、唇颤音，先让声音醒过来'],['long','长音稳定','一口气唱平，练稳'],['single','单音模唱','听一个音，跟着唱准']]],
-  ['音阶与音程',[['scale','音阶课程','七个阶段，从三音到八度'],['interval','音程','从一个音跳到另一个音']]],
+  ['进阶',[['long','长音稳定','一口气唱平，练稳'],['scale','音阶课程','七个阶段，从三音到八度'],['interval','音程','从一个音跳到另一个音']]],
   ['唱歌与节奏',[['song','唱歌','一句一句唱准喜欢的歌'],['track','跟原曲练','原唱一档一档调小'],['rhythm','节奏','在对的时刻开口']]],
 ];
 function homeHTML(){
   const last=saved('pitch-mode',null),d=day();
-  const cont=last&&MODE_NAME[last]&&last!=='home'?`<button class="home-continue" data-go="${last}"><span class="hint">继续上次</span><b>${last==='scale'&&scaleOpt.stage!=='free'?'音阶课程 · '+(courseOf(scaleOpt.stage)?.n||''):MODE_NAME[last]}</b>${uiIcon('arrow')}</button>`:'';
+  const cont=last&&MODE_NAME[last]&&!['home','warm','single','progress'].includes(last)?`<button class="home-continue" data-go="${last}"><span class="hint">继续上次</span><b>${last==='scale'&&scaleOpt.stage!=='free'?'音阶课程 · '+(courseOf(scaleOpt.stage)?.n||''):MODE_NAME[last]}</b>${uiIcon('arrow')}</button>`:'';
   return `${cont}
     <div class="home-stats"><div><b>${Math.floor(d.sec/60)}</b><span>今天开口（分钟）</span></div><div><b>${d.hits}</b><span>今天唱准</span></div><div><b>${nameOf(ceilTop())}</b><span>舒适高音</span></div></div>
     ${HOME_GROUPS.map(([t,items])=>`<div class="home-group"><h3>${t}</h3><div class="home-cards">${items.map(([m,n,desc])=>`<button class="home-card" data-go="${m}">${uiIcon(m)||''}<b>${n}</b><span>${desc}</span></button>`).join('')}</div></div>`).join('')}`;
@@ -1641,7 +1856,6 @@ function renderPanel(){
   on('bImport',importSong);
   p.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>switchMode(b.dataset.go));
   if($('impText')){$('impText').oninput=renderImportPreview;$('impDot').onchange=renderImportPreview}
-  on('bWarmSkip',()=>{state.warm.acc=1e9});on('bWarmAgain',()=>newWarm(0));
   if($('fVocal'))$('fVocal').onchange=e=>loadTrack('vocal',e.target.files[0]);
   if($('fInst'))$('fInst').onchange=e=>loadTrack('inst',e.target.files[0]);
   on('trPlay',()=>TR.playing?trPause():trPlay());on('trBack',()=>{const p=Math.max(0,trPos()-5);TR.playing?trPlay(p):(TR.p0=p,renderPanel())});
@@ -1692,7 +1906,9 @@ function progressHTML(){
     else trend='最近处在平台期——这很正常，进步常常是攒一阵再突然跳一下。保持每周 4 天就好。';
   }else trend='多练几天，这里会出现你的进步曲线。';
   const lv=k=>{const p=levels(k)[D.level[k]];return `第 ${D.level[k]+1} 级 <span class="hint">${k==='rhythm'?p.n:GN[p.g]+' ±'+p.t}</span>`};
+  const ins=insights();
   return `<p style="color:var(--ink);font-size:15px">${trend}</p>
+    <div class="insight"><div class="lbl">我的特点${ins.n>=20?`（根据最近 ${ins.n} 个音）`:''}</div><ul>${ins.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="prog-grid">
       <div><b>${ds.length}</b><span>练习天数</span></div><div><b>${totalMin}</b><span>总开口分钟</span></div><div><b>${totalHits}</b><span>累计唱准</span></div>
       <div><b>${D.best.longSd??'—'}</b><span>长音最稳纪录（抖动）</span></div>
@@ -1767,6 +1983,7 @@ function tick(now){
     if(curMidi==null&&micOn){state.idleT+=dt;if(state.idleT>30000){pausePractice('好一会儿没听到声音，我先帮你暂停了。准备好了按空格，或点「继续练习」。')}}else state.idleT=0;
     if(state.phase==='sing'&&curMidi!=null){
       state.voiced+=dt;state.silence=0;const a=state.att;a.n++;a.sum+=diff;a.sq+=diff*diff;
+      state.ss+=diff;state.sn++;if(state.voiced<=400){state.fs+=diff;state.fn++}
       if(ok){state.hold+=dt;state.miss=0;state.hc+=Math.abs(diff);state.hn++;state.offT=0}
       else{state.miss+=dt;state.offT+=dt;if(state.miss>220){state.hold=Math.max(0,state.hold-dt*2);if(!state.hold){state.hc=0;state.hn=0}}}
       if(state.hold>=holdMs())noteSuccess();
@@ -1789,6 +2006,8 @@ function tick(now){
   const heard=analyser&&now>muteUntil&&!speaking;
   if(state.mode==='warm'&&state.phase==='warm'&&heard){
     if(curMidi!=null||lastRms>0.012)state.warm.acc+=dt;
+    if(curMidi!=null&&state.warm.i===WARM.length-1)state.warm.ms.push(curMidi);
+    updateWarmRing();
     const need=WARM[state.warm.i].sec*1000;
     if(state.warm.acc>=need)warmStepDone();else if(state.warm.acc>0)setStatus(`很好，继续… ${(state.warm.acc/1000).toFixed(1)} / ${WARM[state.warm.i].sec} 秒`,'good');
   }
