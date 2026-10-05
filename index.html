@@ -458,6 +458,31 @@ body.fit .wrap>#kbCard[open]{max-height:190px}
   .home-stats{grid-template-columns:repeat(3,1fr);gap:8px}.home-stats b{font-size:22px}
   .sheet{padding:22px 18px}.set-row{flex-wrap:wrap}.set-row select{max-width:100%}
 }
+/* 手机：练习页打开就是一整屏——目标音 → 实时音高图 → 判定条和按钮，不用往下滑 */
+@media(max-width:680px){
+  body:not([data-mode="home"]) .brand{display:none}
+  body:not([data-mode="home"]) .sidebar{padding:8px 12px 6px}
+  .tab{min-height:32px;padding:6px 10px;font-size:13px}
+  body:not([data-mode="home"]) .wrap{padding:12px 12px 24px}
+  body:not([data-mode="home"]) header{position:absolute;right:12px;top:10px;margin:0;z-index:3}
+  body:not([data-mode="home"]) header .btn{padding:7px 9px;min-height:0}
+  body:not([data-mode="home"]) .section-heading{padding-right:100px;min-height:0;margin-bottom:10px}
+  .section-title h2{font-size:21px}
+  #modeDescription,#modeMeta{display:none}
+  body.session-on:not([data-mode="home"]) #hero{padding:8px 12px;margin-bottom:10px}
+  .main{display:flex!important;flex-direction:column;padding:12px 14px;gap:10px}
+  .main>.display{display:contents}
+  .display>.eyebrow,.display>.hold-label,#keysHint,.meter-lbl,#tgtSub{display:none!important}
+  .display>.row2,.display>#warmStage{order:1}
+  .display>.row2{min-height:0}
+  .main>.stage-cv{order:2;padding:0!important;border:0!important;border-radius:0}
+  #cv{height:190px!important}
+  .display>.meter-wrap{order:3}.display>.hold{order:4}.display>#roundBox{order:5}.display>#status{order:6}.display>#acts{order:7}
+  .big{font-size:30px}.row2 .big small{display:none}
+  .mic-gate{inset:30px 0 10px}
+  .warm-ring{width:96px;height:96px;margin:4px 0 0}.warm-sec b{font-size:22px}.warm-title{font-size:21px;margin-top:4px}
+  body[data-mode="warm"] #cv{height:150px!important}
+}
 </style>
 </head>
 <body>
