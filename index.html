@@ -435,6 +435,16 @@ body:not([data-mode="single"]) #roundBox{display:none}
 .round-dots{display:flex;gap:5px}.round-dots i{width:10px;height:10px;border-radius:50%;border:1px solid var(--line);background:none}
 .round-dots i.g{background:var(--good);border-color:var(--good)}.round-dots i.h{background:var(--warm);border-color:var(--warm)}.round-dots i.x{background:var(--line)}.round-dots i.c{border-color:var(--accent);border-width:2px}
 @media(prefers-reduced-motion:reduce){.warm-ring .fg{transition:none}.warm-stage.hit .warm-ring{animation:none}}
+.teacher{background:var(--accent-soft);border-radius:12px;padding:14px 16px;margin-bottom:16px}.teacher p{color:var(--ink);font-size:14px;line-height:1.75;margin:6px 0 0}
+.cmp{margin-bottom:16px}.cmp table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}.cmp th{font-weight:500;color:var(--muted);text-align:left;padding:6px 8px;font-size:12px}
+.cmp td{padding:7px 8px;border-top:1px solid var(--line)}.cmp td.up{color:var(--good);font-weight:600}.cmp td.down{color:var(--warm);font-weight:600}
+.ms,.journal{margin-top:18px}.ms ul,.jlist{list-style:none;padding:0;margin:8px 0 0}.ms li,.jlist li{font-size:13px;padding:6px 0;border-top:1px solid var(--line);display:flex;gap:12px}.ms li span,.jlist li span{color:var(--muted);min-width:42px}
+.jtags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.journal textarea,#mJournal{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:10px;font:14px/1.6 var(--body);background:var(--paper);color:var(--ink);resize:vertical;user-select:text;-webkit-user-select:text}
+.journal .ctrls{margin-top:8px;display:flex;gap:10px;align-items:center}
+.home-teacher{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 18px;margin-bottom:14px;border:1px solid var(--line);border-radius:14px;background:var(--accent-soft);color:var(--ink);font-size:13px;line-height:1.65}
+.home-teacher .lbl{flex:none;color:var(--accent);font-weight:600}.home-teacher .icon{flex:none;margin-left:auto;color:var(--accent);width:16px;height:16px}
+@media(max-width:680px){.home-teacher{flex-direction:column;align-items:flex-start;gap:4px}.home-teacher .icon{display:none}}
+.notes details{border-top:1px solid var(--line);padding:10px 0}.notes summary{font-size:15px;font-weight:600;cursor:pointer}.notes p,.notes li{font-size:14px;line-height:1.75}.notes ul,.notes ol{padding-left:20px;margin:8px 0}
 /* 页面宽度永远一样：始终给滚动条留位置，切换页面时不会因为有没有滚动条而整体缩放 */
 html{overflow-y:scroll;scrollbar-gutter:stable}
 /* 练习页：整页正好放进窗口，不再被窗口底边切掉一半。
@@ -476,7 +486,7 @@ body.fit .wrap>#kbCard[open]{max-height:190px}
   .section-title h2{font-size:21px}
   #modeDescription,#modeMeta{display:none}
   body.session-on:not([data-mode="home"]) #hero{padding:8px 104px 8px 12px;margin-bottom:10px}
-  .main{display:flex!important;flex-direction:column;padding:12px 14px;gap:10px}
+  .main:not(.hidden){display:flex!important;flex-direction:column;padding:12px 14px;gap:10px}
   .main>.display{display:contents}
   .display>.eyebrow,.display>.hold-label,#keysHint,.meter-lbl,#tgtSub{display:none!important}
   .display>.row2,.display>#warmStage{order:1}
@@ -493,14 +503,14 @@ body.fit .wrap>#kbCard[open]{max-height:190px}
 </head>
 <body>
 <aside class="sidebar"><div class="brand"><div class="brand-mark"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4m5-9v14m5-11v8m5-6v4m3-2h0"/></svg></div><div><b>音准练习</b><small>PITCH STUDIO</small></div></div><nav class="tabs" id="tabs" aria-label="练习">
-    <button class="tab active" data-mode="home"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>今天</button>
+    <button class="tab active" data-mode="home"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>今天</button><button class="tab" data-mode="progress"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4M12 13v6m-4 2h8m-7-2h6"/></svg>我的进步</button>
     <div class="nav-group">每日练习</div><button class="tab daily-tab" data-mode="warm"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4M17.6 17.6 19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg>开口热身<span class="tab-step">1</span></button><button class="tab daily-tab" data-mode="single"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>单音模唱<span class="tab-step">2</span></button><button class="tab daily-tab" data-mode="high"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h5v-5h5v-5h5V5h3"/></svg>高音阶梯<span class="tab-step">3</span></button><button class="tab daily-tab" data-mode="cool"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 8l7 5 7-5M5 16l7-3 7 3"/></svg>放松收声<span class="tab-step">4</span></button>
     <div class="nav-group">进阶</div><button class="tab" data-mode="long"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 14c5-13 9 13 14 0l6-6"/></svg>长音稳定</button><button class="tab" data-mode="scale"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20v-5m5 5V11m5 9V7m5 13V3"/></svg>音阶</button><button class="tab" data-mode="interval"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4"/></svg>音程</button>
     <div class="nav-group">唱歌与节奏</div><button class="tab" data-mode="song"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>唱歌</button><button class="tab" data-mode="track"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 7h6m-6 4h6m-6 4h4"/></svg>跟原曲练</button><button class="tab" data-mode="rhythm"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17V5l11-2v12"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></svg>节奏</button>
-    <div class="nav-group">工具</div><button class="tab" data-mode="free"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18V9m5 13V3m5 15V9m5 11V6m5 11v-6"/></svg>测音域</button><button class="tab" data-mode="progress"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0V3Zm0 2H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4M12 13v6m-4 2h8m-7-2h6"/></svg>我的进步</button>
+    <div class="nav-group">工具</div><button class="tab" data-mode="free"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18V9m5 13V3m5 15V9m5 11V6m5 11v-6"/></svg>测音域</button>
   </nav>
 
-<div class="sidebar-bottom"><button class="utility" data-open="helpCard"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v16M12 5C8 1 3 3 3 3v16s5-2 9 2c4-4 9-2 9-2V3s-5-2-9 2Z"/></svg>使用指南</button><button class="utility" data-open="settingsCard"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h6l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z"/><circle cx="12" cy="12" r="3"/></svg>设置</button><div class="privacy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v13H5zM2 20h20l-3-3H5Z"/></svg>声音只在本机处理</div></div></aside>
+<div class="sidebar-bottom"><button class="utility" data-open="helpCard"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v16M12 5C8 1 3 3 3 3v16s5-2 9 2c4-4 9-2 9-2V3s-5-2-9 2Z"/></svg>老师笔记</button><button class="utility" data-open="settingsCard"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-1 3-3 1 1 3-2 2 2 2-1 3 3 1 1 3h6l1-3 3-1-1-3 2-2-2-2 1-3-3-1-1-3Z"/><circle cx="12" cy="12" r="3"/></svg>设置</button><div class="privacy"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v13H5zM2 20h20l-3-3H5Z"/></svg>声音只在本机处理</div></div></aside>
 <div class="wrap">
   <header>
     <div>
@@ -547,17 +557,62 @@ body.fit .wrap>#kbCard[open]{max-height:190px}
   <div class="sheet-backdrop hidden" id="sheet">
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
       <button class="sheet-close" id="sheetClose" type="button" aria-label="关闭">×</button>
-      <section class="sheet-page steps-help" id="helpCard">
-        <h2 id="sheetTitle">使用指南</h2>
-        <ol>
-      <li>戴上耳机（练节奏时最好用有线耳机或外放，蓝牙会有延迟），找个安静的地方。</li>
-      <li>点「开启麦克风」，允许浏览器使用麦克风。</li>
-      <li>点「开始今天的练习」。第一步只是哼一哼、叹口气，任何声音都算过——先让自己敢出声。</li>
-      <li>之后听到一个音，用"啊——"（或"嗯""呜"）跟着唱出来，不用大声。</li>
-      <li>看左边的指针：落在<b>绿色区间</b>里就是准的，在里面稳住一小会儿就算过。</li>
-      <li>唱不准完全没关系：我会提示你往高还是往低，必要时再弹一遍、或者陪你一起唱。</li>
-    </ol>
-        <p class="hint">难度会自动调整：你唱得顺，就慢慢减少提示；觉得吃力，就自动多给点帮助。目标是让你"大部分能唱准，偶尔要努力一下"——这是进步最快、也最不容易放弃的状态。</p>
+      <section class="sheet-page steps-help notes" id="helpCard">
+        <h2 id="sheetTitle">老师笔记</h2>
+        <p class="hint">我对你说过的话都整理在这里。忘了就翻一翻。</p>
+        <details open><summary>你的目标和路线</summary>
+          <p>你是低音男声，流行歌对你来说偏高。我们的目标不是"喊上去"，而是<b>比现在更高的音也能唱稳、越来越不费力</b>。</p>
+          <ol><li><b>敢出声</b>：小声、跑调都没关系，先开口。</li><li><b>音准</b>：听一个音、唱一个音，开口就落准。</li><li><b>高音</b>：一个半音一个半音往上扩，每天最多扩一个。</li><li><b>唱歌</b>：用喜欢的歌，把原唱一点点拿掉（"慢慢拆拐杖"）。</li></ol>
+        </details>
+        <details><summary>每天怎么练（约 12 分钟）</summary>
+          <ol><li><b>开口热身</b>：哼、叹气、唇颤音、警报滑音、轻轻唱。让声音醒过来，也测一下今天能滑多高。</li>
+          <li><b>单音模唱</b>：一组 10 个，偏中高音。唱准稳住 1～2 秒就行。</li>
+          <li><b>高音阶梯</b>：用「呜」小声往上爬，唱不上去就停，不硬顶。</li>
+          <li><b>放松收声</b>：安静一会儿，再用吸管往下滑。像运动完拉伸。</li></ol>
+          <p>每周练 4～5 天。<b>每天 10 分钟，比周末练一小时有用得多。</b>开始前在首页选一下"今天嗓子感觉"，软件会帮你调整。</p>
+        </details>
+        <details><summary>唱高音的要领</summary>
+          <ul><li><b>越高越小声。</b>高音不是靠力气，是靠放松。音量一大，喉咙就挤。</li>
+          <li>先用「呜」「嗯」这类半闭口的音练高音，比「啊」容易得多。</li>
+          <li>别"往上够"：想象声音从眉心往前飘出去，下巴和脖子放松。</li>
+          <li>够不着就先用警报滑音从下面滑上去，找到了再停住。</li>
+          <li>唱歌时高音太吃力，<b>降 1～2 个调完全没问题</b>，原唱的调不是你的调。</li>
+          <li>单音不是越久越好：中音可以唱长（练气息），<b>高音要唱轻、唱短，慢慢再加长</b>。</li></ul>
+        </details>
+        <details><summary>护嗓：为什么唱几首就哑</summary>
+          <ul><li>最常见的原因：<b>用胸声硬推高音</b>、音量太大、一直唱不休息。</li>
+          <li>每唱两三首（软件里连续唱约 6 分钟会提醒）就停 2 分钟、喝口温水。</li>
+          <li>唱完一定做「放松收声」：先安静几分钟，再用吸管轻轻发声，比只休息恢复得好。</li>
+          <li>嗓子有点累：那天不练高音阶梯。哑了：只做收声，少说话，多喝水。</li>
+          <li><b>嗓子哑超过两周没好、说话也疼，去医院耳鼻喉科。</b></li></ul>
+        </details>
+        <details><summary>找准音的诀窍</summary>
+          <ul><li>开口前，先在心里把那个音"哼"一遍，再出声。</li>
+          <li>你如果总是开口偏低：开口前把音"想高一点"，嘴角微微上扬。</li>
+          <li>找不到就从下面轻轻滑上去，听到对了就停住。</li>
+          <li>点「要唱的音」可以随时再听一遍，空格键也行。</li></ul>
+        </details>
+        <details><summary>节奏：什么时候开口</summary>
+          <ul><li>在前一拍就把气吸好，那一拍一到就出声——不要等听到了再反应。</li>
+          <li>心里数「1 2 3 4」，数熟了再开口；慢一点没关系。</li></ul>
+        </details>
+        <details><summary>唱自己喜欢的歌：慢慢拆拐杖</summary>
+          <ol><li>「跟原曲练」里放进原唱和伴奏，先跟着原唱唱。</li>
+          <li>原唱一档一档调小，最后只剩伴奏。</li>
+          <li>「接龙测试」：原唱突然消失几秒，看你能不能自己接下去。</li>
+          <li>想单独练旋律，可以在「唱歌」里粘贴简谱导入，软件会自动移到适合你的调。</li></ol>
+        </details>
+        <details><summary>心态</summary>
+          <ul><li>进步是一阵一阵的，平台期很正常，常常停一阵再突然跳一下。</li>
+          <li>只跟昨天的自己比。「我的进步」里会如实写进步和退步，退步也只是信息，不是批评。</li>
+          <li>敢出声本身就是在进步。</li></ul>
+        </details>
+        <details><summary>怎么找老师（我）聊</summary>
+          <ul><li>每次练完，在「我的进步」或练完的弹窗里写一句练习日记：嗓子感觉、哪里难。</li>
+          <li>在 Mac 上练，记录会自动保存成文件，我能直接读到。</li>
+          <li>在手机上练：设置 → 导出，把文件传到 Mac，再在 Mac 应用里「导入并合并」。</li>
+          <li>然后来找 Claude 说一句"看看我最近练得怎么样"，我会根据记录给你调整。</li></ul>
+        </details>
       </section>
       <section class="sheet-page" id="settingsCard">
         <h2>设置</h2>
@@ -589,8 +644,8 @@ body.fit .wrap>#kbCard[open]{max-height:190px}
           <div class="set-row"><span>单音 / 长音允许差八度</span><input type="checkbox" id="fold"></div>
         </div>
         <div class="set-group"><h3>练习记录</h3>
-          <div class="set-row"><span>备份或搬到别处</span><span class="pair"><button class="btn sm" id="expBtn" type="button">导出</button><label class="btn sm">导入<input type="file" id="impFile" accept=".json,application/json" hidden></label></span></div>
-          <p class="hint" id="expHint">换电脑或换浏览器时，用它把练习记录带过去。</p>
+          <div class="set-row"><span>备份或搬到别处</span><span class="pair"><button class="btn sm" id="expBtn" type="button">导出</button><label class="btn sm">导入并合并<input type="file" id="impFile" accept=".json,application/json" hidden></label></span></div>
+          <p class="hint" id="expHint">手机上「导出」，把文件传到 Mac（比如隔空投送），再在 Mac 上「导入并合并」——两边的练习记录会合在一起，不会覆盖。</p>
         </div>
       </section>
     </div>
@@ -680,6 +735,30 @@ function parseProgressBackup(text){
   for(const [k,v] of entries){if(typeof v!=='string')throw new Error('不是导出的进度文件');validateSaved(k,JSON.parse(v))}
   return entries;
 }
+// 导入 = 合并：手机和电脑各练各的，导进来以后两边的记录合在一起，不会互相覆盖
+function mergeProgressBackup(entries){
+  const out=[],key=x=>x.t+'|'+(x.type||x.m)+'|'+(x.n??'');
+  for(const [k,v] of entries){
+    const inc=JSON.parse(v),cur=saved(k,null);
+    if(cur==null){out.push([k,v]);continue}
+    if(k==='pitch-log'){
+      const join=(a=[],b=[],cap)=>{const seen=new Set(a.map(key));return [...a,...b.filter(x=>!seen.has(key(x)))].sort((x,y)=>x.t-y.t).slice(-cap)};
+      out.push([k,JSON.stringify({...cur,notes:join(cur.notes,inc.notes,8000),events:join(cur.events,inc.events,3000)})]);
+    }else if(k==='pitch-v2'){
+      const m={...cur,days:{...cur.days},level:{...cur.level}};
+      for(const [d,x] of Object.entries(inc.days||{})){const c=m.days[d];if(!c){m.days[d]=x;continue}const r={...c};
+        for(const [f,val] of Object.entries(x)){if(typeof val==='number'&&typeof r[f]==='number')r[f]=f==='longSd'?Math.min(r[f],val):Math.max(r[f],val);else if(r[f]==null)r[f]=val}m.days[d]=r}
+      for(const [l,val] of Object.entries(inc.level||{}))m.level[l]=Math.max(m.level[l]||0,val);
+      for(const f of ['top','bestReach','bestHigh'])if(inc[f]!=null)m[f]=Math.max(m[f]??0,inc[f]);
+      if(inc.first&&(!m.first||inc.first<m.first))m.first=inc.first;
+      if(inc.best?.longSd!=null)m.best={...(m.best||{}),longSd:m.best?.longSd==null?inc.best.longSd:Math.min(m.best.longSd,inc.best.longSd)};
+      const ids=new Set((m.songs||[]).map(x=>x.id));m.songs=[...(m.songs||[]),...(inc.songs||[]).filter(x=>!ids.has(x.id))];
+      out.push([k,JSON.stringify(m)]);
+    }
+    // 设置、上次练到哪一项：保留这台设备自己的
+  }
+  commitProgressBackup(out);
+}
 function commitProgressBackup(entries){
   const previous=entries.map(([k])=>[k,localStorage.getItem(k)]);
   try{for(const [k,v] of entries)localStorage.setItem(k,v)}
@@ -755,7 +834,8 @@ function logSnapshot(){
   return{app:'音准练习',saved:new Date().toISOString(),
     guide:'notes: m=模式 n=目标音(MIDI) name=音名 ok=1唱准/0先放一放 h=帮助(0无 1重弹 2陪唱 3跳过) lk=开口到唱准的秒数 f=刚开口0.4秒的偏差(音分,负=偏低) b=整个音的平均偏差 c=稳住时的平均绝对偏差 tol=允许范围 hold=要求稳住毫秒 g=提示方式 lv=级别 from=上一个目标音 st=音阶阶段 sess=今日练习编号 rms=平均音量(高音阶梯里和第一级比,>2.2倍=在喊) m=high 是高音阶梯; days[].reach=热身警报滑音够到的最高音(MIDI) days[].highBest=高音阶梯稳住的最高音 days[].voice=自评嗓子(ok/tired/hoarse) days[].cool=做了放松收声 events: restReminder=连续唱约6分钟的休息提醒 voiceCheck cool',
     range:{min:nameOf(settings.min),max:nameOf(settings.max),ceiling:nameOf(ceilTop())},settings:st,level:D.level,days:D.days,best:D.best,course:D.course||null,
-    insights:insights(),notes:LOG.notes,events:LOG.events};
+    insights:insights(),thisWeek:weekStats(0),lastWeek:weekStats(1),teacher:teacherNote(),milestones:milestones(),
+    journal:LOG.events.filter(e=>e.type==='journal').slice(-30),notes:LOG.notes,events:LOG.events};
 }
 function syncLogFile(){if(!window.__NATIVE_APP__)return;try{window.webkit.messageHandlers.audio.postMessage({cmd:'saveLog',json:JSON.stringify(logSnapshot())})}catch(e){}}
 setTimeout(syncLogFile,2500);addEventListener('pagehide',syncLogFile);
@@ -798,6 +878,70 @@ function insights(){
   const hardList=r.hard.filter(h=>h.miss>=30);if(hardList.length)r.tips.push(`最近最难的音：${hardList.map(h=>h.name).join('、')}。单音练习里会多安排它们几次。`);
   return insightCache=r;
 }
+// ================= 老师：每周对比、评语、里程碑 =================
+// 用"最近 7 天"和"再往前 7 天"比，进步和退步都如实写出来
+function weekStats(off=0){
+  const end=new Date();end.setHours(23,59,59,999);end.setDate(end.getDate()-7*off);
+  const start=new Date(end);start.setDate(start.getDate()-6);start.setHours(0,0,0,0);
+  const keys=[];for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1))keys.push(dkey(d));
+  const days=keys.map(k=>D.days[k]).filter(Boolean),inT=x=>x.t>=start.getTime()&&x.t<=end.getTime();
+  const N=LOG.notes.filter(x=>inT(x)&&['single','scale','interval','song'].includes(x.m)),ok=N.filter(x=>x.ok);
+  const E=LOG.events.filter(inT),mx=f=>{const v=days.map(x=>x[f]||0);const m=Math.max(0,...v);return m||null};
+  const fs=N.filter(x=>x.f!=null).map(x=>x.f);
+  return{from:keys[0],to:keys[6],
+    days:days.filter(x=>x.sec>=30).length,min:Math.round(days.reduce((a,x)=>a+(x.sec||0),0)/60),
+    notes:N.length,okRate:N.length>=10?Math.round(ok.length/N.length*100):null,
+    findSec:ok.length>=8?+median(ok.map(x=>Math.max(0,x.lk-(x.hold||1000)/1000))).toFixed(1):null,
+    landing:fs.length>=8?Math.round(median(fs)):null,
+    highBest:mx('highBest'),reach:mx('reach'),
+    tired:days.filter(x=>x.voice==='tired'||x.voice==='hoarse').length,hoarse:days.filter(x=>x.voice==='hoarse').length,
+    cool:days.filter(x=>x.cool).length,rests:E.filter(x=>x.type==='restReminder').length,
+    journals:E.filter(x=>x.type==='journal').length};
+}
+function weekCompare(){
+  const a=weekStats(0),b=weekStats(1),rows=[];
+  const add=(label,now,prev,fmt,better)=>{let dir=null;if(now!=null&&prev!=null&&now!==prev)dir=better(now,prev)?'up':'down';rows.push({label,now:now==null?'—':fmt(now),prev:prev==null?'—':fmt(prev),dir})};
+  const hi=(x,y)=>x>y,lo=(x,y)=>x<y;
+  add('练习天数',a.days,b.days,x=>x+' 天',hi);
+  add('开口时间',a.min,b.min,x=>x+' 分钟',hi);
+  add('唱准率',a.okRate,b.okRate,x=>x+'%',hi);
+  add('找到音用时',a.findSec,b.findSec,x=>x+' 秒',lo);
+  add('开口偏差',a.landing==null?null:Math.abs(a.landing),b.landing==null?null:Math.abs(b.landing),x=>x+' 音分',lo);
+  add('高音阶梯最高',a.highBest,b.highBest,nameOf,hi);
+  add('警报滑音最高',a.reach,b.reach,nameOf,hi);
+  add('嗓子累 / 哑的天数',a.tired,b.tired,x=>x+' 天',lo);
+  return{a,b,rows};
+}
+// 老师的评语：先说做得好的，再说一两个最该改的点；嗓子的事放在最前面
+function teacherNote(){
+  const {a,b}=weekCompare(),out=[];
+  if(a.hoarse>=1||a.tired>=3)out.push(`这周嗓子累了 ${a.tired} 天${a.hoarse?`（哑了 ${a.hoarse} 天）`:''}。先把嗓子养好：高音阶梯隔一天练一次，唱歌降 1～2 个调，每次唱完都做「放松收声」。嗓子哑超过两周没好，去看耳鼻喉科。`);
+  if(!a.days){out.push(b.days?'这周还没怎么练。没关系，今天打开练 10 分钟就算回来了——每天一点点，比偶尔练很久有用得多。':'从今天开始，每周练 4～5 天、每次 10 分钟左右，几周后你会听出变化。');return out}
+  const good=[];
+  if(a.days>=4)good.push(`练了 ${a.days} 天，节奏很好`);else if(a.days>b.days)good.push(`比上周多练了 ${a.days-b.days} 天`);
+  if(a.okRate!=null&&b.okRate!=null&&a.okRate>=b.okRate+5)good.push(`唱准率从 ${b.okRate}% 涨到 ${a.okRate}%`);
+  if(a.findSec!=null&&b.findSec!=null&&a.findSec<=b.findSec-0.3)good.push(`找音快了 ${(b.findSec-a.findSec).toFixed(1)} 秒`);
+  if(a.highBest&&b.highBest&&a.highBest>b.highBest)good.push(`高音阶梯从 ${nameOf(b.highBest)} 爬到了 ${nameOf(a.highBest)}`);
+  if(a.reach&&b.reach&&a.reach>b.reach)good.push(`警报滑音够到了 ${nameOf(a.reach)}，比上周高`);
+  out.push(good.length?'这周做得好的：'+good.join('；')+'。':'这周坚持来练了，这本身就是最重要的一步。');
+  const fix=[];
+  if(a.okRate!=null&&b.okRate!=null&&a.okRate<=b.okRate-10)fix.push(`唱准率比上周低了 ${b.okRate-a.okRate}%。可能是难度升了、或者累了——都正常，平台期之后常常会突然跳一下`);
+  if(a.landing!=null&&a.landing<=-25)fix.push(`开口还是习惯偏低（约 ${-a.landing} 音分）：开口前先在心里把音"想高一点"`);
+  else if(a.landing!=null&&a.landing>=25)fix.push(`开口习惯偏高（约 ${a.landing} 音分）：放松、小声，从上面轻轻落下来`);
+  if(a.findSec!=null&&a.findSec>2.5)fix.push(`找音还要 ${a.findSec} 秒：每个音开口前先在心里哼一遍`);
+  if(a.days<4)fix.push('下周争取练 4 天，每次 10 分钟就够');
+  if(a.days>=2&&a.cool<a.days/2)fix.push('练完记得做「放松收声」，嗓子第二天会舒服很多');
+  if(a.rests>=3)fix.push(`唱歌时提醒了 ${a.rests} 次休息：每唱两三首就停 2 分钟、喝口水`);
+  if(a.highBest&&b.highBest&&a.highBest===b.highBest&&a.days>=3)fix.push('高音最高点这周没动——这很正常，先把这个音唱得更轻松，再往上');
+  if(fix.length)out.push('下周的重点：'+fix.slice(0,2).join('；')+'。');
+  return out;
+}
+const MS_TXT={level:e=>`${MODE_NAME[e.mode]||e.mode}升到第 ${e.to+1} 级`,ceiling:e=>`舒适高音扩展到 ${e.top}`,record:e=>e.what==='reach'?`警报滑音新纪录 ${e.val}`:`高音阶梯新纪录 ${e.val}`,course:e=>`音阶课程「${(courseOf(e.stage)||{}).n||e.stage}」一轮 ${e.pct}%`};
+function milestones(){
+  return LOG.events.filter(e=>(e.type==='level'&&e.dir==='up')||e.type==='ceiling'||e.type==='record'||(e.type==='course'&&e.pct>=85)).slice(-12).reverse()
+    .map(e=>({date:dkey(new Date(e.t)),text:MS_TXT[e.type](e)}));
+}
+function saveJournal(text,tags){text=(text||'').trim().slice(0,2000);if(!text&&!tags.length)return false;logEvent('journal',{text,tags});return true}
 const GN={drone:'陪唱',once:'先听再唱',short:'短提示',blind:'盲唱'};
 // 单音：提示音越来越短、区间越来越窄
 const LEV_S=[{g:'drone',t:50},{g:'once',t:50},{g:'once',t:40},{g:'once',t:30},{g:'short',t:30},{g:'short',t:25}];
@@ -1280,7 +1424,7 @@ function highStep(q){
 function highDone(){
   const h=state.high||{};state.token++;stopDrone();state.phase='done';state.target=null;renderChips();
   const top=ceilTop(),best=h.best,d=day();d.high=1;let grew='';
-  if(best!=null){d.highBest=Math.max(d.highBest||0,best);
+  if(best!=null){d.highBest=Math.max(d.highBest||0,best);if(D.bestHigh&&best>D.bestHigh)logEvent('record',{what:'high',val:nameOf(best)});D.bestHigh=Math.max(D.bestHigh||0,best);
     if(best>top&&!d.highGrew&&d.voice!=='tired'){D.top=top+1;d.highGrew=1;grew=`舒适高音往上扩到 ${nameOf(D.top)}！`;toast(grew);if(session)session.ups.push(grew);logEvent('ceiling',{top:nameOf(D.top),from:'high'})}}
   saveD();
   const loudMax=h.loud&&h.loud.length?Math.max(...h.loud):null;
@@ -1556,7 +1700,7 @@ function playWarmDemo(i){
 function warmStepDone(skip=false){
   const tok=++state.token;state.phase='ok';const w=state.warm,i=w.i;
   if(state.mode==='warm'&&i===WS().length-1&&!skip&&w.ms.length>20){D.comfort=Math.round(median(w.ms));D.comfortDay=today();if(w.rms?.length>20)D.comfortRms=+median(w.rms).toFixed(4);saveD()}
-  if(WS()[i].siren&&w.reach!=null){const d=day(),r=Math.round(w.reach);d.reach=Math.max(d.reach||0,r);D.bestReach=Math.max(D.bestReach||0,r);saveD()}
+  if(WS()[i].siren&&w.reach!=null){const d=day(),r=Math.round(w.reach);d.reach=Math.max(d.reach||0,r);if(D.bestReach&&r>D.bestReach)logEvent('record',{what:'reach',val:nameOf(r)});D.bestReach=Math.max(D.bestReach||0,r);saveD()}
   if(!skip){coachSay(pick(WARM_PRAISE));setStatus('完成 ✓','good');ding();updateWarmRing();$('warmStage')?.classList.add('hit')}
   if(i+1<WS().length){setTimeout(()=>{if(tok===state.token)newWarm(i+1)},skip?0:1700);return}
   if(state.mode==='cool'){setTimeout(()=>{if(tok!==state.token)return;
@@ -1757,10 +1901,12 @@ function endSession(){
   if(s.later)items.push(`有 ${s.later} 个音先放了一放，它们以后还会出现，多见几次就熟了。`);
   const close=pick(['耳朵是慢慢变尖的，今天又往前走了一小步。明天见！','每天一点点，比偶尔练很久有用得多。明天见！','进步常常是一阵一阵的，偶尔停滞也正常。明天见！']);
   $('modalBody').innerHTML=`<h2>今天练完啦</h2><ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul><p>${close}</p>
+    <textarea id="mJournal" rows="2" placeholder="想对老师说点什么？嗓子感觉、哪里难…（可以不写）" style="width:100%;margin:4px 0 12px"></textarea>
     <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" id="mProg">看我的进步</button><button class="btn primary" id="mClose">好的</button></div>`;
   $('modal').classList.remove('hidden');$('mClose').focus();
-  $('mClose').onclick=()=>{$('modal').classList.add('hidden');switchMode('home')};
-  $('mProg').onclick=()=>{$('modal').classList.add('hidden');switchMode('progress')};
+  const keepJ=()=>saveJournal($('mJournal').value,[]);
+  $('mClose').onclick=()=>{keepJ();$('modal').classList.add('hidden');switchMode('home')};
+  $('mProg').onclick=()=>{keepJ();$('modal').classList.add('hidden');switchMode('progress')};
 }
 
 // ================= 界面 =================
@@ -1945,7 +2091,9 @@ const HOME_GROUPS=[
 function homeHTML(){
   const last=saved('pitch-mode',null),d=day();
   const cont=last&&MODE_NAME[last]&&!['home','warm','single','progress'].includes(last)?`<button class="home-continue" data-go="${last}"><span class="hint">继续上次</span><b>${last==='scale'&&scaleOpt.stage!=='free'?'音阶课程 · '+(courseOf(scaleOpt.stage)?.n||''):MODE_NAME[last]}</b>${uiIcon('arrow')}</button>`:'';
+  const tn=teacherNote();
   return `${cont}
+    <button class="home-teacher" data-go="progress"><span class="lbl">老师这周想对你说</span><span>${esc(tn.join(' '))}</span>${uiIcon('arrow')}</button>
     <div class="home-stats"><div><b>${Math.floor(d.sec/60)}</b><span>今天开口（分钟）</span></div><div><b>${d.hits}</b><span>今天唱准</span></div><div><b>${nameOf(ceilTop())}</b><span>舒适高音</span></div></div>
     ${HOME_GROUPS.map(([t,items])=>`<div class="home-group"><h3>${t}</h3><div class="home-cards">${items.map(([m,n,desc])=>`<button class="home-card" data-go="${m}">${uiIcon(m)||''}<b>${n}</b><span>${desc}</span></button>`).join('')}</div></div>`).join('')}`;
 }
@@ -2009,6 +2157,8 @@ function renderPanel(){
   on('bUp',()=>{songSel.adj++;startPhrase()});on('bDown',()=>{songSel.adj--;startPhrase()});
   on('bImport',importSong);
   p.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>switchMode(b.dataset.go));
+  p.querySelectorAll('[data-jtag]').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
+  on('jSave',()=>{const tags=[...p.querySelectorAll('[data-jtag].on')].map(b=>b.dataset.jtag);if(saveJournal($('jText').value,tags)){renderPanel();toast('记下了，老师会看到')}else $('jHint').textContent='写一句或点一个标签再记'});
   if($('impText')){$('impText').oninput=renderImportPreview;$('impDot').onchange=renderImportPreview}
   if($('fVocal'))$('fVocal').onchange=e=>loadTrack('vocal',e.target.files[0]);
   if($('fInst'))$('fInst').onchange=e=>loadTrack('inst',e.target.files[0]);
@@ -2060,8 +2210,17 @@ function progressHTML(){
     else trend='最近处在平台期——这很正常，进步常常是攒一阵再突然跳一下。保持每周 4 天就好。';
   }else trend='多练几天，这里会出现你的进步曲线。';
   const lv=k=>{const p=levels(k)[D.level[k]];return `第 ${D.level[k]+1} 级 <span class="hint">${k==='rhythm'?p.n:GN[p.g]+' ±'+p.t}</span>`};
-  const ins=insights();
-  return `<p style="color:var(--ink);font-size:15px">${trend}</p>
+  const ins=insights(),wc=weekCompare(),ms=milestones(),jr=LOG.events.filter(e=>e.type==='journal').slice(-5).reverse();
+  const teacher=`<div class="teacher"><div class="lbl">老师的话（最近 7 天）</div>${teacherNote().map(t=>`<p>${esc(t)}</p>`).join('')}</div>`;
+  const cmp=`<div class="cmp"><div class="lbl">最近 7 天 vs 再往前 7 天</div><table><thead><tr><th></th><th>最近 7 天</th><th>之前 7 天</th><th></th></tr></thead><tbody>${wc.rows.map(r=>`<tr><td>${r.label}</td><td><b>${r.now}</b></td><td>${r.prev}</td><td class="${r.dir||''}">${r.dir==='up'?'↑ 进步':r.dir==='down'?'↓ 退步':''}</td></tr>`).join('')}</tbody></table></div>`;
+  const mst=`<div class="ms"><div class="lbl">里程碑</div>${ms.length?`<ul>${ms.map(m=>`<li><span>${m.date.slice(5)}</span>${esc(m.text)}</li>`).join('')}</ul>`:'<p class="hint">升级、高音扩展、新纪录都会记在这里。</p>'}</div>`;
+  const jtags=['嗓子轻松','嗓子有点紧','嗓子哑','开心','有点沮丧','唱了歌'];
+  const jnl=`<div class="journal"><div class="lbl">练习日记 · 写给老师</div><p class="hint">今天唱得怎么样、哪里难、嗓子什么感觉——随手记一句。你来找我聊的时候，我会先看这些。</p>
+    <div class="jtags">${jtags.map(t=>`<button class="vchip" data-jtag="${t}">${t}</button>`).join('')}</div>
+    <textarea id="jText" rows="3" placeholder="比如：今天高音阶梯到 B3 有点紧，唱《晴天》副歌最后一句够不着…"></textarea>
+    <div class="ctrls"><button class="btn primary sm" id="jSave">记下来</button><span class="hint" id="jHint"></span></div>
+    ${jr.length?`<ul class="jlist">${jr.map(e=>`<li><span>${dkey(new Date(e.t)).slice(5)}</span>${esc([...(e.tags||[]),e.text].filter(Boolean).join(' · '))}</li>`).join('')}</ul>`:''}</div>`;
+  return `${teacher}${cmp}
     <div class="insight"><div class="lbl">我的特点${ins.n>=20?`（根据最近 ${ins.n} 个音）`:''}</div><ul>${ins.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
     <div class="prog-grid">
       <div><b>${ds.length}</b><span>练习天数</span></div><div><b>${totalMin}</b><span>总开口分钟</span></div><div><b>${totalHits}</b><span>累计唱准</span></div>
@@ -2074,7 +2233,7 @@ function progressHTML(){
       <div><b>${lv('interval')}</b><span>音程难度</span></div><div><b>${lv('song')}</b><span>唱歌难度</span></div>
     </div>
     <div class="lbl" style="margin-bottom:6px">最近 14 天：唱准时的平均偏差（音分，越低越准）</div>
-    <canvas id="pc"></canvas>`;
+    <canvas id="pc"></canvas>${mst}${jnl}`;
 }
 function drawProgress(){
   const c=$('pc');if(!c)return;const dpr=devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;c.width=W*dpr;c.height=H*dpr;
@@ -2282,7 +2441,7 @@ $('expBtn').onclick=()=>{
 };
 $('impFile').onchange=async e=>{
   const f=e.target.files[0];if(!f)return;
-  try{if(f.size>8*1024*1024)throw new Error('文件过大');const entries=parseProgressBackup(await f.text());commitProgressBackup(entries);
+  try{if(f.size>8*1024*1024)throw new Error('文件过大');const entries=parseProgressBackup(await f.text());mergeProgressBackup(entries);
     if(NATIVE)window.webkit.messageHandlers.audio.postMessage({cmd:'reload'});else location.reload();
   }catch(err){$('expHint').textContent='导入失败：文件格式不正确或存储空间不足，原来的进度已保留。';e.target.value=''}
 };
