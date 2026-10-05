@@ -950,6 +950,7 @@ async function openMicrophone(reopen){
     if(oldSource)oldSource.disconnect();if(oldStream)oldStream.getTracks().forEach(t=>t.stop());
     stream.getAudioTracks().forEach(t=>t.addEventListener('ended',()=>{if(micStream!==stream)return;micOn=false;analyser=null;micSrc?.disconnect();micSrc=null;syncMicUI();pausePractice('麦克风已断开，重新开启后可以继续练习。')}));
     const sel=$('micPick');sel.innerHTML='<option value="">自动（避开蓝牙耳机的麦克风）</option>'+ins.map(d=>`<option value="${esc(d.deviceId)}">${esc(d.label||'麦克风')}</option>`).join('');sel.value=settings.micId||'';
+    try{const st=stream.getAudioTracks()[0].getSettings();logEvent('mic',{label:stream.getAudioTracks()[0].label,ec:st.echoCancellation,ns:st.noiseSuppression,agc:st.autoGainControl,sr:ctx.sampleRate,ua:navigator.userAgent.slice(0,140)})}catch(e){}
     syncMicUI();
     if(reopen)coachSay('已换成：'+(stream.getAudioTracks()[0]?.label||'新的麦克风'));
     listWebOutputs().catch(()=>{});if(settings.outId&&c.setSinkId)c.setSinkId(settings.outId).catch(()=>{});
@@ -964,7 +965,9 @@ $('micBtn').onclick=micClick;
 $('tgtBtn').onclick=()=>doAct('replay');$('micCta').onclick=micClick;
 
 // YIN 音高检测
-let lastRms=0;
+let lastRms=0,noiseFloor=0.003,lostT=0;
+// 判断"有没有声音"的门槛跟着环境底噪走：手机麦克风电平比电脑低很多，固定门槛会把唱着的音当成没声音（唱 0.5 秒就断）
+const micGate=(k=1)=>Math.min(0.008,Math.max(0.0015,noiseFloor*2.5))*k;
 function detectPitch(b,sr,gate=0.008){
   let rms=0;for(let i=0;i<b.length;i++)rms+=b[i]*b[i];rms=Math.sqrt(rms/b.length);lastRms=rms;if(rms<gate)return null;
   const minTau=Math.floor(sr/1100),maxTau=Math.min(Math.floor(sr/65),(b.length>>1)-1),W=b.length-maxTau;
@@ -1991,10 +1994,14 @@ function tick(now){
   const dt=Math.min(100,now-lastT);lastT=now;
   let raw=null;
   if(analyser&&now>muteUntil&&!speaking){
-    analyser.getFloatTimeDomainData(buf);const f=detectPitch(buf,ctx.sampleRate,state.mode==='warm'?0.005:0.008);
+    analyser.getFloatTimeDomainData(buf);const f=detectPitch(buf,ctx.sampleRate,micGate(state.mode==='warm'?0.6:1));
     if(f&&f>55&&f<1100)raw=f2m(f);
+    // 没听到音高时，慢慢学习环境底噪
+    if(raw==null)noiseFloor=noiseFloor*0.97+Math.min(lastRms,0.02)*0.03;
   }
-  if(raw!=null){smooth.push(raw);if(smooth.length>5)smooth.shift();const s=[...smooth].sort((a,b)=>a-b);curMidi=s[s.length>>1]}
+  if(raw!=null){smooth.push(raw);if(smooth.length>5)smooth.shift();const s=[...smooth].sort((a,b)=>a-b);curMidi=s[s.length>>1];lostT=0}
+  // 偶尔一两帧没识别出来（换气、辅音、手机麦克风电平波动）不算断：保留 180 毫秒
+  else if(curMidi!=null&&(lostT+=dt)<180){}
   else{smooth=[];curMidi=null}
 
   if(curMidi!=null){secAcc+=dt;if(secAcc>=1000){day().sec+=secAcc/1000;secAcc=0;saveD();renderStats()}}
@@ -2030,7 +2037,7 @@ function tick(now){
   }
   const heard=analyser&&now>muteUntil&&!speaking;
   if(state.mode==='warm'&&state.phase==='warm'&&heard){
-    if(curMidi!=null||lastRms>0.012)state.warm.acc+=dt;
+    if(curMidi!=null||lastRms>micGate(1.5))state.warm.acc+=dt;
     if(curMidi!=null&&state.warm.i===WARM.length-1)state.warm.ms.push(curMidi);
     updateWarmRing();
     const need=WARM[state.warm.i].sec*1000;
@@ -2039,8 +2046,8 @@ function tick(now){
   // 开口时机：检测声音从安静到响起的那一刻
   if(state.mode==='rhythm'&&state.rh&&state.rh.running&&state.rh.L.in==='sing'&&heard){
     const rh=state.rh;
-    if(lastRms>0.02&&rh.quiet>=70){rh.hits.push(ctx.currentTime-rh.lat);rh.quiet=0}
-    else if(lastRms<0.012)rh.quiet+=dt;
+    if(lastRms>micGate(2.5)&&rh.quiet>=70){rh.hits.push(ctx.currentTime-rh.lat);rh.quiet=0}
+    else if(lastRms<micGate(1.5))rh.quiet+=dt;
   }
   if(state.mode==='free'&&curMidi!=null){
     const f=state.free;f.run.push(curMidi);if(f.run.length>15)f.run.shift();
